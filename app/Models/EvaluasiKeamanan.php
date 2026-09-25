@@ -5,20 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Keamanan extends Model
+class EvaluasiKeamanan extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
+        'jenis_evaluasi',
         'lokasi_pengamanan',
         'nama_lokasi',
-        'tanggal_laporan',
-        'shift',
-        'petugas',
-        'kondisi_keamanan',
-        'uraian_kegiatan',
-        'tindakan_lanjutan',
+        'periode',
+        'tahun',
+        'hasil_evaluasi',
+        'rekomendasi',
     ];
 
     public function user()

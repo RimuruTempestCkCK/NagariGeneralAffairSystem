@@ -9,6 +9,8 @@ use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\PerjalananKendaraanController;
 use App\Http\Controllers\BbmKendaraanController;
 use App\Http\Controllers\PemeliharaanKendaraanController;
+use App\Http\Controllers\KeamananController;
+use App\Http\Controllers\EvaluasiKeamananController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -83,4 +85,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('perjalanan-kendaraan', PerjalananKendaraanController::class)->except(['create', 'edit']);
     Route::resource('bbm-kendaraan', BbmKendaraanController::class)->except(['create', 'edit']);
     Route::resource('pemeliharaan-kendaraan', PemeliharaanKendaraanController::class)->except(['create', 'edit']);
+
+    // Modul Keamanan (Admin & Staff)
+    Route::resource('keamanan', KeamananController::class)->except(['create', 'edit']);
+    Route::resource('evaluasi-keamanan', EvaluasiKeamananController::class)->except(['create', 'edit']);
 });
