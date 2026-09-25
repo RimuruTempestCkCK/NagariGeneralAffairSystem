@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.adminator')
 
 @section('title', 'Perjalanan Kendaraan')
 

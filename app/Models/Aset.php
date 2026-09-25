@@ -19,4 +19,24 @@ class Aset extends Model
         'lampiran_bukti',
         'keterangan',
     ];
+    
+    protected $appends = ['status_sertifikat'];
+
+    public function getStatusSertifikatAttribute()
+    {
+        if (!$this->jatuh_tempo_sertifikat) {
+            return 'Tidak Ada Jatuh Tempo';
+        }
+
+        $jatuhTempo = \Carbon\Carbon::parse($this->jatuh_tempo_sertifikat);
+        $sekarang = \Carbon\Carbon::now();
+
+        if ($jatuhTempo->isPast()) {
+            return 'Sudah Jatuh Tempo';
+        } elseif ($jatuhTempo->diffInDays($sekarang) <= 90) { // threshold 90 days
+            return 'Akan Jatuh Tempo';
+        }
+
+        return 'Aman';
+    }
 }

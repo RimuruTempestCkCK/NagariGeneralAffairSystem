@@ -11,6 +11,7 @@ use App\Http\Controllers\BbmKendaraanController;
 use App\Http\Controllers\PemeliharaanKendaraanController;
 use App\Http\Controllers\KeamananController;
 use App\Http\Controllers\EvaluasiKeamananController;
+use App\Http\Controllers\AsetController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -89,4 +90,7 @@ Route::middleware('auth')->group(function () {
     // Modul Keamanan (Admin & Staff)
     Route::resource('keamanan', KeamananController::class)->except(['create', 'edit']);
     Route::resource('evaluasi-keamanan', EvaluasiKeamananController::class)->except(['create', 'edit']);
+
+    // Modul Aset (Admin & Staff - tapi mutate di-restrict di controller ke Admin)
+    Route::resource('aset', AsetController::class)->except(['create', 'edit']);
 });
