@@ -1,0 +1,2 @@
+Admin | admin@banknagari.co.id | admin123 | Diarahkan ke /admin/dashboard
+Staff | staff@banknagari.co.id | staff123 | Diarahkan ke /staff/dashboard

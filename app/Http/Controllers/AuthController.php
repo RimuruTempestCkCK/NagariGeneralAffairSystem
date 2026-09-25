@@ -10,7 +10,7 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return $this->redirectBasedOnRole(Auth::user());
         }
         return view('welcome');
     }
@@ -26,12 +26,21 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended(route('dashboard'));
+            return $this->redirectBasedOnRole(Auth::user());
         }
 
         return back()->withErrors([
             'email' => 'Email atau kata sandi tidak cocok dengan data kami.',
         ])->onlyInput('email');
+    }
+
+    public function redirectBasedOnRole($user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('staff.dashboard');
     }
 
     public function logout(Request $request)

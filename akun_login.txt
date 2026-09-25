@@ -1,0 +1,31 @@
+=======================================================
+SISTEM GENERAL AFFAIR BANK NAGARI (GAS / SIDUM)
+Informasi Akun Default & Panduan Akses
+=======================================================
+
+1. AKUN LOGIN:
+
+   a. Administrator (Divisi Umum / Pengelola)
+      - Email    : admin@banknagari.co.id
+      - Password : admin123
+      - Role     : admin
+      - Redirect : /admin/dashboard
+
+   b. Staff Operasional (Cabang / Unit Kerja)
+      - Email    : staff@banknagari.co.id
+      - Password : staff123
+      - Role     : staff
+      - Redirect : /staff/dashboard
+
+=======================================================
+2. CARA MENJALANKAN SEEDER (JIKA DATABASE DI-RESET):
+   php artisan migrate
+   php artisan db:seed --class=UserSeeder
+
+=======================================================
+3. MODUL UTAMA YANG DIKEMBANGKAN:
+   - Modul ATK (Alat Tulis Kantor & Purchase Order)
+   - Modul Kendaraan & Log BBM / Pemeliharaan Suku Cadang
+   - Modul Keamanan (Laporan Pengamanan Kantor)
+   - Modul Kepemilikan Aset (Sertifikat Tanah & Bangunan)
+=======================================================
