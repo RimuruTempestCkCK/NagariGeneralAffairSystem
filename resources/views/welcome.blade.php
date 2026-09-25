@@ -34,8 +34,13 @@
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
                 Sign in to platform 
             </h2>
-            <form class="mt-8 space-y-6" method="POST" action="{{ route('login') ?? url('/login') }}">
+            <form class="mt-8 space-y-6" method="POST" action="{{ url('/login') }}">
                 @csrf
+                @if ($errors->any())
+                    <div class="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-700 dark:text-red-400" role="alert">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
                 <div>
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
                     <input type="email" name="email" id="email" value="{{ old('email') }}" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="name@company.com" required autofocus>

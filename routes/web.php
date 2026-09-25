@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 // Halaman Login (Tampilan Utama)
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Halaman yang membutuhkan Login
