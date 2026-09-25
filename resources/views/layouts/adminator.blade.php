@@ -12,6 +12,7 @@
     <script defer="defer" src="{{ asset('adminator/vendors.js') }}"></script>
     <script defer="defer" src="{{ asset('adminator/2026.js') }}"></script>
     <link href="{{ asset('adminator/style.css') }}" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
@@ -90,5 +91,26 @@
     </div>
     
     @stack('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                const brandDiv = document.querySelector('.brand');
+                if(brandDiv) {
+                    brandDiv.innerHTML = `<img src="{{ asset('images/bank-nagari-logo.svg') }}" style="height:32px; width:auto;"> <span style="margin-left: 8px; font-weight: bold; font-size: 16px;">GAS</span>`;
+                }
+            }, 100);
+        });
+    </script>
+    <style>
+        @media print {
+            .d-sidebar, .d-topbar, [data-shell-sidebar], [data-shell-topbar], .card-action, .btn, .hamburger, form, .data-toolbar {
+                display: none !important;
+            }
+            .main { margin-left: 0 !important; }
+            .content { padding: 0 !important; }
+            .card { box-shadow: none !important; border: none !important; margin: 0 !important; }
+            body { background: white !important; }
+        }
+    </style>
 </body>
 </html>

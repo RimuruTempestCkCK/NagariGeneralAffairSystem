@@ -12,6 +12,8 @@ use App\Http\Controllers\PemeliharaanKendaraanController;
 use App\Http\Controllers\KeamananController;
 use App\Http\Controllers\EvaluasiKeamananController;
 use App\Http\Controllers\AsetController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,22 +26,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Halaman yang membutuhkan Login
 Route::middleware('auth')->group(function () {
     // Redirect generic dashboard
-    Route::get('/dashboard', function () {
-        if (Auth::user()->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-        return redirect()->route('staff.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/staff/dashboard', [DashboardController::class, 'index'])->name('staff.dashboard');
 
-    // Dashboard Admin
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard')->middleware('role:admin');
-
-    // Dashboard Staff
-    Route::get('/staff/dashboard', function () {
-        return view('staff.dashboard');
-    })->name('staff.dashboard')->middleware('role:staff');
+    // Reporting Routes
+    Route::get('/laporan/atk', [ReportController::class, 'atk'])->name('laporan.atk');
+    Route::get('/laporan/kendaraan', [ReportController::class, 'kendaraan'])->name('laporan.kendaraan');
+    Route::get('/laporan/aset', [ReportController::class, 'aset'])->name('laporan.aset');
 
     // QR Code Scanner & Print & Lookup (Dapat diakses Admin dan Staff)
     Route::get('/atk/scan', [AtkController::class, 'scanView'])->name('atk.scan');
