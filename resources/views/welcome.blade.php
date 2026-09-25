@@ -26,7 +26,7 @@
     <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
         <div class="flex items-center justify-between">
             <a href="{{ url('/') }}" class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.svg') }}" class="h-9 w-auto" alt="Logo">
+                <img src="{{ asset('images/bank-nagari-logo.svg') }}" class="h-10 w-auto bg-white p-1 rounded-md shadow-xs dark:bg-white" alt="Bank Nagari Logo">
                 <span class="self-center text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
                     Bank <span class="text-primary-600 dark:text-primary-500">Nagari</span> <span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary-100 text-primary-800 dark:bg-primary-900/60 dark:text-primary-300 ml-1">GAS</span>
                 </span>
@@ -47,7 +47,10 @@
     <!-- Main Content / Login Card -->
     <main class="flex flex-col items-center justify-center px-4 py-8 mx-auto md:min-h-[calc(100vh-80px)]">
         <div class="w-full max-w-md p-6 space-y-6 sm:p-8 bg-white rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 dark:bg-gray-800">
-            <div>
+            <div class="flex flex-col items-center text-center pb-2">
+                <div class="mb-4 p-2 bg-white rounded-xl shadow-xs border border-gray-100 inline-flex items-center justify-center">
+                    <img src="{{ asset('images/bank-nagari-logo.svg') }}" class="h-12 w-auto" alt="Bank Nagari Logo">
+                </div>
                 <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                     Masuk ke Sistem
                 </h1>
