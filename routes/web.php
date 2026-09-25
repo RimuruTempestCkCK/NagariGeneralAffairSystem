@@ -5,6 +5,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PemakaianAtkController;
 use App\Http\Controllers\PermintaanAtkController;
 use App\Http\Controllers\StokAtkController;
+use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\PerjalananKendaraanController;
+use App\Http\Controllers\BbmKendaraanController;
+use App\Http\Controllers\PemeliharaanKendaraanController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -73,4 +77,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/pemakaian-atk', [PemakaianAtkController::class, 'index'])->name('pemakaian-atk.index');
     Route::post('/pemakaian-atk', [PemakaianAtkController::class, 'store'])->name('pemakaian-atk.store');
     Route::get('/pemakaian-atk/{id}', [PemakaianAtkController::class, 'show'])->name('pemakaian-atk.show');
+
+    // Modul Kendaraan (Admin & Staff)
+    Route::resource('kendaraan', KendaraanController::class)->except(['create', 'edit']);
+    Route::resource('perjalanan-kendaraan', PerjalananKendaraanController::class)->except(['create', 'edit']);
+    Route::resource('bbm-kendaraan', BbmKendaraanController::class)->except(['create', 'edit']);
+    Route::resource('pemeliharaan-kendaraan', PemeliharaanKendaraanController::class)->except(['create', 'edit']);
 });

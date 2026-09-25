@@ -75,6 +75,7 @@ class PemakaianAtkController extends Controller
 
             // Validasi kecukupan stok
             if ($atk->jumlah < $validated['jumlah']) {
+                DB::rollBack();
                 return response()->json([
                     'success' => false,
                     'message' => "Stok tidak mencukupi! Stok saat ini untuk {$atk->nama_atk} hanya tersisa {$atk->jumlah} {$atk->satuan}.",
