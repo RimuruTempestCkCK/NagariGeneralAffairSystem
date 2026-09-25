@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Adminator - General Affair System')</title>
     <script>!function(){try{var t=localStorage.getItem("dash26-theme"),e=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.setAttribute("data-theme",t||(e?"dark":"light"))}catch(t){document.documentElement.setAttribute("data-theme","light")}}()</script>
+    <script>window.GAS_USER_ROLE = "{{ Auth::check() ? Auth::user()->role : 'staff' }}";</script>
     <script defer="defer" src="{{ asset('adminator/runtime.js') }}"></script>
     <script defer="defer" src="{{ asset('adminator/vendor-fullcalendar.js') }}"></script>
     <script defer="defer" src="{{ asset('adminator/vendor-chartjs.js') }}"></script>

@@ -40,6 +40,10 @@ class KendaraanController extends Controller
      */
     public function store(Request $request)
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'staff') {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
         $validated = $request->validate([
             'nomor_kendaraan' => 'required|string|max:50|unique:kendaraans,nomor_kendaraan',
             'status_kendaraan' => 'required|in:Milik,Sewa',
@@ -93,6 +97,10 @@ class KendaraanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'staff') {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
         $kendaraan = Kendaraan::findOrFail($id);
 
         $validated = $request->validate([
@@ -120,6 +128,10 @@ class KendaraanController extends Controller
      */
     public function destroy($id)
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'staff') {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
         $kendaraan = Kendaraan::findOrFail($id);
         $kendaraan->delete();
 
