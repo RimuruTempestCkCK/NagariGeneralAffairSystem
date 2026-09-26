@@ -35,7 +35,7 @@ class AuditLogController extends Controller
         $logs = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
         $users = \App\Models\User::orderBy('name')->get();
 
-        return view('admin.audit-logs', compact('logs', 'users'));
+        return view('admin.audit-logs.index', compact('logs', 'users'));
     }
 
     public function show($id)
@@ -55,3 +55,4 @@ class AuditLogController extends Controller
         ]);
     }
 }
+

@@ -41,7 +41,7 @@ class PermintaanAtkController extends Controller
         $permintaans = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         $atks = Atk::where('status', 'Aktif')->orderBy('nama_atk')->get();
 
-        return view('permintaan-atk.index', compact('permintaans', 'atks'));
+        return view('shared.permintaan-atk.index', compact('permintaans', 'atks'));
     }
 
     /**
@@ -329,3 +329,4 @@ class PermintaanAtkController extends Controller
         ]);
     }
 }
+

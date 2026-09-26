@@ -51,7 +51,7 @@ class PemakaianAtkController extends Controller
             ->whereYear('tanggal', now()->year)
             ->sum('jumlah');
 
-        return view('pemakaian-atk.index', compact('pemakaians', 'atks', 'totalBebanBulanIni', 'totalItemDipakaiBulanIni'));
+        return view('shared.pemakaian-atk.index', compact('pemakaians', 'atks', 'totalBebanBulanIni', 'totalItemDipakaiBulanIni'));
     }
 
     /**
@@ -159,3 +159,4 @@ class PemakaianAtkController extends Controller
         ]);
     }
 }
+

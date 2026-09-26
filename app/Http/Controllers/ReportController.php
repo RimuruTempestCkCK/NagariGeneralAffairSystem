@@ -130,7 +130,7 @@ class ReportController extends Controller
             return $this->mapAtkRow($atk);
         });
 
-        return view('laporan.atk', compact('atks'));
+        return view('shared.laporan.atk', compact('atks'));
     }
 
     public function kendaraan(Request $request)
@@ -141,7 +141,7 @@ class ReportController extends Controller
             return $this->mapKendaraanRow($k);
         });
 
-        return view('laporan.kendaraan', compact('kendaraans'));
+        return view('shared.laporan.kendaraan', compact('kendaraans'));
     }
 
     public function aset(Request $request)
@@ -150,7 +150,7 @@ class ReportController extends Controller
 
         $asets = $this->buildAsetQuery($request)->get();
 
-        return view('laporan.aset', compact('asets'));
+        return view('shared.laporan.aset', compact('asets'));
     }
     // --- EXPORT LOGIC ---
 
@@ -165,7 +165,7 @@ class ReportController extends Controller
 
         if ($format === 'pdf') {
             AuditLogService::log('EXPORT', 'ATK_REPORT', 'User exported Laporan ATK to PDF', Auth::user());
-            return view('laporan.export.atk_pdf', compact('atks', 'request'));
+            return view('shared.laporan.export.atk_pdf', compact('atks', 'request'));
         }
 
         AuditLogService::log('EXPORT', 'ATK_REPORT', 'User exported Laporan ATK to Excel (CSV)', Auth::user());
@@ -211,7 +211,7 @@ class ReportController extends Controller
 
         if ($format === 'pdf') {
             AuditLogService::log('EXPORT', 'KENDARAAN_REPORT', 'User exported Laporan Kendaraan to PDF', Auth::user());
-            return view('laporan.export.kendaraan_pdf', compact('kendaraans', 'request'));
+            return view('shared.laporan.export.kendaraan_pdf', compact('kendaraans', 'request'));
         }
 
         AuditLogService::log('EXPORT', 'KENDARAAN_REPORT', 'User exported Laporan Kendaraan to Excel (CSV)', Auth::user());
@@ -250,7 +250,7 @@ class ReportController extends Controller
 
         if ($format === 'pdf') {
             AuditLogService::log('EXPORT', 'ASET_REPORT', 'User exported Laporan Aset to PDF', Auth::user());
-            return view('laporan.export.aset_pdf', compact('asets', 'request'));
+            return view('shared.laporan.export.aset_pdf', compact('asets', 'request'));
         }
 
         AuditLogService::log('EXPORT', 'ASET_REPORT', 'User exported Laporan Aset to Excel (CSV)', Auth::user());
@@ -282,3 +282,4 @@ class ReportController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 }
+

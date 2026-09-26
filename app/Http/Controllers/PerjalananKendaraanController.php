@@ -33,7 +33,7 @@ class PerjalananKendaraanController extends Controller
         $perjalanans = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
         $kendaraans = Kendaraan::where('kondisi', '!=', 'Rusak')->orderBy('nomor_kendaraan', 'asc')->get();
 
-        return view('perjalanan-kendaraan.index', compact('perjalanans', 'kendaraans'));
+        return view('shared.perjalanan-kendaraan.index', compact('perjalanans', 'kendaraans'));
     }
 
     /**
@@ -132,3 +132,4 @@ class PerjalananKendaraanController extends Controller
         ]);
     }
 }
+

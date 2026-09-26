@@ -31,7 +31,7 @@ class KeamananController extends Controller
 
         $laporans = $query->orderBy('tanggal_laporan', 'desc')->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
-        return view('keamanan.index', compact('laporans'));
+        return view('shared.keamanan.index', compact('laporans'));
     }
 
     public function store(Request $request)
@@ -116,3 +116,4 @@ class KeamananController extends Controller
         ]);
     }
 }
+

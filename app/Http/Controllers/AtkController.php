@@ -32,7 +32,7 @@ class AtkController extends Controller
         $atks = $query->orderBy('kode_atk', 'asc')->paginate(10)->withQueryString();
         $jenisList = Atk::select('jenis_atk')->distinct()->pluck('jenis_atk');
 
-        return view('atk.index', compact('atks', 'jenisList'));
+        return view('admin.atk.index', compact('atks', 'jenisList'));
     }
 
     public function store(Request $request)
@@ -144,7 +144,7 @@ class AtkController extends Controller
             ['ids' => $atks->pluck('id')->toArray()]
         );
 
-        return view('atk.bulk-print', compact('atks'));
+        return view('admin.atk.bulk-print', compact('atks'));
     }
 
     public function printQr($id)
@@ -152,12 +152,12 @@ class AtkController extends Controller
         $atk = Atk::findOrFail($id);
         $qrImage = base64_encode(QrCode::format('svg')->size(180)->generate($atk->kode_atk));
 
-        return view('atk.print-qr', compact('atk', 'qrImage'));
+        return view('admin.atk.print-qr', compact('atk', 'qrImage'));
     }
 
     public function scanView()
     {
-        return view('atk.scan');
+        return view('admin.atk.scan');
     }
 
     public function scanLookup($kode)
@@ -177,3 +177,4 @@ class AtkController extends Controller
         ]);
     }
 }
+

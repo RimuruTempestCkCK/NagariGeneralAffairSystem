@@ -32,7 +32,7 @@ class KendaraanController extends Controller
 
         $kendaraans = $query->orderBy('nomor_kendaraan', 'asc')->paginate(10)->withQueryString();
 
-        return view('kendaraan.index', compact('kendaraans'));
+        return view('shared.kendaraan.index', compact('kendaraans'));
     }
 
     /**
@@ -141,3 +141,4 @@ class KendaraanController extends Controller
         ]);
     }
 }
+

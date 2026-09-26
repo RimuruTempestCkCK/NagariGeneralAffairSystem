@@ -27,7 +27,7 @@ class BulkPrintTest extends TestCase
         
         $response = $this->actingAs($this->admin)->get(route('atk.bulk-print', ['ids' => [$atk1->id, $atk2->id]]));
         $response->assertStatus(200);
-        $response->assertViewIs('atk.bulk-print');
+        $response->assertViewIs('admin.atk.bulk-print');
         $response->assertSee($atk1->kode_atk);
         $response->assertSee($atk2->kode_atk);
 
@@ -77,7 +77,7 @@ class BulkPrintTest extends TestCase
         $atk1 = Atk::create(['kode_atk'=>'ATK-01','nama_atk'=>'Barang 1','jenis_atk'=>'A','satuan'=>'Pcs','status'=>'Aktif','jumlah'=>10,'harga'=>1000]);
         $response = $this->actingAs($this->admin)->get(route('atk.print-qr', $atk1->id));
         $response->assertStatus(200);
-        $response->assertViewIs('atk.print-qr');
+        $response->assertViewIs('admin.atk.print-qr');
     }
 
     public function test_existing_scanner_works()

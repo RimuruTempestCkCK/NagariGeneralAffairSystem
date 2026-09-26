@@ -12,7 +12,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return $this->redirectBasedOnRole(Auth::user());
         }
-        return view('welcome');
+        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -53,3 +53,4 @@ class AuthController extends Controller
         return redirect('/');
     }
 }
+

@@ -33,7 +33,7 @@ class AsetController extends Controller
 
         $asets = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
-        return view('aset.index', compact('asets'));
+        return view('shared.aset.index', compact('asets'));
     }
 
     public function store(Request $request)
@@ -142,3 +142,4 @@ class AsetController extends Controller
         ]);
     }
 }
+

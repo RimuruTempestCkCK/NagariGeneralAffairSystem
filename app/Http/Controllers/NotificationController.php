@@ -11,7 +11,7 @@ class NotificationController extends Controller
     {
         // View for listing notifications
         $notifications = Auth::user()->notifications()->paginate(15);
-        return view('notifications.index', compact('notifications'));
+        return view('shared.notifications.index', compact('notifications'));
     }
 
     public function markAsRead($id)
@@ -38,3 +38,4 @@ class NotificationController extends Controller
         return redirect($url);
     }
 }
+

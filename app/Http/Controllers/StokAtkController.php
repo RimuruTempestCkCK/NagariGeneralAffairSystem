@@ -45,7 +45,7 @@ class StokAtkController extends Controller
         $totalItemAtk = Atk::count();
         $totalStokFisik = Atk::sum('jumlah');
 
-        return view('stok-atk.index', compact('transaksiStok', 'atks', 'totalNilaiPersediaan', 'totalItemAtk', 'totalStokFisik'));
+        return view('admin.stok-atk.index', compact('transaksiStok', 'atks', 'totalNilaiPersediaan', 'totalItemAtk', 'totalStokFisik'));
     }
 
     /**
@@ -118,3 +118,4 @@ class StokAtkController extends Controller
         ]);
     }
 }
+

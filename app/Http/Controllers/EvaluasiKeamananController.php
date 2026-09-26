@@ -30,7 +30,7 @@ class EvaluasiKeamananController extends Controller
 
         $evaluasis = $query->orderBy('tahun', 'desc')->orderBy('periode', 'desc')->paginate(10)->withQueryString();
 
-        return view('evaluasi-keamanan.index', compact('evaluasis'));
+        return view('shared.evaluasi-keamanan.index', compact('evaluasis'));
     }
 
     public function store(Request $request)
@@ -113,3 +113,4 @@ class EvaluasiKeamananController extends Controller
         ]);
     }
 }
+

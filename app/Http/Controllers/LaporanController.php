@@ -8,3 +8,4 @@ class LaporanController extends Controller
 {
     //
 }
+

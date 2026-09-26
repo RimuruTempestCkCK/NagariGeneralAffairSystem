@@ -31,7 +31,7 @@ class BbmKendaraanController extends Controller
         $bbms = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
         $kendaraans = Kendaraan::where('kondisi', '!=', 'Rusak')->orderBy('nomor_kendaraan', 'asc')->get();
 
-        return view('bbm-kendaraan.index', compact('bbms', 'kendaraans'));
+        return view('shared.bbm-kendaraan.index', compact('bbms', 'kendaraans'));
     }
 
     /**
@@ -127,3 +127,4 @@ class BbmKendaraanController extends Controller
         ]);
     }
 }
+

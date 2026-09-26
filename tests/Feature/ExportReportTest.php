@@ -34,7 +34,7 @@ class ExportReportTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->get(route('laporan.atk.export', ['format' => 'pdf']));
         $response->assertStatus(200);
-        $response->assertViewIs('laporan.export.atk_pdf');
+        $response->assertViewIs('shared.laporan.export.atk_pdf');
         
         $this->assertDatabaseHas('audit_logs', [
             'action' => 'EXPORT',

@@ -43,7 +43,7 @@ class DashboardController extends Controller
         
         $recentTrans = PermintaanAtk::with('user')->orderBy('created_at', 'desc')->take(5)->get();
 
-        return view('admin.dashboard', compact(
+        return view('admin.dashboard.index', compact(
             'totalAtk', 'totalStok', 'pendingPermintaan',
             'totalKendaraan', 'expiringStnk',
             'totalAset', 'expiringAset',
@@ -60,8 +60,9 @@ class DashboardController extends Controller
         
         $recentTrans = PermintaanAtk::where('user_id', $user->id)->orderBy('created_at', 'desc')->take(5)->get();
 
-        return view('staff.dashboard', compact(
+        return view('staff.dashboard.index', compact(
             'myPermintaan', 'pendingPermintaan', 'myKeamanan', 'recentTrans'
         ));
     }
 }
+

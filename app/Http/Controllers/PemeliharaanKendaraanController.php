@@ -35,7 +35,7 @@ class PemeliharaanKendaraanController extends Controller
         $pemeliharaans = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
         $kendaraans = Kendaraan::orderBy('nomor_kendaraan', 'asc')->get();
 
-        return view('pemeliharaan-kendaraan.index', compact('pemeliharaans', 'kendaraans'));
+        return view('shared.pemeliharaan-kendaraan.index', compact('pemeliharaans', 'kendaraans'));
     }
 
     /**
@@ -135,3 +135,4 @@ class PemeliharaanKendaraanController extends Controller
         ]);
     }
 }
+
