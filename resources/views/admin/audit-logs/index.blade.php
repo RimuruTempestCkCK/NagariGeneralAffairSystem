@@ -20,7 +20,7 @@
         <form action="{{ route('admin.audit-logs.index') }}" method="GET" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <select name="user_id" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua User</option>
-                @foreach( as )
+                @foreach($users as $user)
                     <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                 @endforeach
             </select>
@@ -53,12 +53,12 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($logs as )
+                @forelse($logs as $log)
                 <tr>
                     <td>{{ $log->created_at->format('d/m/Y H:i:s') }}</td>
-                    <td>{{ $log->user ? ->user->name : 'Sistem/Dihapus' }}</td>
+                    <td>{{ $log->user ? $log->user->name : 'Sistem/Dihapus' }}</td>
                     <td>{{ $log->module }}</td>
-                    <td><span class="tag {{ $log->action == 'CREATE' || ->action == 'LOGIN' ? 't-active' : (->action == 'DELETE' || ->action == 'LOGOUT' ? 't-unavail' : 't-new') }}">{{ $log->action }}</span></td>
+                    <td><span class="tag {{ $log->action == 'CREATE' || $log->action == 'LOGIN' ? 't-active' : ($log->action == 'DELETE' || $log->action == 'LOGOUT' ? 't-unavail' : 't-new') }}">{{ $log->action }}</span></td>
                     <td>{{ $log->description }}</td>
                     <td>{{ $log->ip_address }}</td>
                     <td>
@@ -125,7 +125,7 @@
     }
 
     function showDetailModal(id) {
-        fetch(/admin/audit-logs/+id)
+        fetch('/admin/audit-logs/' + id)
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
