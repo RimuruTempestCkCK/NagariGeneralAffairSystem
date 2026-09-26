@@ -11,7 +11,7 @@
 
     <nav class="nav-section">
         <div class="nav-label">Menu Utama</div>
-        <a class="nav-link {{ request()->is('dashboard*') || request()->is('admin/dashboard*') || request()->is('staff/dashboard*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.dashboard.index') }}">
+        <a class="nav-link {{ request()->is('dashboard*') || request()->is('admin/dashboard*') || request()->is('staff/dashboard*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.dashboard') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d='M3 12 12 3l9 9'/><path d='M5 10v10h14V10'/></svg>
             <span>Dashboard</span>
         </a>

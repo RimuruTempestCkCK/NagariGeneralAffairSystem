@@ -12,7 +12,7 @@
         <p class="hero-sub">Arahkan kamera ke QR Code label ATK atau masukkan kode ATK secara manual untuk melihat data inventaris.</p>
     </div>
     <div class="hero-actions">
-        <a href="{{ Auth::user()->role === 'admin' ? route('admin.atk.index') : route(Auth::user()->role . '.dashboard.index') }}" class="btn btn--ghost">
+        <a href="{{ Auth::user()->role === 'admin' ? route('admin.atk.index') : route(Auth::user()->role . '.dashboard') }}" class="btn btn--ghost">
             &larr; Kembali
         </a>
     </div>
