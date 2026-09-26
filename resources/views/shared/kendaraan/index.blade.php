@@ -12,9 +12,7 @@
         <p class="hero-sub">Manajemen data kendaraan inventaris perusahaan.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openFormModal()" class="btn btn-primary">
-            + Tambah Kendaraan
-        </button>
+        <button type="button" onclick="openFormModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Tambah Kendaraan</button>
     </div>
 </section>
 
@@ -37,7 +35,7 @@
                 <option value="Servis" {{ request('kondisi') === 'Servis' ? 'selected' : '' }}>Servis</option>
                 <option value="Rusak" {{ request('kondisi') === 'Rusak' ? 'selected' : '' }}>Rusak</option>
             </select>
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
         </form>
     </div>
 
@@ -154,38 +152,38 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Plat Nomor Kendaraan *</label>
-                    <input type="text" id="nomor_kendaraan" required style="text-transform: uppercase;">
+                    <input class="input" type="text" id="nomor_kendaraan" required style="text-transform: uppercase;">
                 </div>
                 <div class="form-group">
                     <label>Jenis Kendaraan *</label>
-                    <input type="text" id="jenis_kendaraan" required>
+                    <input class="input" type="text" id="jenis_kendaraan" required>
                 </div>
                 <div class="form-group">
                     <label>Tahun Pembuatan *</label>
-                    <input type="number" id="tahun_kendaraan" required min="1900" max="2030">
+                    <input class="input" type="number" id="tahun_kendaraan" required min="1900" max="2030">
                 </div>
                 <div class="form-group">
                     <label>Status Kepemilikan *</label>
-                    <select id="status_kendaraan" required>
+                    <select class="select" id="status_kendaraan" required>
                         <option value="Milik">Milik (Aset)</option>
                         <option value="Sewa">Sewa (Rental)</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Nomor BPKB</label>
-                    <input type="text" id="nomor_bpkb">
+                    <input class="input" type="text" id="nomor_bpkb">
                 </div>
                 <div class="form-group">
                     <label>Nomor STNK</label>
-                    <input type="text" id="nomor_stnk">
+                    <input class="input" type="text" id="nomor_stnk">
                 </div>
                 <div class="form-group">
                     <label>Tanggal Jatuh Tempo STNK *</label>
-                    <input type="date" id="jatuh_tempo_stnk" required>
+                    <input class="input" type="date" id="jatuh_tempo_stnk" required>
                 </div>
                 <div class="form-group">
                     <label>Kondisi Kendaraan *</label>
-                    <select id="kondisi" required>
+                    <select class="select" id="kondisi" required>
                         <option value="Aktif">Aktif beroperasi</option>
                         <option value="Servis">Sedang diservis</option>
                         <option value="Rusak">Rusak berat / Tidak aktif</option>
@@ -194,7 +192,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan Kendaraan</button>
+                <button type="submit" class="btn btn--primary">Simpan Kendaraan</button>
             </div>
         </form>
     </div>
@@ -211,7 +209,7 @@
             <!-- Injected via JS -->
         </div>
         <div class="modal-footer">
-            <button type="button" onclick="closeDetailModal()" class="btn btn-primary">Tutup</button>
+            <button type="button" onclick="closeDetailModal()" class="btn btn--primary">Tutup</button>
         </div>
     </div>
 </div>

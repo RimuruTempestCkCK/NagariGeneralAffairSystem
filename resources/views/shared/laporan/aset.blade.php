@@ -12,9 +12,9 @@
         <p class="hero-sub">Daftar Kepemilikan Aset (Kondisi Saat Ini: {{ \Carbon\Carbon::now()->format('d F Y') }})</p>
     </div>
     <div class="hero-actions">
-        <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn-primary" style="background: #28a745; border-color: #28a745; margin-right: 5px;">Excel</a>
-        <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn-primary" style="background: #dc3545; border-color: #dc3545; margin-right: 5px;">PDF</a>
-        <button class="btn btn-primary" onclick="window.print()" style="background: #2c3e50; border-color: #2c3e50;">
+        <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn--primary" style="background: #28a745; border-color: #28a745; margin-right: 5px;">Excel</a>
+        <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn--primary" style="background: #dc3545; border-color: #dc3545; margin-right: 5px;">PDF</a>
+        <button class="btn btn--primary" onclick="window.print()" style="background: #2c3e50; border-color: #2c3e50;">
             Print Laporan
         </button>
     </div>
@@ -35,7 +35,7 @@
                 <option value="Akan Jatuh Tempo" {{ request('status') == 'Akan Jatuh Tempo' ? 'selected' : '' }}>Akan Jatuh Tempo</option>
                 <option value="Sudah Jatuh Tempo" {{ request('status') == 'Sudah Jatuh Tempo' ? 'selected' : '' }}>Sudah Jatuh Tempo</option>
             </select>
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
             <a href="{{ route('admin.laporan.aset') }}" class="btn btn--ghost" style="padding: 5px 15px; text-decoration: none;">Reset</a>
         </form>
     </div>

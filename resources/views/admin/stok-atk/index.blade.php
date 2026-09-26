@@ -12,12 +12,8 @@
         <p class="hero-sub">Manajemen fisik stok, harga, dan Jurnal BYD.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openCreateModal('Stok Awal')" class="btn btn--ghost" style="margin-right: 10px;">
-            + Catat Stok Awal
-        </button>
-        <button type="button" onclick="openCreateModal('Stok Masuk')" class="btn btn-primary">
-            + Tambah Stok Masuk
-        </button>
+        <button type="button" onclick="openCreateModal('Stok Awal')" class="btn btn--ghost" style="margin-right: 10px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat Stok Awal</button>
+        <button type="button" onclick="openCreateModal('Stok Masuk')" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Tambah Stok Masuk</button>
     </div>
 </section>
 
@@ -50,7 +46,7 @@
                 <option value="Stok Awal" {{ request('jenis_transaksi') === 'Stok Awal' ? 'selected' : '' }}>Stok Awal</option>
                 <option value="Stok Masuk" {{ request('jenis_transaksi') === 'Stok Masuk' ? 'selected' : '' }}>Stok Masuk</option>
             </select>
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
         </form>
     </div>
 
@@ -146,7 +142,7 @@
             <input type="hidden" id="jenis_transaksi" name="jenis_transaksi" value="Stok Masuk">
             <div class="form-group">
                 <label>Pilih Barang ATK *</label>
-                <select id="atk_id" required onchange="autoFillAtkPrice()">
+                <select class="select" id="atk_id" required onchange="autoFillAtkPrice()">
                     <option value="">-- Pilih Barang ATK --</option>
                     @foreach($atks as $atk)
                         <option value="{{ $atk->id }}" data-harga="{{ $atk->harga }}" data-satuan="{{ $atk->satuan }}" data-stok="{{ $atk->jumlah }}">
@@ -158,11 +154,11 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Jumlah Masuk *</label>
-                    <input type="number" id="jumlah" min="1" required placeholder="Contoh: 50" oninput="calculateTotal()">
+                    <input class="input" type="number" id="jumlah" min="1" required placeholder="Contoh: 50" oninput="calculateTotal()">
                 </div>
                 <div class="form-group">
                     <label>Harga Satuan (Rp) *</label>
-                    <input type="number" id="harga_satuan" min="0" required placeholder="0" oninput="calculateTotal()">
+                    <input class="input" type="number" id="harga_satuan" min="0" required placeholder="0" oninput="calculateTotal()">
                 </div>
             </div>
             <div style="background: var(--bg-muted); padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; margin-bottom: 15px;">
@@ -172,20 +168,20 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Tanggal Transaksi *</label>
-                    <input type="date" id="tanggal" value="{{ date('Y-m-d') }}" required>
+                    <input class="input" type="date" id="tanggal" value="{{ date('Y-m-d') }}" required>
                 </div>
                 <div class="form-group">
                     <label>No. Jurnal Pembukuan BYD</label>
-                    <input type="text" id="no_jurnal" placeholder="Contoh: JRN-BYD-2026-001">
+                    <input class="input" type="text" id="no_jurnal" placeholder="Contoh: JRN-BYD-2026-001">
                 </div>
             </div>
             <div class="form-group">
                 <label>Keterangan / Faktur</label>
-                <textarea id="keterangan" rows="2" placeholder="Catatan..."></textarea>
+                <textarea class="textarea" id="keterangan" rows="2" placeholder="Catatan..."></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan Transaksi</button>
+                <button type="submit" class="btn btn--primary">Simpan Transaksi</button>
             </div>
         </form>
     </div>
@@ -201,7 +197,7 @@
             <!-- Injected via JS -->
         </div>
         <div class="modal-footer">
-            <button type="button" onclick="closeDetailModal()" class="btn btn-primary">Tutup</button>
+            <button type="button" onclick="closeDetailModal()" class="btn btn--primary">Tutup</button>
         </div>
     </div>
 </div>

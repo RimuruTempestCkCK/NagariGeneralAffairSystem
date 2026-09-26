@@ -34,7 +34,7 @@
                 <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500;">Atau Masukkan Kode ATK Manual</label>
                 <div style="display: flex; gap: 10px;">
                     <input type="text" id="manual-code" class="input" placeholder="Contoh: ATK-00001" style="flex: 1; padding: 10px; border: 1px solid var(--border-soft); border-radius: 6px;">
-                    <button type="button" onclick="lookupCode(document.getElementById('manual-code').value)" class="btn btn-primary">Cari</button>
+                    <button type="button" onclick="lookupCode(document.getElementById('manual-code').value)" class="btn btn--primary">Cari</button>
                 </div>
             </div>
         </div>
@@ -96,7 +96,7 @@
 
                 @if(Auth::user()->role === 'admin')
                 <div style="margin-top: 20px;">
-                    <a id="res-print-link" href="#" target="_blank" class="btn btn-primary" style="width: 100%; text-align: center;">
+                    <a id="res-print-link" href="#" target="_blank" class="btn btn--primary" style="width: 100%; text-align: center;">
                         Cetak Label QR
                     </a>
                 </div>

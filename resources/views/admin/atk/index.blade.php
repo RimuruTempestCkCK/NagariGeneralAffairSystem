@@ -16,9 +16,7 @@
             Scan QR
         </a>
         @if(Auth::user()->role === 'admin')
-            <button type="button" onclick="openCreateModal()" class="btn btn-primary">
-                + Tambah ATK
-            </button>
+            <button type="button" onclick="openCreateModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Tambah ATK</button>
         @endif
         <button type="button" onclick="submitBulkPrint()" class="btn btn--ghost">
             Bulk Print QR
@@ -45,7 +43,7 @@
                 <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
                 <option value="Nonaktif" {{ request('status') == 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
             </select>
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
             @if(request()->anyFilled(['search', 'jenis_atk', 'status']))
                 <a href="{{ route('admin.atk.index') }}" style="color: var(--t-muted); font-size: 14px;">Reset</a>
             @endif
@@ -156,47 +154,47 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Kode Jenis Barang (Kode ATK) *</label>
-                    <input type="text" id="form-kode" required>
+                    <input class="input" type="text" id="form-kode" required>
                 </div>
                 <div class="form-group">
                     <label>Nama Barang ATK *</label>
-                    <input type="text" id="form-nama" required>
+                    <input class="input" type="text" id="form-nama" required>
                 </div>
                 <div class="form-group">
                     <label>Jenis Barang ATK *</label>
-                    <input type="text" id="form-jenis" required>
+                    <input class="input" type="text" id="form-jenis" required>
                 </div>
                 <div class="form-group">
                     <label>Satuan *</label>
-                    <input type="text" id="form-satuan" required>
+                    <input class="input" type="text" id="form-satuan" required>
                 </div>
                 <div class="form-group">
                     <label>Jumlah / Stok *</label>
-                    <input type="number" id="form-jumlah" required>
+                    <input class="input" type="number" id="form-jumlah" required>
                 </div>
                 <div class="form-group">
                     <label>Harga Barang (Rp) *</label>
-                    <input type="number" id="form-harga" required>
+                    <input class="input" type="number" id="form-harga" required>
                 </div>
                 <div class="form-group">
                     <label>Rekening Penampungan (BYD)</label>
-                    <input type="text" id="form-rekening-penampungan">
+                    <input class="input" type="text" id="form-rekening-penampungan">
                 </div>
                 <div class="form-group">
                     <label>Rekening Biaya</label>
-                    <input type="text" id="form-rekening-biaya">
+                    <input class="input" type="text" id="form-rekening-biaya">
                 </div>
             </div>
             <div class="form-group">
                 <label>Status</label>
-                <select id="form-status">
+                <select class="select" id="form-status">
                     <option value="Aktif">Aktif</option>
                     <option value="Nonaktif">Nonaktif</option>
                 </select>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeModal('atk-modal')" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan Data</button>
+                <button type="submit" class="btn btn--primary">Simpan Data</button>
             </div>
         </form>
     </div>
@@ -213,7 +211,7 @@
             <!-- Diisi via JavaScript -->
         </div>
         <div class="modal-footer">
-            <button type="button" onclick="closeModal('detail-modal')" class="btn btn-primary">Tutup</button>
+            <button type="button" onclick="closeModal('detail-modal')" class="btn btn--primary">Tutup</button>
         </div>
     </div>
 </div>

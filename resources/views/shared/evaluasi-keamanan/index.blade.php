@@ -12,9 +12,7 @@
         <p class="hero-sub">Pencatatan hasil evaluasi keamanan triwulan dan tahunan.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openFormModal()" class="btn btn-primary">
-            + Catat Evaluasi
-        </button>
+        <button type="button" onclick="openFormModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat Evaluasi</button>
     </div>
 </section>
 
@@ -37,7 +35,7 @@
                 <option value="Unit Kerja / KCP / Kas" {{ request('lokasi_pengamanan') === 'Unit Kerja / KCP / Kas' ? 'selected' : '' }}>Unit Kerja / KCP / Kas</option>
             </select>
             <input type="number" name="tahun" value="{{ request('tahun') }}" placeholder="Tahun" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 80px;">
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
         </form>
     </div>
 
@@ -121,18 +119,18 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Jenis Evaluasi *</label>
-                    <select id="jenis_evaluasi" required>
+                    <select class="select" id="jenis_evaluasi" required>
                         <option value="Triwulan">Triwulan</option>
                         <option value="Tahunan">Tahunan</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Tahun *</label>
-                    <input type="number" id="tahun" required min="2000">
+                    <input class="input" type="number" id="tahun" required min="2000">
                 </div>
                 <div class="form-group">
                     <label>Jenis Lokasi *</label>
-                    <select id="lokasi_pengamanan" required>
+                    <select class="select" id="lokasi_pengamanan" required>
                         <option value="Kantor Pusat">Kantor Pusat</option>
                         <option value="Kantor Cabang">Kantor Cabang</option>
                         <option value="Unit Kerja / KCP / Kas">Unit Kerja / KCP / Kas</option>
@@ -140,24 +138,24 @@
                 </div>
                 <div class="form-group">
                     <label>Nama Lokasi *</label>
-                    <input type="text" id="nama_lokasi" required placeholder="Cth: Cabang Padang">
+                    <input class="input" type="text" id="nama_lokasi" required placeholder="Cth: Cabang Padang">
                 </div>
             </div>
             <div class="form-group">
                 <label>Periode (Keterangan Triwulan/Tahunan) *</label>
-                <input type="text" id="periode" required placeholder="Cth: Q1, Q2, Tahunan">
+                <input class="input" type="text" id="periode" required placeholder="Cth: Q1, Q2, Tahunan">
             </div>
             <div class="form-group">
                 <label>Hasil Evaluasi *</label>
-                <textarea id="hasil_evaluasi" required rows="3"></textarea>
+                <textarea class="textarea" id="hasil_evaluasi" required rows="3"></textarea>
             </div>
             <div class="form-group">
                 <label>Rekomendasi / Tindak Lanjut</label>
-                <textarea id="rekomendasi" rows="2"></textarea>
+                <textarea class="textarea" id="rekomendasi" rows="2"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan Evaluasi</button>
+                <button type="submit" class="btn btn--primary">Simpan Evaluasi</button>
             </div>
         </form>
     </div>
@@ -173,7 +171,7 @@
             <!-- Injected via JS -->
         </div>
         <div class="modal-footer">
-            <button type="button" onclick="closeDetailModal()" class="btn btn-primary">Tutup</button>
+            <button type="button" onclick="closeDetailModal()" class="btn btn--primary">Tutup</button>
         </div>
     </div>
 </div>

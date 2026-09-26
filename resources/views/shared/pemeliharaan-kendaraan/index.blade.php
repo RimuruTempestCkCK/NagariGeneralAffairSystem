@@ -12,9 +12,7 @@
         <p class="hero-sub">Pencatatan biaya service dan perbaikan kendaraan operasional.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openFormModal()" class="btn btn-primary">
-            + Catat Pemeliharaan
-        </button>
+        <button type="button" onclick="openFormModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat Pemeliharaan</button>
     </div>
 </section>
 
@@ -40,7 +38,7 @@
             </select>
             <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
         </form>
     </div>
 
@@ -128,7 +126,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Kendaraan *</label>
-                    <select id="kendaraan_id" required>
+                    <select class="select" id="kendaraan_id" required>
                         <option value="">Pilih Kendaraan...</option>
                         @foreach($kendaraans as $k)
                         <option value="{{ $k->id }}">{{ $k->nomor_kendaraan }}</option>
@@ -137,11 +135,11 @@
                 </div>
                 <div class="form-group">
                     <label>Tanggal Pemeliharaan *</label>
-                    <input type="date" id="tanggal" required>
+                    <input class="input" type="date" id="tanggal" required>
                 </div>
                 <div class="form-group">
                     <label>Jenis Pemeliharaan *</label>
-                    <select id="jenis_perbaikan" required>
+                    <select class="select" id="jenis_perbaikan" required>
                         <option value="">Pilih Jenis...</option>
                         <option value="Ban">Penggantian Ban</option>
                         <option value="Sparepart">Penggantian Sparepart</option>
@@ -151,34 +149,34 @@
                 </div>
                 <div class="form-group">
                     <label>Nama Bengkel</label>
-                    <input type="text" id="bengkel">
+                    <input class="input" type="text" id="bengkel">
                 </div>
             </div>
             <div class="form-group">
                 <label>Rincian Onderdil / Sparepart</label>
-                <textarea id="onderdil" rows="2"></textarea>
+                <textarea class="textarea" id="onderdil" rows="2"></textarea>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Biaya Onderdil (Rp) *</label>
-                    <input type="number" id="harga_onderdil" required min="0" value="0" oninput="calculateTotal()">
+                    <input class="input" type="number" id="harga_onderdil" required min="0" value="0" oninput="calculateTotal()">
                 </div>
                 <div class="form-group">
                     <label>Biaya Jasa (Rp) *</label>
-                    <input type="number" id="biaya_jasa" required min="0" value="0" oninput="calculateTotal()">
+                    <input class="input" type="number" id="biaya_jasa" required min="0" value="0" oninput="calculateTotal()">
                 </div>
                 <div class="form-group">
                     <label>Total Biaya (Otomatis)</label>
-                    <input type="text" id="total_biaya" readonly style="background: var(--bg-muted); font-weight: bold;" value="Rp 0">
+                    <input class="input" type="text" id="total_biaya" readonly style="background: var(--bg-muted); font-weight: bold;" value="Rp 0">
                 </div>
             </div>
             <div class="form-group">
                 <label>Keterangan Tambahan</label>
-                <textarea id="catatan" rows="2"></textarea>
+                <textarea class="textarea" id="catatan" rows="2"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan Pemeliharaan</button>
+                <button type="submit" class="btn btn--primary">Simpan Pemeliharaan</button>
             </div>
         </form>
     </div>
@@ -194,7 +192,7 @@
             <!-- Injected via JS -->
         </div>
         <div class="modal-footer">
-            <button type="button" onclick="closeDetailModal()" class="btn btn-primary">Tutup</button>
+            <button type="button" onclick="closeDetailModal()" class="btn btn--primary">Tutup</button>
         </div>
     </div>
 </div>

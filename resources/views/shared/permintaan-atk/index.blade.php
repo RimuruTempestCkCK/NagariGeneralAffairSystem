@@ -12,9 +12,7 @@
         <p class="hero-sub">Daftar Purchase Order dan permohonan pengambilan ATK.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openCreateModal()" class="btn btn-primary">
-            + Buat Permintaan ATK
-        </button>
+        <button type="button" onclick="openCreateModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Buat Permintaan ATK</button>
     </div>
 </section>
 
@@ -33,7 +31,7 @@
                 <option value="APPROVED" {{ request('status') === 'APPROVED' ? 'selected' : '' }}>APPROVED</option>
                 <option value="REJECTED" {{ request('status') === 'REJECTED' ? 'selected' : '' }}>REJECTED</option>
             </select>
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
         </form>
     </div>
 
@@ -153,21 +151,21 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Unit Kerja / Cabang *</label>
-                    <input type="text" id="unit_kerja" required>
+                    <input class="input" type="text" id="unit_kerja" required>
                 </div>
                 <div class="form-group">
                     <label>Tanggal Permintaan *</label>
-                    <input type="date" id="tanggal_permintaan" value="{{ date('Y-m-d') }}" required>
+                    <input class="input" type="date" id="tanggal_permintaan" value="{{ date('Y-m-d') }}" required>
                 </div>
             </div>
             <div class="form-group">
                 <label>Catatan / Keterangan</label>
-                <textarea id="catatan" rows="2"></textarea>
+                <textarea class="textarea" id="catatan" rows="2"></textarea>
             </div>
             <div class="form-group">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                     <label style="margin: 0;">Daftar Item Barang ATK *</label>
-                    <button type="button" onclick="addItemRow()" class="btn btn--ghost" style="padding: 2px 8px; font-size: 12px;">+ Tambah</button>
+                    <button type="button" onclick="addItemRow()" class="btn btn--ghost" style="padding: 2px 8px; font-size: 12px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Tambah</button>
                 </div>
                 <div id="itemsContainer" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid var(--border-soft); border-radius: 4px; background: var(--bg-body);">
                     <!-- Rows injected via JS -->
@@ -176,7 +174,7 @@
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
                 <button type="submit" name="submit_action" value="draft" class="btn btn--ghost" style="background:var(--bg-muted);">Simpan Draft</button>
-                <button type="submit" name="submit_action" value="submit" class="btn btn-primary">Submit Langsung</button>
+                <button type="submit" name="submit_action" value="submit" class="btn btn--primary">Submit Langsung</button>
             </div>
         </form>
     </div>
@@ -193,7 +191,7 @@
             <!-- Detail injected via JS -->
         </div>
         <div class="modal-footer">
-            <button type="button" onclick="closeDetailModal()" class="btn btn-primary">Tutup</button>
+            <button type="button" onclick="closeDetailModal()" class="btn btn--primary">Tutup</button>
         </div>
     </div>
 </div>

@@ -13,7 +13,7 @@
         </div>
         <div class="card-action">
             <form action="{{ route(Auth::user()->role . '.aset.index') }}" method="GET" style="display:inline-block; margin-right: 15px;">
-                <input type="text" name="search" value="{{ request('search') }}" class="form-control" style="width:250px; display:inline-block; padding: 6px 10px; margin:0;" placeholder="Cari Sertifikat / Cabang...">
+                <input type="text" name="search" value="{{ request('search') }}" class="input" style="width:250px; display:inline-block; padding: 6px 10px; margin:0;" placeholder="Cari Sertifikat / Cabang...">
                 <button type="submit" class="btn btn--primary" style="padding: 6px 12px; margin-left: 5px;">Cari</button>
             </form>
 
@@ -90,42 +90,42 @@
             <div style="display: flex; gap: 15px;">
                 <div style="flex:1;">
                     <label class="form-label">Kode Cabang <span style="color:red">*</span></label>
-                    <input type="text" id="kode_cabang" name="kode_cabang" class="form-control" required placeholder="Contoh: CAB-001">
+                    <input type="text" id="kode_cabang" name="kode_cabang" class="input" required placeholder="Contoh: CAB-001">
                 </div>
                 <div style="flex:1;">
                     <label class="form-label">Nomor Sertifikat <span style="color:red">*</span></label>
-                    <input type="text" id="nomor_sertifikat" name="nomor_sertifikat" class="form-control" required>
+                    <input type="text" id="nomor_sertifikat" name="nomor_sertifikat" class="input" required>
                 </div>
             </div>
 
             <div style="display: flex; gap: 15px;">
                 <div style="flex:1;">
                     <label class="form-label">Nama Pemilik <span style="color:red">*</span></label>
-                    <input type="text" id="nama_pemilik" name="nama_pemilik" class="form-control" required>
+                    <input type="text" id="nama_pemilik" name="nama_pemilik" class="input" required>
                 </div>
                 <div style="flex:1;">
                     <label class="form-label">Luas Tanah (m&sup2;) <span style="color:red">*</span></label>
-                    <input type="number" step="0.01" id="luas_tanah" name="luas_tanah" class="form-control" required>
+                    <input type="number" step="0.01" id="luas_tanah" name="luas_tanah" class="input" required>
                 </div>
             </div>
 
             <label class="form-label">Lokasi <span style="color:red">*</span></label>
-            <textarea id="lokasi" name="lokasi" class="form-control" rows="2" required></textarea>
+            <textarea id="lokasi" name="lokasi" class="input" rows="2" required></textarea>
 
             <div style="display: flex; gap: 15px;">
                 <div style="flex:1;">
                     <label class="form-label">Tanggal Jatuh Tempo Sertifikat</label>
-                    <input type="date" id="jatuh_tempo_sertifikat" name="jatuh_tempo_sertifikat" class="form-control">
+                    <input type="date" id="jatuh_tempo_sertifikat" name="jatuh_tempo_sertifikat" class="input">
                 </div>
                 <div style="flex:1;">
                     <label class="form-label">Lampiran Bukti (PDF/JPG/PNG, Max 5MB)</label>
-                    <input type="file" id="lampiran_bukti" name="lampiran_bukti" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                    <input type="file" id="lampiran_bukti" name="lampiran_bukti" class="input" accept=".pdf,.jpg,.jpeg,.png">
                     <div id="current_lampiran" style="font-size: 12px; margin-top: -5px; margin-bottom: 10px;"></div>
                 </div>
             </div>
 
             <label class="form-label">Keterangan Tambahan</label>
-            <textarea id="keterangan" name="keterangan" class="form-control" rows="2"></textarea>
+            <textarea id="keterangan" name="keterangan" class="input" rows="2"></textarea>
 
             <div style="text-align: right; margin-top: 20px;">
                 <button type="button" class="btn btn--ghost" onclick="closeFormModal()">Batal</button>

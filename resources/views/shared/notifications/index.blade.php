@@ -15,7 +15,7 @@
         @if(Auth::user()->unreadNotifications->count() > 0)
             <form action="{{ route(Auth::user()->role . '.notifications.markAllAsRead') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-primary">Tandai Semua Dibaca</button>
+                <button type="submit" class="btn btn--primary">Tandai Semua Dibaca</button>
             </form>
         @endif
     </div>

@@ -12,9 +12,7 @@
         <p class="hero-sub">Catatan Pemakaian ATK & Jurnal Pembebanan Biaya.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openCreateModal()" class="btn btn-primary">
-            + Catat Pemakaian ATK
-        </button>
+        <button type="button" onclick="openCreateModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat Pemakaian ATK</button>
     </div>
 </section>
 
@@ -38,7 +36,7 @@
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.pemakaian-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari Unit / No. Jurnal / ATK..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 250px;">
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Cari</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Cari</button>
         </form>
     </div>
 
@@ -133,7 +131,7 @@
         <form id="formPemakaian" onsubmit="handlePemakaianSubmit(event)">
             <div class="form-group">
                 <label>Pilih Barang ATK *</label>
-                <select id="atk_id" required onchange="autoFillPriceAndStock()">
+                <select class="select" id="atk_id" required onchange="autoFillPriceAndStock()">
                     <option value="">-- Pilih Barang ATK --</option>
                     @foreach($atks as $atk)
                         <option value="{{ $atk->id }}" data-harga="{{ $atk->harga }}" data-satuan="{{ $atk->satuan }}" data-stok="{{ $atk->jumlah }}">
@@ -145,19 +143,19 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Unit Kerja / Cabang *</label>
-                    <input type="text" id="unit_kerja" required placeholder="Contoh: Operasional Pusat">
+                    <input class="input" type="text" id="unit_kerja" required placeholder="Contoh: Operasional Pusat">
                 </div>
                 <div class="form-group">
                     <label>Tanggal Pemakaian *</label>
-                    <input type="date" id="tanggal" value="{{ date('Y-m-d') }}" required>
+                    <input class="input" type="date" id="tanggal" value="{{ date('Y-m-d') }}" required>
                 </div>
                 <div class="form-group">
                     <label>Jumlah Pemakaian *</label>
-                    <input type="number" id="jumlah" min="1" required placeholder="Contoh: 5" oninput="calculateTotal()">
+                    <input class="input" type="number" id="jumlah" min="1" required placeholder="Contoh: 5" oninput="calculateTotal()">
                 </div>
                 <div class="form-group">
                     <label>Harga Satuan Berlaku</label>
-                    <input type="text" id="harga_satuan_label" readonly style="background: var(--bg-muted);" value="Rp 0">
+                    <input class="input" type="text" id="harga_satuan_label" readonly style="background: var(--bg-muted);" value="Rp 0">
                 </div>
             </div>
             <div style="background: var(--bg-muted); padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; margin-bottom: 15px;">
@@ -166,15 +164,15 @@
             </div>
             <div class="form-group">
                 <label>No. Jurnal Pembebanan Akhir Bulan</label>
-                <input type="text" id="no_jurnal_beban" placeholder="Opsional">
+                <input class="input" type="text" id="no_jurnal_beban" placeholder="Opsional">
             </div>
             <div class="form-group">
                 <label>Keperluan Pemakaian</label>
-                <textarea id="keperluan" rows="2" placeholder="Keperluan operasional..."></textarea>
+                <textarea class="textarea" id="keperluan" rows="2" placeholder="Keperluan operasional..."></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan & Potong Stok</button>
+                <button type="submit" class="btn btn--primary">Simpan & Potong Stok</button>
             </div>
         </form>
     </div>
@@ -190,7 +188,7 @@
             <!-- Injected via JS -->
         </div>
         <div class="modal-footer">
-            <button type="button" onclick="closeDetailModal()" class="btn btn-primary">Tutup</button>
+            <button type="button" onclick="closeDetailModal()" class="btn btn--primary">Tutup</button>
         </div>
     </div>
 </div>

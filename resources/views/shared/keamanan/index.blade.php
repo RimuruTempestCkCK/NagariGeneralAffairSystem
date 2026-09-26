@@ -12,9 +12,7 @@
         <p class="hero-sub">Pencatatan kondisi keamanan dan aktivitas patroli di berbagai lokasi.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openFormModal()" class="btn btn-primary">
-            + Catat Laporan
-        </button>
+        <button type="button" onclick="openFormModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat Laporan</button>
     </div>
 </section>
 
@@ -38,7 +36,7 @@
             </select>
             <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
         </form>
     </div>
 
@@ -133,7 +131,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Jenis Lokasi *</label>
-                    <select id="lokasi_pengamanan" required>
+                    <select class="select" id="lokasi_pengamanan" required>
                         <option value="Kantor Pusat">Kantor Pusat</option>
                         <option value="Kantor Cabang">Kantor Cabang</option>
                         <option value="Unit Kerja / KCP / Kas">Unit Kerja / KCP / Kas</option>
@@ -141,17 +139,17 @@
                 </div>
                 <div class="form-group">
                     <label>Nama Lokasi *</label>
-                    <input type="text" id="nama_lokasi" required placeholder="Cth: Cabang Padang">
+                    <input class="input" type="text" id="nama_lokasi" required placeholder="Cth: Cabang Padang">
                 </div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Tanggal *</label>
-                    <input type="date" id="tanggal_laporan" required>
+                    <input class="input" type="date" id="tanggal_laporan" required>
                 </div>
                 <div class="form-group">
                     <label>Shift *</label>
-                    <select id="shift" required>
+                    <select class="select" id="shift" required>
                         <option value="Pagi">Pagi</option>
                         <option value="Siang">Siang</option>
                         <option value="Malam">Malam</option>
@@ -159,27 +157,27 @@
                 </div>
                 <div class="form-group">
                     <label>Nama Petugas *</label>
-                    <input type="text" id="petugas" required>
+                    <input class="input" type="text" id="petugas" required>
                 </div>
             </div>
             <div class="form-group">
                 <label>Kondisi Keamanan *</label>
-                <select id="kondisi_keamanan" required>
+                <select class="select" id="kondisi_keamanan" required>
                     <option value="Aman Kondusif">Aman Kondusif</option>
                     <option value="Insiden / Masalah">Insiden / Masalah</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>Uraian Kegiatan / Laporan *</label>
-                <textarea id="uraian_kegiatan" required rows="3"></textarea>
+                <textarea class="textarea" id="uraian_kegiatan" required rows="3"></textarea>
             </div>
             <div class="form-group">
                 <label>Tindakan Lanjutan (Jika Ada Insiden)</label>
-                <textarea id="tindakan_lanjutan" rows="2"></textarea>
+                <textarea class="textarea" id="tindakan_lanjutan" rows="2"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan Laporan</button>
+                <button type="submit" class="btn btn--primary">Simpan Laporan</button>
             </div>
         </form>
     </div>
@@ -195,7 +193,7 @@
             <!-- Injected via JS -->
         </div>
         <div class="modal-footer">
-            <button type="button" onclick="closeDetailModal()" class="btn btn-primary">Tutup</button>
+            <button type="button" onclick="closeDetailModal()" class="btn btn--primary">Tutup</button>
         </div>
     </div>
 </div>

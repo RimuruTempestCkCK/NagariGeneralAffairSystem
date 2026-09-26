@@ -32,7 +32,7 @@
                 <option value="Kendaraan" {{ request('module') == 'Kendaraan' ? 'selected' : '' }}>Kendaraan</option>
                 <option value="PO" {{ request('module') == 'PO' ? 'selected' : '' }}>PO</option>
             </select>
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
             @if(request()->anyFilled(['user_id', 'module']))
                 <a href="{{ route('admin.audit-logs.index') }}" style="color: var(--t-muted); font-size: 14px;">Reset</a>
             @endif
@@ -114,7 +114,7 @@
             </div>
         </div>
         <div class="modal-footer" style="margin-top: 20px; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn btn-primary" onclick="closeModal('viewModal')">Tutup</button>
+            <button type="button" class="btn btn--primary" onclick="closeModal('viewModal')">Tutup</button>
         </div>
     </div>
 </div>

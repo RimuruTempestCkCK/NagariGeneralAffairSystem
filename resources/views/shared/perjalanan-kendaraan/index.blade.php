@@ -12,9 +12,7 @@
         <p class="hero-sub">Pencatatan tujuan dan jarak tempuh kendaraan dinas operasional.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openFormModal()" class="btn btn-primary">
-            + Catat Perjalanan
-        </button>
+        <button type="button" onclick="openFormModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat Perjalanan</button>
     </div>
 </section>
 
@@ -33,7 +31,7 @@
             </select>
             <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
         </form>
     </div>
 
@@ -116,7 +114,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Kendaraan *</label>
-                    <select id="kendaraan_id" required>
+                    <select class="select" id="kendaraan_id" required>
                         <option value="">Pilih Kendaraan...</option>
                         @foreach($kendaraans as $k)
                         <option value="{{ $k->id }}">{{ $k->nomor_kendaraan }} - {{ $k->jenis_kendaraan }}</option>
@@ -125,32 +123,32 @@
                 </div>
                 <div class="form-group">
                     <label>Tanggal Perjalanan *</label>
-                    <input type="date" id="tanggal" required>
+                    <input class="input" type="date" id="tanggal" required>
                 </div>
                 <div class="form-group">
                     <label>Kilometer Awal *</label>
-                    <input type="number" id="kilometer_awal" required min="0" oninput="calculateJarak()">
+                    <input class="input" type="number" id="kilometer_awal" required min="0" oninput="calculateJarak()">
                 </div>
                 <div class="form-group">
                     <label>Kilometer Akhir *</label>
-                    <input type="number" id="kilometer_akhir" required min="0" oninput="calculateJarak()">
+                    <input class="input" type="number" id="kilometer_akhir" required min="0" oninput="calculateJarak()">
                 </div>
             </div>
             <div class="form-group">
                 <label>Jarak Tempuh (Otomatis)</label>
-                <input type="text" id="jarak_tempuh" readonly style="background: var(--bg-muted); font-weight: bold;">
+                <input class="input" type="text" id="jarak_tempuh" readonly style="background: var(--bg-muted); font-weight: bold;">
             </div>
             <div class="form-group">
                 <label>Tujuan *</label>
-                <input type="text" id="tujuan" required>
+                <input class="input" type="text" id="tujuan" required>
             </div>
             <div class="form-group">
                 <label>Keterangan</label>
-                <textarea id="keterangan" rows="2"></textarea>
+                <textarea class="textarea" id="keterangan" rows="2"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan Perjalanan</button>
+                <button type="submit" class="btn btn--primary">Simpan Perjalanan</button>
             </div>
         </form>
     </div>

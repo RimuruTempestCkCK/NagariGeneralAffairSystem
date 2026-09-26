@@ -12,9 +12,7 @@
         <p class="hero-sub">Pencatatan konsumsi bahan bakar kendaraan.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openFormModal()" class="btn btn-primary">
-            + Catat BBM
-        </button>
+        <button type="button" onclick="openFormModal()" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat BBM</button>
     </div>
 </section>
 
@@ -33,7 +31,7 @@
             </select>
             <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
         </form>
     </div>
 
@@ -117,7 +115,7 @@
             <input type="hidden" id="bbm_id" name="id">
             <div class="form-group">
                 <label>Kendaraan *</label>
-                <select id="kendaraan_id" required>
+                <select class="select" id="kendaraan_id" required>
                     <option value="">Pilih Kendaraan...</option>
                     @foreach($kendaraans as $k)
                     <option value="{{ $k->id }}">{{ $k->nomor_kendaraan }} - {{ $k->jenis_kendaraan }}</option>
@@ -127,32 +125,32 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>Tanggal Pembelian *</label>
-                    <input type="date" id="tanggal" required>
+                    <input class="input" type="date" id="tanggal" required>
                 </div>
                 <div class="form-group">
                     <label>Jenis BBM *</label>
-                    <input type="text" id="jenis_bbm" required>
+                    <input class="input" type="text" id="jenis_bbm" required>
                 </div>
                 <div class="form-group">
                     <label>Jumlah (Liter) *</label>
-                    <input type="number" id="liter" required step="0.01" min="0.1" oninput="calculateTotal()">
+                    <input class="input" type="number" id="liter" required step="0.01" min="0.1" oninput="calculateTotal()">
                 </div>
                 <div class="form-group">
                     <label>Harga per Liter (Rp) *</label>
-                    <input type="number" id="harga_per_liter" required min="0" oninput="calculateTotal()">
+                    <input class="input" type="number" id="harga_per_liter" required min="0" oninput="calculateTotal()">
                 </div>
             </div>
             <div class="form-group">
                 <label>Total Biaya (Otomatis)</label>
-                <input type="text" id="total_biaya" readonly style="background: var(--bg-muted); font-weight: bold;">
+                <input class="input" type="text" id="total_biaya" readonly style="background: var(--bg-muted); font-weight: bold;">
             </div>
             <div class="form-group">
                 <label>Catatan Tambahan</label>
-                <textarea id="catatan" rows="2"></textarea>
+                <textarea class="textarea" id="catatan" rows="2"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan BBM</button>
+                <button type="submit" class="btn btn--primary">Simpan BBM</button>
             </div>
         </form>
     </div>
