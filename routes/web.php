@@ -54,13 +54,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/staff/atk/scan/lookup/{kode}', [AtkController::class, 'scanLookup'])->name('staff.atk.scan.lookup');
 
     // Audit Trail (Admin Only)
-    Route::middleware('role:admin')->group(function () {
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/admin/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('audit-logs.index');
         Route::get('/audit-logs/{id}', [\App\Http\Controllers\AuditLogController::class, 'show'])->name('audit-logs.show');
     });
 
     // Master ATK CRUD (Admin Only)
-    Route::middleware('role:admin')->group(function () {
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/atk', [AtkController::class, 'index'])->name('atk.index');
         Route::post('/atk', [AtkController::class, 'store'])->name('atk.store');
         Route::get('/atk/bulk-print', [AtkController::class, 'bulkPrint'])->name('atk.bulk-print');
