@@ -13,9 +13,11 @@
     <script defer="defer" src="{{ asset('adminator_templete/vendors.js?v=' . time()) }}"></script>
     <script defer="defer" src="{{ asset('adminator_templete/2026.js?v=' . time()) }}"></script>
     <link href="{{ asset('adminator_templete/style.css?v=' . time()) }}" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- Inline styles to adjust SweetAlert2 z-index if it conflicts with Adminator shell -->
     <style>
@@ -36,22 +38,22 @@
             display: flex;
         }
         .modal-content {
-            background: var(--bg-base);
+            background: #ffffff;
             padding: 24px;
             border-radius: 12px;
             width: 100%;
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
-            color: var(--t-base);
+            color: #333333;
         }
-        .form-control {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 8px 12px;
             border-radius: 6px;
-            border: 1px solid var(--border-base);
-            background: var(--bg-muted);
-            color: var(--t-base);
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            color: #333333;
             margin-bottom: 12px;
         }
         .form-label {
