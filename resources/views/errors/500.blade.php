@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', 'Server Error')
+@section('code', '500')
+@section('message', 'Terjadi Kesalahan Server')
+@section('description', 'Ups! Ada sesuatu yang salah dari sisi server kami. Tim kami akan segera meninjaunya. Silakan coba beberapa saat lagi.')

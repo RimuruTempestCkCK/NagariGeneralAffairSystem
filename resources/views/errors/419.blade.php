@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', 'Page Expired')
+@section('code', '419')
+@section('message', 'Sesi Berakhir')
+@section('description', 'Sesi login Anda telah kedaluwarsa karena tidak ada aktivitas (atau token tidak valid). Silakan muat ulang halaman ini dan masuk kembali.')

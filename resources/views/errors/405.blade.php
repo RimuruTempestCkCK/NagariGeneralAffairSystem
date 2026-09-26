@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', 'Method Not Allowed')
+@section('code', '405')
+@section('message', 'Metode Tidak Diizinkan')
+@section('description', 'Metode permintaan (GET/POST/PUT/DELETE) tidak didukung untuk rute yang Anda tuju.')

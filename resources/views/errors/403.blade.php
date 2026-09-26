@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', 'Forbidden')
+@section('code', '403')
+@section('message', 'Akses Ditolak')
+@section('description', 'Maaf, Anda tidak memiliki hak akses (role/izin) untuk melihat halaman atau menjalankan aksi ini.')

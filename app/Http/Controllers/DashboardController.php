@@ -30,8 +30,8 @@ class DashboardController extends Controller
         
         $totalKendaraan = Kendaraan::count();
         // Check vehicles where stnk is expiring in <= 30 days
-        $expiringStnk = Kendaraan::whereNotNull('berlaku_stnk')
-            ->whereDate('berlaku_stnk', '<=', Carbon::now()->addDays(30))
+        $expiringStnk = Kendaraan::whereNotNull('jatuh_tempo_stnk')
+            ->whereDate('jatuh_tempo_stnk', '<=', Carbon::now()->addDays(30))
             ->count();
             
         $totalAset = Aset::count();
