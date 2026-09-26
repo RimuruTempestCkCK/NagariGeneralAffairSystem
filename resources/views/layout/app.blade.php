@@ -76,47 +76,27 @@
 </head>
 <body data-active="@yield('active_menu', 'dashboard')" data-crumbs="@yield('breadcrumbs', 'Dashboard')">
     <div class="shell">
-        <!-- Sidebar -->
+        <!-- Sidebar natively rendered via Blade -->
         @include('layout.sidebar')
         
         <div class="main">
-            <!-- Topbar/Header -->
+            <!-- Topbar/Header natively rendered via Blade -->
             @include('layout.header')
             
             <main class="content">
                 @yield('content')
             </main>
             
-            <!-- Footer -->
+            <!-- Footer natively rendered via Blade -->
             @include('layout.footer')
         </div>
     </div>
     
     @stack('scripts')
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(() => {
-                const topbar = document.querySelector('[data-shell-topbar]');
-                if(topbar && !document.getElementById("notif-bell-container")) {
-                    const unreadCount = {{ Auth::check() ? Auth::user()->unreadNotifications->count() : 0 }};
-                    const notifHtml = `<div id="notif-bell-container" style="position: absolute; right: 80px; top: 15px; z-index: 1000;">
-                        <a href="{{ route('notifications.index') }}" style="position: relative; display: inline-block; text-decoration: none; color: var(--t-base);">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                            ${unreadCount > 0 ? `<span style="position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold;">${unreadCount}</span>` : ''}
-                        </a>
-                    </div>`;
-                    topbar.insertAdjacentHTML("beforeend", notifHtml);
-                }
-                const brandDiv = document.querySelector('.brand');
-                if(brandDiv) {
-                    brandDiv.innerHTML = `<img src="{{ asset('images/bank-nagari-logo.svg') }}" style="height:32px; width:auto;"> <span style="margin-left: 8px; font-weight: bold; font-size: 16px;">GAS</span>`;
-                }
-            }, 100);
-        });
-    </script>
+    
     <style>
         @media print {
-            .d-sidebar, .d-topbar, [data-shell-sidebar], [data-shell-topbar], .card-action, .btn, .hamburger, form, .data-toolbar {
+            .d-sidebar, .d-topbar, .card-action, .btn, .hamburger, form, .data-toolbar {
                 display: none !important;
             }
             .main { margin-left: 0 !important; }
