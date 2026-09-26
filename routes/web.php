@@ -40,10 +40,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/atk', [AtkController::class, 'index'])->name('atk.index');
         Route::post('/atk', [AtkController::class, 'store'])->name('atk.store');
         Route::get('/atk/bulk-print', [AtkController::class, 'bulkPrint'])->name('atk.bulk-print');
-        Route::get('/atk/{id}', [AtkController::class, 'show'])->name('atk.show');
-        Route::put('/atk/{id}', [AtkController::class, 'update'])->name('atk.update');
-        Route::delete('/atk/{id}', [AtkController::class, 'destroy'])->name('atk.destroy');
-        Route::post('/atk/{id}/generate-qr', [AtkController::class, 'generateQr'])->name('atk.generate-qr');
+        Route::get('/atk/{id}', [AtkController::class, 'show'])->name('atk.show')->where('id', '[0-9]+');
+        Route::put('/atk/{id}', [AtkController::class, 'update'])->name('atk.update')->where('id', '[0-9]+');
+        Route::delete('/atk/{id}', [AtkController::class, 'destroy'])->name('atk.destroy')->where('id', '[0-9]+');
+        Route::post('/atk/{id}/generate-qr', [AtkController::class, 'generateQr'])->name('atk.generate-qr')->where('id', '[0-9]+');
 
         // Approval Permintaan ATK (Admin Only) - Wait, ini shared controller tapi action admin
         Route::post('/permintaan-atk/{id}/approve', [PermintaanAtkController::class, 'approve'])->name('permintaan-atk.approve');

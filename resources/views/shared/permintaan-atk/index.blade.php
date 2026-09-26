@@ -23,8 +23,8 @@
             <h2 class="card-title">Purchase Order ATK</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.permintaan-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
-            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. PO / Unit..." style="width: 200px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <select name="status" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. PO / Unit..." style="width: 220px;">
+            <select name="status" onchange="this.form.submit()" class="select" style="width: 150px;">
                 <option value="">Semua Status</option>
                 <option value="DRAFT" {{ request('status') === 'DRAFT' ? 'selected' : '' }}>DRAFT</option>
                 <option value="PENDING" {{ request('status') === 'PENDING' ? 'selected' : '' }}>PENDING</option>
@@ -167,7 +167,7 @@
                     <label style="margin: 0;">Daftar Item Barang ATK *</label>
                     <button type="button" onclick="addItemRow()" class="btn btn--ghost" style="padding: 2px 8px; font-size: 12px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Tambah</button>
                 </div>
-                <div id="itemsContainer" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid var(--border-soft); border-radius: 4px; background: var(--bg-body);">
+                <div id="itemsContainer" style="max-height: 300px; overflow-y: auto; padding: 15px; border: 1px solid var(--border-soft); border-radius: 8px; background: transparent; display: flex; flex-direction: column; gap: 5px;">
                     <!-- Rows injected via JS -->
                 </div>
             </div>
@@ -210,13 +210,19 @@
         });
 
         const rowHtml = `
-            <div class="item-row" id="row_${rowId}" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                <select name="atk_id" required class="input" style="flex:1; padding:5px;" onchange="updateItemMeta('${rowId}')">
-                    ${optionsHtml}
-                </select>
-                <input type="number" name="jumlah_diminta" value="${jumlah}" min="1" required class="input" style="width: 70px; padding:5px;" placeholder="Qty">
-                <span id="satuan_${rowId}" style="width: 50px; font-size: 12px; color: var(--t-muted);">Satuan</span>
-                <button type="button" onclick="removeItemRow('${rowId}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:18px;">&times;</button>
+            <div class="item-row" id="row_${rowId}" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center; padding: 10px; border: 1px solid var(--border-soft); border-radius: 8px; background: var(--bg-muted);">
+                <div class="field" style="flex: 1; margin: 0;">
+                    <select name="atk_id" required class="select" onchange="updateItemMeta('${rowId}')" style="width: 100%;">
+                        ${optionsHtml}
+                    </select>
+                </div>
+                <div class="field" style="width: 100px; margin: 0;">
+                    <input type="number" name="jumlah_diminta" value="${jumlah}" min="1" required class="input" placeholder="Qty">
+                </div>
+                <span id="satuan_${rowId}" style="width: 70px; font-size: 13px; color: var(--t-muted); font-weight: 500;">Satuan</span>
+                <button type="button" onclick="removeItemRow('${rowId}')" class="btn btn--icon" style="color:var(--danger); background: var(--danger-soft); border-radius: 6px; padding: 6px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+                </button>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', rowHtml);
