@@ -21,7 +21,7 @@
         <div class="nav-label">Modul ATK</div>
         
         @if(Auth::user()->role === 'admin')
-        <a class="nav-link {{ request()->routeIs('atk.*') || request()->routeIs('admin.atk.*') ? 'is-active' : '' }}" href="{{ route('admin.atk.index') }}">
+        <a class="nav-link {{ request()->routeIs('atk.*') || request()->routeIs('admin.atk.*') ? 'is-active' : '' }}" href="{{ route('atk.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
             <span>Master ATK</span>
         </a>
