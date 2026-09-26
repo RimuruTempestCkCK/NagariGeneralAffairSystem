@@ -271,7 +271,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/pemakaian-atk/${id}/jurnal`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ no_jurnal_beban: result.value, _token: '{{ csrf_token() }}' }) });
+                    const res = await fetch(`/admin/pemakaian-atk/${id}/jurnal`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ no_jurnal_beban: result.value, _token: '{{ csrf_token() }}' }) });
                     const data = await res.json();
                     if (data.success) location.reload();
                     else Swal.fire('Gagal', data.message, 'error');

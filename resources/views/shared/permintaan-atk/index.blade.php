@@ -395,7 +395,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/permintaan-atk/${id}/approve`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
+                    const res = await fetch(`/admin/permintaan-atk/${id}/approve`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
                     const data = await res.json();
                     if (data.success) location.reload();
                     else Swal.fire('Gagal', data.message, 'error');
@@ -410,7 +410,7 @@
         }).then(async (result) => {
             if (result.isConfirmed && result.value) {
                 try {
-                    const res = await fetch(`/permintaan-atk/${id}/reject`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ alasan_reject: result.value, _token: '{{ csrf_token() }}' }) });
+                    const res = await fetch(`/admin/permintaan-atk/${id}/reject`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ alasan_reject: result.value, _token: '{{ csrf_token() }}' }) });
                     const data = await res.json();
                     if (data.success) location.reload();
                     else Swal.fire('Gagal', data.message, 'error');

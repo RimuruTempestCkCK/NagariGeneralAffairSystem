@@ -12,7 +12,7 @@
         <p class="hero-sub">Manajemen inventaris alat tulis kantor.</p>
     </div>
     <div class="hero-actions">
-        <a href="{{ route('atk.scan') }}" class="btn btn--ghost">
+        <a href="{{ route('admin.atk.scan') }}" class="btn btn--ghost">
             Scan QR
         </a>
         @if(Auth::user()->role === 'admin')
@@ -86,7 +86,7 @@
                                 <button type="button" onclick="showDetailModal({{ $item->id }})" class="btn--icon" aria-label="View" title="Lihat Detail">
                                     <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 </button>
-                                <a href="{{ route('atk.print-qr', $item->id) }}" target="_blank" class="btn--icon" title="Cetak QR Code">
+                                <a href="{{ route('admin.atk.print-qr', $item->id) }}" target="_blank" class="btn--icon" title="Cetak QR Code">
                                     <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                                 </a>
                                 @if(Auth::user()->role === 'admin')
