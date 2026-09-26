@@ -237,7 +237,7 @@
 
     async function openDetailModal(id) {
         try {
-            const res = await fetch(`/pemakaian-atk/${id}`);
+            const res = await fetch(`/${window.GAS_USER_ROLE}/pemakaian-atk/${id}`);
             const data = await res.json();
             if (!data.success) return Swal.fire('Error', data.message, 'error');
 
@@ -292,7 +292,7 @@
         };
 
         try {
-            const res = await fetch('/pemakaian-atk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const res = await fetch(`/${window.GAS_USER_ROLE}/pemakaian-atk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await res.json();
             if (data.success) location.reload();
             else Swal.fire('Gagal', data.message, 'error');

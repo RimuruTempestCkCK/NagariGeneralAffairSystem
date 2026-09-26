@@ -21,25 +21,25 @@
         <div class="nav-label">Modul ATK</div>
         
         @if(Auth::user()->role === 'admin')
-        <a class="nav-link {{ request()->routeIs('atk.*') || request()->routeIs('admin.atk.*') ? 'is-active' : '' }}" href="{{ route('atk.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.atk.*') || request()->routeIs('admin.atk.*') ? 'is-active' : '' }}" href="{{ route('admin.atk.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
             <span>Master ATK</span>
         </a>
         @endif
 
-        <a class="nav-link {{ request()->routeIs('permintaan-atk.*') ? 'is-active' : '' }}" href="{{ route('permintaan-atk.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.permintaan-atk.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.permintaan-atk.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
             <span>Permintaan / PO ATK</span>
         </a>
 
         @if(Auth::user()->role === 'admin')
-        <a class="nav-link {{ request()->routeIs('stok-atk.*') ? 'is-active' : '' }}" href="{{ route('stok-atk.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.stok-atk.*') ? 'is-active' : '' }}" href="{{ route('admin.stok-atk.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             <span>Stok ATK</span>
         </a>
         @endif
         
-        <a class="nav-link {{ request()->routeIs('pemakaian-atk.*') ? 'is-active' : '' }}" href="{{ route('pemakaian-atk.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.pemakaian-atk.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.pemakaian-atk.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg>
             <span>Pemakaian ATK</span>
         </a>
@@ -53,20 +53,20 @@
     <nav class="nav-section">
         <div class="nav-label">Modul Kendaraan</div>
         @if(Auth::user()->role === 'admin')
-        <a class="nav-link {{ request()->routeIs('kendaraan.*') ? 'is-active' : '' }}" href="{{ route('kendaraan.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.kendaraan.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.kendaraan.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
             <span>Master Kendaraan</span>
         </a>
         @endif
-        <a class="nav-link {{ request()->routeIs('perjalanan-kendaraan.*') ? 'is-active' : '' }}" href="{{ route('perjalanan-kendaraan.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.perjalanan-kendaraan.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.perjalanan-kendaraan.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
             <span>Jarak Tempuh</span>
         </a>
-        <a class="nav-link {{ request()->routeIs('bbm-kendaraan.*') ? 'is-active' : '' }}" href="{{ route('bbm-kendaraan.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.bbm-kendaraan.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.bbm-kendaraan.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 22h18"/><path d="M19 18v-8l-4-4H5a2 2 0 0 0-2 2v10"/><path d="M14 6h5l4 4v8h-5"/><path d="M9 22v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>
             <span>BBM Kendaraan</span>
         </a>
-        <a class="nav-link {{ request()->routeIs('pemeliharaan-kendaraan.*') ? 'is-active' : '' }}" href="{{ route('pemeliharaan-kendaraan.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.pemeliharaan-kendaraan.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.pemeliharaan-kendaraan.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 9.36l-7.19 7.19a2.12 2.12 0 0 1-3-3l7.19-7.19a6 6 0 0 1 9.36-7.94z"/></svg>
             <span>Pemeliharaan</span>
         </a>
@@ -74,12 +74,12 @@
 
     <nav class="nav-section">
         <div class="nav-label">Modul Keamanan</div>
-        <a class="nav-link {{ request()->routeIs('keamanan.*') ? 'is-active' : '' }}" href="{{ route('keamanan.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.keamanan.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.keamanan.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Laporan Keamanan</span>
         </a>
         @if(Auth::user()->role === 'admin')
-        <a class="nav-link {{ request()->routeIs('evaluasi-keamanan.*') ? 'is-active' : '' }}" href="{{ route('evaluasi-keamanan.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.evaluasi-keamanan.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.evaluasi-keamanan.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
             <span>Evaluasi Keamanan</span>
         </a>
@@ -89,7 +89,7 @@
     @if(Auth::user()->role === 'admin')
     <nav class="nav-section">
         <div class="nav-label">Modul Manajemen</div>
-        <a class="nav-link {{ request()->routeIs('aset.*') ? 'is-active' : '' }}" href="{{ route('aset.index') }}">
+        <a class="nav-link {{ request()->routeIs('*.aset.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.aset.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
             <span>Manajemen Aset</span>
         </a>
@@ -97,15 +97,15 @@
 
     <nav class="nav-section">
         <div class="nav-label">Modul Reporting</div>
-        <a class="nav-link {{ request()->routeIs('laporan.atk') ? 'is-active' : '' }}" href="{{ route('laporan.atk') }}">
+        <a class="nav-link {{ request()->routeIs('admin.laporan.atk') ? 'is-active' : '' }}" href="{{ route('admin.laporan.atk') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x='3' y='4' width='18' height='16' rx='2'/></svg>
             <span>Laporan ATK</span>
         </a>
-        <a class="nav-link {{ request()->routeIs('laporan.kendaraan') ? 'is-active' : '' }}" href="{{ route('laporan.kendaraan') }}">
+        <a class="nav-link {{ request()->routeIs('admin.laporan.kendaraan') ? 'is-active' : '' }}" href="{{ route('admin.laporan.kendaraan') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x='3' y='4' width='18' height='16' rx='2'/></svg>
             <span>Laporan Kendaraan</span>
         </a>
-        <a class="nav-link {{ request()->routeIs('laporan.aset') ? 'is-active' : '' }}" href="{{ route('laporan.aset') }}">
+        <a class="nav-link {{ request()->routeIs('admin.laporan.aset') ? 'is-active' : '' }}" href="{{ route('admin.laporan.aset') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x='3' y='4' width='18' height='16' rx='2'/></svg>
             <span>Laporan Aset</span>
         </a>
@@ -114,7 +114,7 @@
 
         <nav class="nav-section">
         <div class="nav-label">Sistem</div>
-        <a class="nav-link {{ request()->routeIs('audit-logs.*') ? 'is-active' : '' }}" href="{{ route('audit-logs.index') }}">
+        <a class="nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'is-active' : '' }}" href="{{ route('admin.audit-logs.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             <span>Audit Trail</span>
         </a>

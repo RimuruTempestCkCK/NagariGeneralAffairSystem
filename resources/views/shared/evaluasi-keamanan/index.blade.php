@@ -188,7 +188,7 @@
             document.getElementById('modalForm').classList.add('flex');
         } else {
             document.getElementById('modalFormTitle').textContent = 'Edit Evaluasi Keamanan';
-            fetch(`/evaluasi-keamanan/${id}`)
+            fetch(`/${window.GAS_USER_ROLE}/evaluasi-keamanan/${id}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -211,7 +211,7 @@
     function closeDetailModal() { document.getElementById('modalDetail').classList.remove('flex'); }
 
     function openDetailModal(id) {
-        fetch(`/evaluasi-keamanan/${id}`)
+        fetch(`/${window.GAS_USER_ROLE}/evaluasi-keamanan/${id}`)
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -237,7 +237,7 @@
     async function handleFormSubmit(e) {
         e.preventDefault();
         const id = document.getElementById('evaluasi_id').value;
-        const url = id ? `/evaluasi-keamanan/${id}` : '/evaluasi-keamanan';
+        const url = id ? `/${window.GAS_USER_ROLE}/evaluasi-keamanan/${id}` : `/${window.GAS_USER_ROLE}/evaluasi-keamanan`;
         const method = id ? 'PUT' : 'POST';
 
         const payload = {
@@ -267,7 +267,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/evaluasi-keamanan/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
+                    const res = await fetch(`/${window.GAS_USER_ROLE}/evaluasi-keamanan/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
                     const data = await res.json();
                     if (data.success) location.reload();
                     else Swal.fire('Gagal', data.message, 'error');

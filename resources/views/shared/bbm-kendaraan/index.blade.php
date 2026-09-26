@@ -180,7 +180,7 @@
             document.getElementById('modalForm').classList.add('flex');
         } else {
             document.getElementById('modalFormTitle').textContent = 'Edit Data BBM';
-            fetch(`/bbm-kendaraan/${id}`)
+            fetch(`/${window.GAS_USER_ROLE}/bbm-kendaraan/${id}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -204,7 +204,7 @@
     async function handleFormSubmit(e) {
         e.preventDefault();
         const id = document.getElementById('bbm_id').value;
-        const url = id ? `/bbm-kendaraan/${id}` : '/bbm-kendaraan';
+        const url = id ? `/${window.GAS_USER_ROLE}/bbm-kendaraan/${id}` : `/${window.GAS_USER_ROLE}/bbm-kendaraan`;
         const method = id ? 'PUT' : 'POST';
 
         const payload = {
@@ -233,7 +233,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/bbm-kendaraan/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
+                    const res = await fetch(`/${window.GAS_USER_ROLE}/bbm-kendaraan/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
                     const data = await res.json();
                     if (data.success) location.reload();
                     else Swal.fire('Gagal', data.message, 'error');

@@ -254,7 +254,7 @@
 
     async function openEditModal(id) {
         try {
-            const res = await fetch(`/permintaan-atk/${id}`);
+            const res = await fetch(`/${window.GAS_USER_ROLE}/permintaan-atk/${id}`);
             const data = await res.json();
             if (data.success) {
                 const p = data.data;
@@ -275,7 +275,7 @@
 
     async function openDetailModal(id) {
         try {
-            const res = await fetch(`/permintaan-atk/${id}`);
+            const res = await fetch(`/${window.GAS_USER_ROLE}/permintaan-atk/${id}`);
             const data = await res.json();
             if (data.success) {
                 const p = data.data;
@@ -324,7 +324,7 @@
         e.preventDefault();
         const actionType = e.submitter ? e.submitter.value : 'draft';
         const id = document.getElementById('permintaan_id').value;
-        const url = id ? `/permintaan-atk/${id}` : '/permintaan-atk';
+        const url = id ? `/${window.GAS_USER_ROLE}/permintaan-atk/${id}` : `/${window.GAS_USER_ROLE}/permintaan-atk`;
         const method = id ? 'PUT' : 'POST';
 
         const itemRows = document.querySelectorAll('.item-row');
@@ -365,7 +365,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/permintaan-atk/${id}/submit`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
+                    const res = await fetch(`/${window.GAS_USER_ROLE}/permintaan-atk/${id}/submit`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
                     const data = await res.json();
                     if (data.success) location.reload();
                     else Swal.fire('Gagal', data.message, 'error');
@@ -380,7 +380,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/permintaan-atk/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
+                    const res = await fetch(`/${window.GAS_USER_ROLE}/permintaan-atk/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
                     const data = await res.json();
                     if (data.success) location.reload();
                     else Swal.fire('Gagal', data.message, 'error');

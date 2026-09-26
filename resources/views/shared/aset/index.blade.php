@@ -167,7 +167,7 @@
             document.getElementById('modalForm').classList.add('flex');
         } else {
             document.getElementById('modalFormTitle').textContent = 'Edit Aset';
-            fetch(`/aset/${id}`)
+            fetch(`/${window.GAS_USER_ROLE}/aset/${id}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -203,7 +203,7 @@
     }
 
     function openDetailModal(id) {
-        fetch(`/aset/${id}`)
+        fetch(`/${window.GAS_USER_ROLE}/aset/${id}`)
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -243,7 +243,7 @@
         e.preventDefault();
         
         const id = document.getElementById('aset_id').value;
-        const url = id ? `/aset/${id}` : '/aset';
+        const url = id ? `/${window.GAS_USER_ROLE}/aset/${id}` : `/${window.GAS_USER_ROLE}/aset`;
         
         // Use FormData for file upload
         const formElement = document.getElementById('formData');
@@ -294,7 +294,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/aset/${id}`, {
+                    const res = await fetch(`/${window.GAS_USER_ROLE}/aset/${id}`, {
                         method: 'DELETE',
                         headers: { 
                             'Content-Type': 'application/json', 
