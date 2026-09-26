@@ -36,7 +36,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Riwayat Pemakaian ATK</h2>
         </div>
-        <form method="GET" action="{{ route('pemakaian-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.pemakaian-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari Unit / No. Jurnal / ATK..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 250px;">
             <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Cari</button>
         </form>

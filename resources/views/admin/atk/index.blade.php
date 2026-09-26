@@ -32,7 +32,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Data ATK</h2>
         </div>
-        <form action="{{ route('atk.index') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
+        <form action="{{ route('admin.atk.index') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari kode/nama ATK..." style="width: 200px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <select name="jenis_atk" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Jenis</option>
@@ -47,13 +47,13 @@
             </select>
             <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
             @if(request()->anyFilled(['search', 'jenis_atk', 'status']))
-                <a href="{{ route('atk.index') }}" style="color: var(--t-muted); font-size: 14px;">Reset</a>
+                <a href="{{ route('admin.atk.index') }}" style="color: var(--t-muted); font-size: 14px;">Reset</a>
             @endif
         </form>
     </div>
 
     <div class="table-scroll">
-        <form id="bulkPrintForm" action="{{ route('atk.bulk-print') }}" method="GET" target="_blank">
+        <form id="bulkPrintForm" action="{{ route('admin.atk.bulk-print') }}" method="GET" target="_blank">
             <table class="table">
                 <thead>
                     <tr>

@@ -24,7 +24,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Riwayat Pembelian BBM</h2>
         </div>
-        <form method="GET" action="{{ route('bbm-kendaraan.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.bbm-kendaraan.index') }}" style="display: flex; gap: 10px; align-items: center;">
             <select name="kendaraan_id" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Kendaraan</option>
                 @foreach($kendaraans as $k)

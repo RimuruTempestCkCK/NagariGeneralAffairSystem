@@ -43,7 +43,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Riwayat Transaksi Stok</h2>
         </div>
-        <form method="GET" action="{{ route('stok-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route('admin.stok-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. Jurnal / Keterangan / ATK..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 250px;">
             <select name="jenis_transaksi" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Transaksi</option>

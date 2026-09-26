@@ -15,7 +15,7 @@
 
                     <!-- Filter Form -->
                     <div class="layer w-100 mB-20">
-                        <form action="{{ route('audit-logs.index') }}" method="GET" class="row align-items-center">
+                        <form action="{{ route('admin.audit-logs.index') }}" method="GET" class="row align-items-center">
                             <div class="col-md-3 mb-2">
                                 <label for="tanggal_mulai">Tanggal Mulai</label>
                                 <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control" value="{{ request('tanggal_mulai') }}">

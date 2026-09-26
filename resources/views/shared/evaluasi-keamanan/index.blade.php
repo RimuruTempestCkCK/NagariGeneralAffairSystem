@@ -24,7 +24,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Riwayat Evaluasi Keamanan</h2>
         </div>
-        <form method="GET" action="{{ route('evaluasi-keamanan.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.evaluasi-keamanan.index') }}" style="display: flex; gap: 10px; align-items: center;">
             <select name="jenis_evaluasi" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Jenis</option>
                 <option value="Triwulan" {{ request('jenis_evaluasi') === 'Triwulan' ? 'selected' : '' }}>Triwulan</option>

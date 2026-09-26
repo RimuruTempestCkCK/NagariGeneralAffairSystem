@@ -12,7 +12,7 @@
             <h2 class="card-title">Manajemen Aset Perusahaan</h2>
         </div>
         <div class="card-action">
-            <form action="{{ route('aset.index') }}" method="GET" style="display:inline-block; margin-right: 15px;">
+            <form action="{{ route(Auth::user()->role . '.aset.index') }}" method="GET" style="display:inline-block; margin-right: 15px;">
                 <input type="text" name="search" value="{{ request('search') }}" class="form-control" style="width:250px; display:inline-block; padding: 6px 10px; margin:0;" placeholder="Cari Sertifikat / Cabang...">
                 <button type="submit" class="btn btn--primary" style="padding: 6px 12px; margin-left: 5px;">Cari</button>
             </form>

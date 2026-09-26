@@ -51,7 +51,7 @@
     <div class="card" style="padding:20px;">
         <span class="eyebrow">Laporan Keamanan</span>
         <h2 class="card-title">{{ $totalKeamanan }} Laporan</h2>
-        <div class="mt-2"><a href="{{ route('keamanan.index') }}" class="text-blue-500 text-sm hover:underline">Lihat semua laporan &rarr;</a></div>
+        <div class="mt-2"><a href="{{ route('admin.keamanan.index') }}" class="text-blue-500 text-sm hover:underline">Lihat semua laporan &rarr;</a></div>
     </div>
 </div>
 
@@ -61,7 +61,7 @@
             <span class="eyebrow">Aktivitas</span>
             <h2 class="card-title">Permintaan ATK Terbaru</h2>
         </div>
-        <a class="card-action" href="{{ route('permintaan-atk.index') }}">Semua Transaksi &rarr;</a>
+        <a class="card-action" href="{{ route('admin.permintaan-atk.index') }}">Semua Transaksi &rarr;</a>
     </div>
     <table class="table">
         <thead>

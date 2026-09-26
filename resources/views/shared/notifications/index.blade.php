@@ -13,7 +13,7 @@
     </div>
     <div class="hero-actions">
         @if(Auth::user()->unreadNotifications->count() > 0)
-            <form action="{{ route('notifications.markAllAsRead') }}" method="POST">
+            <form action="{{ route(Auth::user()->role . '.notifications.markAllAsRead') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-primary">Tandai Semua Dibaca</button>
             </form>
@@ -46,10 +46,10 @@
                         
                         <div style="margin-top: 8px; display: flex; gap: 15px; font-size: 13px;">
                             @if(!empty($notif->data['url']))
-                                <a href="{{ route('notifications.markAndRedirect', $notif->id) }}" style="color: var(--accent); font-weight: 500; text-decoration: none;">Lihat Detail</a>
+                                <a href="{{ route(Auth::user()->role . '.notifications.markAndRedirect', $notif->id) }}" style="color: var(--accent); font-weight: 500; text-decoration: none;">Lihat Detail</a>
                             @endif
                             @if(is_null($notif->read_at))
-                                <form action="{{ route('notifications.markAsRead', $notif->id) }}" method="POST" style="margin: 0;">
+                                <form action="{{ route(Auth::user()->role . '.notifications.markAsRead', $notif->id) }}" method="POST" style="margin: 0;">
                                     @csrf
                                     <button type="submit" style="background: none; border: none; color: var(--t-muted); cursor: pointer; padding: 0; font-family: inherit;">Tandai Dibaca</button>
                                 </form>

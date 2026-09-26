@@ -24,7 +24,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Riwayat Laporan Keamanan</h2>
         </div>
-        <form method="GET" action="{{ route('keamanan.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.keamanan.index') }}" style="display: flex; gap: 10px; align-items: center;">
             <select name="lokasi_pengamanan" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Lokasi</option>
                 <option value="Kantor Pusat" {{ request('lokasi_pengamanan') === 'Kantor Pusat' ? 'selected' : '' }}>Kantor Pusat</option>

@@ -12,8 +12,8 @@
         <p class="hero-sub">Periode: {{ request('start_date') ? date('d M Y', strtotime(request('start_date'))) : 'Awal' }} s.d {{ request('end_date') ? date('d M Y', strtotime(request('end_date'))) : 'Sekarang' }}</p>
     </div>
     <div class="hero-actions">
-        <a href="{{ route('laporan.atk.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn-primary" style="background: #28a745; border-color: #28a745; margin-right: 5px;">Excel</a>
-        <a href="{{ route('laporan.atk.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn-primary" style="background: #dc3545; border-color: #dc3545; margin-right: 5px;">PDF</a>
+        <a href="{{ route('admin.laporan.atk.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn-primary" style="background: #28a745; border-color: #28a745; margin-right: 5px;">Excel</a>
+        <a href="{{ route('admin.laporan.atk.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn-primary" style="background: #dc3545; border-color: #dc3545; margin-right: 5px;">PDF</a>
         <button class="btn btn-primary" onclick="window.print()" style="background: #2c3e50; border-color: #2c3e50;">
             Print Laporan
         </button>
@@ -27,12 +27,12 @@
             <h2 class="card-title">Persediaan ATK</h2>
         </div>
         
-        <form action="{{ route('laporan.atk') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
+        <form action="{{ route('admin.laporan.atk') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
             <input type="date" name="start_date" value="{{ request('start_date') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="date" name="end_date" value="{{ request('end_date') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari ATK..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 200px;">
             <button type="submit" class="btn btn-primary" style="padding: 5px 15px;">Filter</button>
-            <a href="{{ route('laporan.atk') }}" class="btn btn--ghost" style="padding: 5px 15px; text-decoration: none;">Reset</a>
+            <a href="{{ route('admin.laporan.atk') }}" class="btn btn--ghost" style="padding: 5px 15px; text-decoration: none;">Reset</a>
         </form>
     </div>
     

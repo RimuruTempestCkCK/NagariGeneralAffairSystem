@@ -24,7 +24,7 @@
             <span class="eyebrow">Daftar PO</span>
             <h2 class="card-title">Purchase Order ATK</h2>
         </div>
-        <form method="GET" action="{{ route('permintaan-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.permintaan-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. PO / Unit..." style="width: 200px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <select name="status" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Status</option>
