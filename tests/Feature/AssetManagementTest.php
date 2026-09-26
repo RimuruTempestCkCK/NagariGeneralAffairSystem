@@ -132,6 +132,6 @@ class AssetManagementTest extends TestCase
 
         $response = $this->actingAs($this->admin)->deleteJson('/aset/' . $aset->id);
         $response->assertStatus(200);
-        $this->assertDatabaseMissing('asets', ['id' => $aset->id]);
+        $this->assertSoftDeleted('asets', ['id' => $aset->id]);
     }
 }

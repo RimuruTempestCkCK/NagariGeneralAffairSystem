@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BbmKendaraan extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
 
     protected $fillable = [
         'kendaraan_id',
@@ -22,7 +22,7 @@ class BbmKendaraan extends Model
 
     public function kendaraan()
     {
-        return $this->belongsTo(Kendaraan::class, 'kendaraan_id');
+        return $this->belongsTo(Kendaraan::class, 'kendaraan_id')->withTrashed();
     }
 
     public function user()

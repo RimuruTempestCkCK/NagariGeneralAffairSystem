@@ -117,6 +117,36 @@ class AtkController extends Controller
         ]);
     }
 
+    public function bulkPrint(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+
+        $ids = array_unique($ids);
+        
+        $atks = Atk::whereIn('id', $ids)->where('status', 'Aktif')->get();
+        
+        if ($atks->isEmpty()) {
+            return redirect()->back()->with('error', 'Silakan pilih minimal satu ATK aktif.');
+        }
+        
+        if ($atks->count() > 100) {
+            return redirect()->back()->with('error', 'Maksimal 100 QR Code dapat dicetak sekaligus.');
+        }
+
+        \App\Services\AuditLogService::log(
+            'BULK_PRINT', 
+            'ATK', 
+            'Admin mencetak ' . $atks->count() . ' QR Code ATK', 
+            null, null, 
+            ['ids' => $atks->pluck('id')->toArray()]
+        );
+
+        return view('atk.bulk-print', compact('atks'));
+    }
+
     public function printQr($id)
     {
         $atk = Atk::findOrFail($id);

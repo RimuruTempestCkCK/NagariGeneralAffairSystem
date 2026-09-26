@@ -26,6 +26,9 @@
         </div>
 
         <!-- Filter & Search Toolbar -->
+        <div class="mb-4">
+            <button type="button" onclick="submitBulkPrint()" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2.5">Bulk Print QR</button>
+        </div>
         <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
             <form action="{{ route('atk.index') }}" method="GET" class="flex flex-wrap items-center gap-3 sm:mb-0">
                 <div class="relative w-48 sm:w-64">
@@ -72,10 +75,12 @@
     <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
             <div class="overflow-hidden shadow">
-                <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
+                <form id="bulkPrintForm" action="{{ route('atk.bulk-print') }}" method="GET" target="_blank">
+                  <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                     <thead class="bg-gray-100 dark:bg-gray-700">
                         <tr>
-                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Kode ATK</th>
+                            <th scope="col" class="p-4"><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                              <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Kode ATK</th>
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Nama Barang</th>
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Jenis</th>
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Stok</th>
@@ -145,7 +150,7 @@
                         </tr>
                         @endforelse
                     </tbody>
-                </table>
+                </table></form>
             </div>
         </div>
     </div>

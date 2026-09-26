@@ -34,7 +34,7 @@
             </form>
             
             <div style="margin-top: 18px; margin-left: 20px;">
-                <button class="btn btn--primary" onclick="window.print()" style="padding: 6px 12px; background: #2c3e50; border-color: #2c3e50;">
+                <a href="{{ route('laporan.aset.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn--success" style="padding: 6px 12px; margin-right: 5px; background: #28a745; border-color: #28a745; color: white; text-decoration: none;">Excel</a> <a href="{{ route('laporan.aset.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn--danger" style="padding: 6px 12px; margin-right: 5px; background: #dc3545; border-color: #dc3545; color: white; text-decoration: none;">PDF</a> <button class="btn btn--primary" onclick="window.print()" style="padding: 6px 12px; background: #2c3e50; border-color: #2c3e50;">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2" style="margin-right: 5px;">
                         <polyline points="6 9 6 2 18 2 18 9"></polyline>
                         <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>

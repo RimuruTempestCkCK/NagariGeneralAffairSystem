@@ -26,6 +26,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+            \App\Services\AuditLogService::log('LOGIN', 'Auth', 'User berhasil login', Auth::user());
             return $this->redirectBasedOnRole(Auth::user());
         }
 
@@ -45,7 +46,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        \App\Services\AuditLogService::log('LOGOUT', 'Auth', 'User logout', \Illuminate\Support\Facades\Auth::user()); Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

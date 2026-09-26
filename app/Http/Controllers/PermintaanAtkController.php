@@ -98,6 +98,8 @@ class PermintaanAtkController extends Controller
 
             DB::commit();
 
+            \App\Services\NotificationService::notifyAdminNewPo($permintaan);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Permintaan ATK ' . $nomorPo . ' berhasil dibuat dengan status ' . $status . '.',
@@ -278,6 +280,10 @@ class PermintaanAtkController extends Controller
             'alasan_reject' => null,
         ]);
 
+        \App\Services\AuditLogService::log('APPROVE', 'PO', 'Admin menyetujui PO ' . $permintaan->nomor_po, $permintaan, clone $permintaan, null);
+
+        \App\Services\NotificationService::notifyStaffPoApproved($permintaan);
+
         return response()->json([
             'success' => true,
             'message' => 'Permintaan ATK ' . $permintaan->nomor_po . ' berhasil disetujui (APPROVED).',
@@ -312,6 +318,10 @@ class PermintaanAtkController extends Controller
             'approved_at' => now(),
             'alasan_reject' => $request->alasan_reject,
         ]);
+
+        \App\Services\AuditLogService::log('REJECT', 'PO', 'Admin menolak PO ' . $permintaan->nomor_po . ' alasan: ' . $request->alasan_reject, $permintaan, clone $permintaan, null);
+
+        \App\Services\NotificationService::notifyStaffPoRejected($permintaan);
 
         return response()->json([
             'success' => true,

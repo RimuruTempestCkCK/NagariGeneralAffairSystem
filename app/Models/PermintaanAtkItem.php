@@ -23,6 +23,6 @@ class PermintaanAtkItem extends Model
 
     public function atk()
     {
-        return $this->belongsTo(Atk::class, 'atk_id');
+        return $this->belongsTo(Atk::class, 'atk_id')->withTrashed();
     }
 }

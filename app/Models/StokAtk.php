@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StokAtk extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
 
     protected $fillable = [
         'atk_id',
@@ -24,7 +24,7 @@ class StokAtk extends Model
 
     public function atk()
     {
-        return $this->belongsTo(Atk::class, 'atk_id');
+        return $this->belongsTo(Atk::class, 'atk_id')->withTrashed();
     }
 
     public function user()

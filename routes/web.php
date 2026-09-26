@@ -23,8 +23,14 @@ Route::post('/', [AuthController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Halaman yang membutuhkan Login
+    // Halaman yang membutuhkan Login
 Route::middleware('auth')->group(function () {
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::post('/notifications/{id}/mark-read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::get('/notifications/{id}/redirect', [\App\Http\Controllers\NotificationController::class, 'markAndRedirect'])->name('notifications.markAndRedirect');
+
     // Redirect generic dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -35,15 +41,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/kendaraan', [ReportController::class, 'kendaraan'])->name('laporan.kendaraan');
     Route::get('/laporan/aset', [ReportController::class, 'aset'])->name('laporan.aset');
 
+    Route::get('/laporan/atk/export', [ReportController::class, 'exportAtk'])->name('laporan.atk.export');
+    Route::get('/laporan/kendaraan/export', [ReportController::class, 'exportKendaraan'])->name('laporan.kendaraan.export');
+    Route::get('/laporan/aset/export', [ReportController::class, 'exportAset'])->name('laporan.aset.export');
+
     // QR Code Scanner & Print & Lookup (Dapat diakses Admin dan Staff)
     Route::get('/atk/scan', [AtkController::class, 'scanView'])->name('atk.scan');
     Route::get('/atk/scan/lookup/{kode}', [AtkController::class, 'scanLookup'])->name('atk.scan.lookup');
     Route::get('/atk/{id}/print-qr', [AtkController::class, 'printQr'])->name('atk.print-qr');
 
+    // Audit Trail (Admin Only)
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::get('/audit-logs/{id}', [\App\Http\Controllers\AuditLogController::class, 'show'])->name('audit-logs.show');
+    });
+
     // Master ATK CRUD (Admin Only)
     Route::middleware('role:admin')->group(function () {
         Route::get('/atk', [AtkController::class, 'index'])->name('atk.index');
         Route::post('/atk', [AtkController::class, 'store'])->name('atk.store');
+        Route::get('/atk/bulk-print', [AtkController::class, 'bulkPrint'])->name('atk.bulk-print');
         Route::get('/atk/{id}', [AtkController::class, 'show'])->name('atk.show');
         Route::put('/atk/{id}', [AtkController::class, 'update'])->name('atk.update');
         Route::delete('/atk/{id}', [AtkController::class, 'destroy'])->name('atk.destroy');

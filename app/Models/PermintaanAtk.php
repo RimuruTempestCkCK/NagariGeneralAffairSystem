@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PermintaanAtk extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
 
     protected $fillable = [
         'nomor_po',

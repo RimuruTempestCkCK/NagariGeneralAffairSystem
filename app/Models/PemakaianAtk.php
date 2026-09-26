@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PemakaianAtk extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
 
     protected $fillable = [
         'atk_id',
@@ -23,7 +23,7 @@ class PemakaianAtk extends Model
 
     public function atk()
     {
-        return $this->belongsTo(Atk::class, 'atk_id');
+        return $this->belongsTo(Atk::class, 'atk_id')->withTrashed();
     }
 
     public function user()
