@@ -8,10 +8,10 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
     <!-- Adminator Scripts -->
-    <script defer="defer" src="{{ asset('adminator/runtime.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator/vendors.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator/2026.js') }}"></script>
-    <link href="{{ asset('adminator/style.css') }}" rel="stylesheet">
+    <script defer="defer" src="{{ asset('adminator_templete/runtime.js') }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/vendors.js') }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/2026.js') }}"></script>
+    <link href="{{ asset('adminator_templete/style.css') }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>

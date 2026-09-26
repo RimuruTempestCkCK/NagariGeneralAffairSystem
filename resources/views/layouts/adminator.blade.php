@@ -7,12 +7,12 @@
     <title>@yield('title', 'Adminator - General Affair System')</title>
     <script>!function(){try{var t=localStorage.getItem("dash26-theme"),e=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.setAttribute("data-theme",t||(e?"dark":"light"))}catch(t){document.documentElement.setAttribute("data-theme","light")}}()</script>
     <script>window.GAS_USER_ROLE = "{{ Auth::check() ? Auth::user()->role : 'staff' }}";</script>
-    <script defer="defer" src="{{ asset('adminator/runtime.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator/vendor-fullcalendar.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator/vendor-chartjs.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator/vendors.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator/2026.js') }}"></script>
-    <link href="{{ asset('adminator/style.css') }}" rel="stylesheet">
+    <script defer="defer" src="{{ asset('adminator_templete/runtime.js?v=' . time()) }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/vendor-fullcalendar.js?v=' . time()) }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/vendor-chartjs.js?v=' . time()) }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/vendors.js?v=' . time()) }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/2026.js?v=' . time()) }}"></script>
+    <link href="{{ asset('adminator_templete/style.css?v=' . time()) }}" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
