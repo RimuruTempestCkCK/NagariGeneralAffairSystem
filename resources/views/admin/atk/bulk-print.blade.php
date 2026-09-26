@@ -1,74 +1,73 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Bulk Print QR ATK</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #fff;
+@extends('layout.app')
+
+@section('title', 'Bulk Print QR ATK')
+@section('active_menu', 'atk')
+@section('breadcrumbs', 'Modul ATK | Master ATK | Bulk Print QR')
+
+@section('content')
+<div class="px-4 pt-6 no-print">
+    <div class="p-4 bg-white border border-gray-200 rounded-2xl shadow-sm mb-6 dark:border-gray-700 dark:bg-gray-800 flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">Cetak QR Code Massal</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cetak beberapa label QR Code secara bersamaan.</p>
+        </div>
+        <div class="flex gap-3">
+            <button class="btn btn--ghost" onclick="window.close()">Tutup</button>
+            <button class="btn btn--primary" onclick="window.print()">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 5px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print Sekarang
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="print-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 20px;">
+    @foreach($atks as $atk)
+        <div class="label-box" style="border: 2px dashed var(--border-soft); padding: 15px; text-align: center; border-radius: 8px; background: var(--bg-base);">
+            <div class="qr-wrapper" style="margin-bottom: 10px; display: flex; justify-content: center;">
+                {!! QrCode::format('svg')->size(100)->generate($atk->kode_atk) !!}
+            </div>
+            <div class="label-code" style="font-weight: bold; font-size: 16px; margin-bottom: 5px; color: var(--accent);">{{ $atk->kode_atk }}</div>
+            <div class="label-name" style="font-size: 13px; color: var(--t-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $atk->nama_atk }}</div>
+        </div>
+    @endforeach
+</div>
+
+@push('styles')
+<style>
+    @media print {
+        .d-sidebar, .d-topbar, .no-print, [data-shell-sidebar], [data-shell-topbar] {
+            display: none !important;
         }
-        .print-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            width: 100%;
+        body, html {
+            background: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
-        .label-box {
-            border: 1px dashed #ccc;
-            padding: 10px;
-            text-align: center;
+        .main { margin: 0 !important; }
+        .content { padding: 0 !important; }
+        .label-box { 
+            border: 1px solid #000 !important; 
             break-inside: avoid;
             page-break-inside: avoid;
-            box-sizing: border-box;
+            background: white !important;
         }
-        .qr-wrapper {
-            margin-bottom: 8px;
+        .print-container {
+            grid-template-columns: repeat(4, 1fr) !important;
         }
-        .qr-wrapper svg {
-            width: 100px;
-            height: 100px;
-        }
-        .label-code {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 3px;
-        }
-        .label-name {
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .no-print {
-            margin-bottom: 20px;
-        }
-        @media print {
-            body { padding: 0; }
-            .no-print { display: none !important; }
-            .label-box { border: 1px solid #000; }
-            @page { margin: 1cm; size: A4 portrait; }
-        }
-    </style>
-</head>
-<body onload="window.print()">
-    <div class="no-print">
-        <button onclick="window.print()" style="padding:10px 20px; background:#007bff; color:#fff; border:none; cursor:pointer;">Print Sekarang</button>
-        <button onclick="window.close()" style="padding:10px 20px; background:#6c757d; color:#fff; border:none; cursor:pointer;">Tutup</button>
-    </div>
+        @page { margin: 1cm; size: A4 portrait; }
+    }
+</style>
+@endpush
 
-    <div class="print-container">
-        @foreach($atks as $atk)
-            <div class="label-box">
-                <div class="qr-wrapper">
-                    {!! QrCode::format('svg')->size(100)->generate($atk->kode_atk) !!}
-                </div>
-                <div class="label-code">{{ $atk->kode_atk }}</div>
-                <div class="label-name">{{ $atk->nama_atk }}</div>
-            </div>
-        @endforeach
-    </div>
-</body>
-</html>
+@push('scripts')
+<script>
+    window.onload = function() {
+        // Otomatis trigger print setelah render
+        setTimeout(() => {
+            window.print();
+        }, 500);
+    }
+</script>
+@endpush
+@endsection

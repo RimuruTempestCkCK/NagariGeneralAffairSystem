@@ -46,9 +46,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/aset/export', [ReportController::class, 'exportAset'])->name('laporan.aset.export');
 
     // QR Code Scanner & Print & Lookup (Dapat diakses Admin dan Staff)
-    Route::get('/atk/scan', [AtkController::class, 'scanView'])->name('atk.scan');
-    Route::get('/atk/scan/lookup/{kode}', [AtkController::class, 'scanLookup'])->name('atk.scan.lookup');
-    Route::get('/atk/{id}/print-qr', [AtkController::class, 'printQr'])->name('atk.print-qr');
+    Route::get('/admin/atk/scan', [AtkController::class, 'scanView'])->name('admin.atk.scan');
+    Route::get('/admin/atk/scan/lookup/{kode}', [AtkController::class, 'scanLookup'])->name('admin.atk.scan.lookup');
+    Route::get('/admin/atk/{id}/print-qr', [AtkController::class, 'printQr'])->name('admin.atk.print-qr');
+    
+    Route::get('/staff/atk/scan', [AtkController::class, 'scanView'])->name('staff.atk.scan');
+    Route::get('/staff/atk/scan/lookup/{kode}', [AtkController::class, 'scanLookup'])->name('staff.atk.scan.lookup');
 
     // Audit Trail (Admin Only)
     Route::middleware('role:admin')->group(function () {
