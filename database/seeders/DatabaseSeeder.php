@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             AtkSeeder::class,
+            TransaksiAtkSeeder::class,
             KendaraanSeeder::class,
             AsetSeeder::class,
             WorkflowSeeder::class,
