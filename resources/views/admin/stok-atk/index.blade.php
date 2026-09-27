@@ -40,8 +40,8 @@
             <h2 class="card-title">Riwayat Transaksi Stok</h2>
         </div>
         <form method="GET" action="{{ route('admin.stok-atk.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. Jurnal / Keterangan / ATK..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 250px;">
-            <select name="jenis_transaksi" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. Jurnal / Keterangan / ATK..." style="width: 250px;">
+            <select name="jenis_transaksi" onchange="this.form.submit()" class="input">
                 <option value="">Semua Transaksi</option>
                 <option value="Stok Awal" {{ request('jenis_transaksi') === 'Stok Awal' ? 'selected' : '' }}>Stok Awal</option>
                 <option value="Stok Masuk" {{ request('jenis_transaksi') === 'Stok Masuk' ? 'selected' : '' }}>Stok Masuk</option>

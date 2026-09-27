@@ -23,13 +23,13 @@
             <h2 class="card-title">Data Kendaraan</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari Plat Nomor / Jenis..." style="width: 200px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <select name="status_kendaraan" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari Plat Nomor / Jenis..." style="width: 200px;">
+            <select name="status_kendaraan" onchange="this.form.submit()" class="input">
                 <option value="">Semua Status</option>
                 <option value="Milik" {{ request('status_kendaraan') === 'Milik' ? 'selected' : '' }}>Milik</option>
                 <option value="Sewa" {{ request('status_kendaraan') === 'Sewa' ? 'selected' : '' }}>Sewa</option>
             </select>
-            <select name="kondisi" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="kondisi" onchange="this.form.submit()" class="input">
                 <option value="">Semua Kondisi</option>
                 <option value="Aktif" {{ request('kondisi') === 'Aktif' ? 'selected' : '' }}>Aktif</option>
                 <option value="Servis" {{ request('kondisi') === 'Servis' ? 'selected' : '' }}>Servis</option>

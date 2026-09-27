@@ -28,8 +28,8 @@
         </div>
         
         <form action="{{ route('admin.laporan.aset') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari aset..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 200px;">
-            <select name="status" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari aset..." style="width: 200px;">
+            <select name="status" class="input">
                 <option value="">Semua Status</option>
                 <option value="Aman" {{ request('status') == 'Aman' ? 'selected' : '' }}>Aman</option>
                 <option value="Akan Jatuh Tempo" {{ request('status') == 'Akan Jatuh Tempo' ? 'selected' : '' }}>Akan Jatuh Tempo</option>

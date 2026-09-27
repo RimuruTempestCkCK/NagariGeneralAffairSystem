@@ -13,7 +13,7 @@
         </div>
         <div class="card-action">
             <form action="{{ route(Auth::user()->role . '.aset.index') }}" method="GET" class="filter-bar">
-                <input type="text" name="search" value="{{ request('search') }}" class="input" style="width:250px; display:inline-block; padding: 6px 10px; margin:0;" placeholder="Cari Sertifikat / Cabang...">
+                <input type="text" name="search" value="{{ request('search') }}" class="input" style="width: 250px;" placeholder="Cari Sertifikat / Cabang...">
                 <button type="submit" class="btn btn--primary btn--filter">Cari</button>
             </form>
 
@@ -59,11 +59,19 @@
                     <span class="tag {{ $statusClass }}">{{ $aset->status_sertifikat }}</span>
                 </td>
                 <td style="text-align:right; white-space: nowrap;">
-                    <button class="btn btn--ghost btn--xs" onclick="openDetailModal({{ $aset->id }})">Detail</button>
-                    @if(Auth::user()->role === 'admin')
-                    <button class="btn btn--ghost btn--xs" onclick="openFormModal({{ $aset->id }})">Edit</button>
-                    <button class="btn btn--outline-danger btn--xs" onclick="deleteData({{ $aset->id }}, '{{ $aset->nomor_sertifikat }}')">Hapus</button>
-                    @endif
+                    <div class="data-cell-actions" style="justify-content: flex-end;">
+                        <button type="button" onclick="openDetailModal({{ $aset->id }})" class="btn--icon act--view" aria-label="Detail" title="Detail">
+                            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                        @if(Auth::user()->role === 'admin')
+                        <button type="button" onclick="openFormModal({{ $aset->id }})" class="btn--icon act--edit" aria-label="Edit" title="Edit">
+                            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
+                        </button>
+                        <button type="button" onclick="deleteData({{ $aset->id }}, '{{ $aset->nomor_sertifikat }}')" class="btn--icon act--delete" aria-label="Hapus" title="Hapus">
+                            <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        </button>
+                        @endif
+                    </div>
                 </td>
             </tr>
             @empty

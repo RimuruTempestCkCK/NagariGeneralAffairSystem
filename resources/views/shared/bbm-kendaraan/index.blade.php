@@ -23,14 +23,14 @@
             <h2 class="card-title">Riwayat Pembelian BBM</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.bbm-kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <select name="kendaraan_id" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="kendaraan_id" onchange="this.form.submit()" class="input">
                 <option value="">Semua Kendaraan</option>
                 @foreach($kendaraans as $k)
                 <option value="{{ $k->id }}" {{ request('kendaraan_id') == $k->id ? 'selected' : '' }}>{{ $k->nomor_kendaraan }}</option>
                 @endforeach
             </select>
-            <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input">
+            <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input">
             <button type="submit" class="btn btn--primary btn--filter">Filter</button>
         </form>
     </div>

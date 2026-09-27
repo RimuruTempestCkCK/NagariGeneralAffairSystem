@@ -23,18 +23,18 @@
             <h2 class="card-title">Riwayat Evaluasi Keamanan</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.evaluasi-keamanan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <select name="jenis_evaluasi" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="jenis_evaluasi" onchange="this.form.submit()" class="input">
                 <option value="">Semua Jenis</option>
                 <option value="Triwulan" {{ request('jenis_evaluasi') === 'Triwulan' ? 'selected' : '' }}>Triwulan</option>
                 <option value="Tahunan" {{ request('jenis_evaluasi') === 'Tahunan' ? 'selected' : '' }}>Tahunan</option>
             </select>
-            <select name="lokasi_pengamanan" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="lokasi_pengamanan" onchange="this.form.submit()" class="input">
                 <option value="">Semua Lokasi</option>
                 <option value="Kantor Pusat" {{ request('lokasi_pengamanan') === 'Kantor Pusat' ? 'selected' : '' }}>Kantor Pusat</option>
                 <option value="Kantor Cabang" {{ request('lokasi_pengamanan') === 'Kantor Cabang' ? 'selected' : '' }}>Kantor Cabang</option>
                 <option value="Unit Kerja / KCP / Kas" {{ request('lokasi_pengamanan') === 'Unit Kerja / KCP / Kas' ? 'selected' : '' }}>Unit Kerja / KCP / Kas</option>
             </select>
-            <input type="number" name="tahun" value="{{ request('tahun') }}" placeholder="Tahun" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 80px;">
+            <input type="number" name="tahun" value="{{ request('tahun') }}" placeholder="Tahun" class="input" style="width: 80px;">
             <button type="submit" class="btn btn--primary btn--filter">Filter</button>
         </form>
     </div>

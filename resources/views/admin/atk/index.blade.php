@@ -31,14 +31,14 @@
             <h2 class="card-title">Data ATK</h2>
         </div>
         <form action="{{ route('admin.atk.index') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari kode/nama ATK..." style="width: 200px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <select name="jenis_atk" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari kode/nama ATK..." style="width: 200px;">
+            <select name="jenis_atk" onchange="this.form.submit()" class="input">
                 <option value="">Semua Jenis</option>
                 @foreach($jenisList as $j)
                     <option value="{{ $j }}" {{ request('jenis_atk') == $j ? 'selected' : '' }}>{{ $j }}</option>
                 @endforeach
             </select>
-            <select name="status" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="status" onchange="this.form.submit()" class="input">
                 <option value="">Semua Status</option>
                 <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
                 <option value="Nonaktif" {{ request('status') == 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>

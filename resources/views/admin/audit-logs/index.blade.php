@@ -18,13 +18,13 @@
             <h2 class="card-title">Data Audit Log</h2>
         </div>
         <form action="{{ route('admin.audit-logs.index') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <select name="user_id" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="user_id" onchange="this.form.submit()" class="input">
                 <option value="">Semua User</option>
                 @foreach($users as $user)
                     <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                 @endforeach
             </select>
-            <select name="module" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="module" onchange="this.form.submit()" class="input">
                 <option value="">Semua Module</option>
                 <option value="Auth" {{ request('module') == 'Auth' ? 'selected' : '' }}>Auth</option>
                 <option value="Aset" {{ request('module') == 'Aset' ? 'selected' : '' }}>Aset</option>

@@ -20,22 +20,46 @@
      style="background:#28a745 / #dc3545 / #2c3e50" -> .btn--success/.btn--danger/.btn--secondary
      style="color: var(--danger) / var(--success)"  -> .act--delete / .act--approve
      style="color: var(--accent)"                   -> .act--* (--accent is not a real token)
-     style="margin-right: 5px / 10px" on button rows -> .btn-group
+      style="margin-right: 5px / 10px" on button rows -> .btn-group
+
+   Scope - "one height" covers CONTENT buttons only (.btn and its variants,
+   .btn--icon, .modal-close, .pager-btn, .cal-nav-btn). Three Adminator
+   controls are deliberately left at their native size and must not be folded
+   into the 30px rule:
+     - .hamburger (36px) and .icon-btn (36px) are app chrome: the sidebar
+       toggle and the header icon buttons, not page actions.
+     - .dd-menu-item (42px) is a dropdown row, sized by its own padding, and
+       forcing it to 30px would squash the label and the 12px gap.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. BUTTON HEIGHT / RADIUS / PADDING - deterministic sizing
+   1. BUTTON HEIGHT / RADIUS / PADDING - one height for the whole app
 
-   Adminator's .btn derives its height from padding + line-height, so any
-   inline padding override produced a different height on every page. The size
-   variants below pin an explicit min-height so a given variant always renders
-   at the same height regardless of which page uses it.
+   Every content button renders at 30px on desktop, taking .btn--filter (the
+   "Cari" button) as the reference. Before this pass the variants disagreed
+   with each other: .btn sat at 36px, .btn--xs at 26px and .btn--icon at 28px,
+   and any page carrying an inline padding override landed somewhere else
+   again.
+
+   Three things have to be pinned together, because .btn derives its height
+   from content + padding + border and none of the three can be left to the
+   cascade:
+     - min-height, so 30px is the floor
+     - padding, because Adminator's .btn ships padding:9px 14px which alone
+       already renders at 36px
+     - line-height, because the app sets 1.55 globally. At 12.5px that is
+       19.375px of content, so content + 12px padding + 2px border = 33.375px
+       and min-height:30px would never take effect. line-height 1.2 brings the
+       content to 15px, i.e. 29px natural, which the 30px floor then owns.
 
    min-height is used (not height) so a long label can still grow the button
    instead of being clipped.
    -------------------------------------------------------------------------- */
 .btn {
-    min-height: 36px;
+    font-size: 12.5px;
+    line-height: 1.2;
+    min-height: 30px;
+    padding: 6px 14px;
 }
 
 .btn--sm {
@@ -43,27 +67,30 @@
 }
 
 .btn--xs {
-    font-size: 11px;
-    gap: 5px;
-    min-height: 26px;
-    padding: 4px 8px;
-    border-radius: 6px;
+    font-size: 12.5px;
+    gap: 6px;
+    line-height: 1.2;
+    min-height: 30px;
+    padding: 6px 12px;
+    border-radius: 8px;
 }
 
 /* The recurring "Filter" submit button used to carry padding:5px 15px on ten
    separate pages. One class keeps them all identical. */
 .btn--filter {
     font-size: 12.5px;
+    line-height: 1.2;
     min-height: 30px;
-    padding: 5px 14px;
+    padding: 6px 14px;
 }
 
 /* Reset link rendered as a ghost button (laporan pages) uses the same height
    as its sibling .btn--filter so the pair lines up. */
 .btn--reset {
     font-size: 12.5px;
+    line-height: 1.2;
     min-height: 30px;
-    padding: 5px 14px;
+    padding: 6px 14px;
     text-decoration: none;
 }
 
@@ -82,8 +109,15 @@
     align-items: center;
     display: inline-flex;
     justify-content: center;
-    min-height: 28px;
-    min-width: 28px;
+    min-height: 30px;
+    min-width: 30px;
+}
+
+/* Adminator ships .auth-submit.btn { padding: 11px 14px } at specificity 2, so
+   it outranks a single-class .btn rule and kept the login submit on its own
+   taller padding. Same key on both sides, declared later, wins. */
+.btn.auth-submit {
+    padding: 6px 14px;
 }
 
 /* --------------------------------------------------------------------------
@@ -138,8 +172,8 @@ a.btn:focus-visible {
    4. ACTION ICON SYSTEM (kolom "Aksi")
 
    One icon standard for the whole application:
-     - container: .btn--icon, 28x28, radius 6px (from Adminator)
-     - icon:      13px stroke icon (from Adminator)
+   - container: .btn--icon, 30x30, radius 6px (from Adminator)
+   - icon: 13px stroke icon (from Adminator)
      - colour:    by meaning, expressed as a modifier class instead of an
                   inline style
      - hover:     matching *-soft background, same hue
@@ -214,6 +248,15 @@ a.btn:focus-visible {
    4px keeps the targets visually separate without widening the column. */
 .data-cell-actions {
     gap: 4px;
+}
+
+/* Adminator's .data-cell-actions .btn--icon is specificity 2, so it wins over
+   the single-class .btn--icon sizing rule and would otherwise decide the box
+   on its own. Pin the target so the action cluster matches every other
+   button instead of rendering at 28px. */
+.data-cell-actions .btn--icon {
+    min-height: 30px;
+    min-width: 30px;
 }
 
 /* --------------------------------------------------------------------------

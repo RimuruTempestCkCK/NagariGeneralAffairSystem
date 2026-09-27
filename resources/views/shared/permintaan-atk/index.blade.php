@@ -220,7 +220,7 @@
                     <input type="number" name="jumlah_diminta" value="${jumlah}" min="1" required class="input" placeholder="Qty">
                 </div>
                 <span id="satuan_${rowId}" style="width: 70px; font-size: 13px; color: var(--t-muted); font-weight: 500;">Satuan</span>
-                <button type="button" onclick="removeItemRow('${rowId}')" class="btn btn--icon act--delete">
+                <button type="button" onclick="removeItemRow('${rowId}')" class="btn--icon act--delete">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 6L6 18M6 6l12 12"></path></svg>
                 </button>
             </div>

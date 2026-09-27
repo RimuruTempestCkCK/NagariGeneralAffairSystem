@@ -54,6 +54,49 @@ form.filter-bar > .textarea {
     flex: 0 1 auto;
 }
 
+/* Match the 30px button height so the filter row reads as one line. These
+   controls used to carry an inline `padding:5px; border-radius:4px; border:
+   1px solid var(--border-soft)`, which rendered them at ~28px next to a 30px
+   "Cari" button. The rule lives here rather than in ngas-ui.css on purpose:
+   this selector ties with the mobile tier's `min-height:40px` below, and this
+   file is loaded first, so the mobile touch target keeps winning on source
+   order.
+
+   line-height is pinned for the same reason as in ngas-ui.css: the app-wide
+   1.55 would otherwise put 19.375px of content inside the control and push it
+   past the 30px floor.
+
+   height is pinned as well, and this is the part line-height cannot do.
+   <select class="input"> and <input type="date"> are UA widgets: Chrome sizes
+   their inner field from its own metrics and ignores author line-height (it
+   even reports the computed value back as `normal`). Those two land at 31px
+   while a plain text input lands at 30px, so the filter row was visibly
+   ragged by a single pixel. An explicit height settles all three at 30px.
+   The vertical padding drops to 4px to give the date/select inner field 20px
+   of room inside the fixed 30px, so nothing gets clipped.
+
+   This stays safe on mobile: min-height always beats height in CSS, so the
+   40px touch target in the mobile tier below still wins. */
+form.filter-bar > .input,
+form.filter-bar > .select {
+    border-radius: 8px;
+    font-size: 12.5px;
+    line-height: 1.2;
+    height: 30px;
+    min-height: 30px;
+    padding: 4px 12px;
+}
+
+/* A textarea is excluded from the fixed height on purpose: it has to be able
+   to grow with the number of lines the user is expected to type. */
+form.filter-bar > .textarea {
+    border-radius: 8px;
+    font-size: 12.5px;
+    line-height: 1.2;
+    min-height: 30px;
+    padding: 6px 12px;
+}
+
 form.filter-bar > .btn,
 form.filter-bar > a {
     max-width: 100%;

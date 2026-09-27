@@ -23,19 +23,19 @@
             <h2 class="card-title">Riwayat Laporan Keamanan</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.keamanan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <select name="lokasi_pengamanan" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="lokasi_pengamanan" onchange="this.form.submit()" class="input">
                 <option value="">Semua Lokasi</option>
                 <option value="Kantor Pusat" {{ request('lokasi_pengamanan') === 'Kantor Pusat' ? 'selected' : '' }}>Kantor Pusat</option>
                 <option value="Kantor Cabang" {{ request('lokasi_pengamanan') === 'Kantor Cabang' ? 'selected' : '' }}>Kantor Cabang</option>
                 <option value="Unit Kerja / KCP / Kas" {{ request('lokasi_pengamanan') === 'Unit Kerja / KCP / Kas' ? 'selected' : '' }}>Unit Kerja / KCP / Kas</option>
             </select>
-            <select name="kondisi_keamanan" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="kondisi_keamanan" onchange="this.form.submit()" class="input">
                 <option value="">Semua Kondisi</option>
                 <option value="Aman Kondusif" {{ request('kondisi_keamanan') === 'Aman Kondusif' ? 'selected' : '' }}>Aman Kondusif</option>
                 <option value="Insiden / Masalah" {{ request('kondisi_keamanan') === 'Insiden / Masalah' ? 'selected' : '' }}>Insiden / Masalah</option>
             </select>
-            <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input">
+            <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input">
             <button type="submit" class="btn btn--primary btn--filter">Filter</button>
         </form>
     </div>

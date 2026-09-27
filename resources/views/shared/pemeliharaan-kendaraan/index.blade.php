@@ -23,21 +23,21 @@
             <h2 class="card-title">Riwayat Pemeliharaan Kendaraan</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.pemeliharaan-kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <select name="kendaraan_id" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="kendaraan_id" onchange="this.form.submit()" class="input">
                 <option value="">Semua Kendaraan</option>
                 @foreach($kendaraans as $k)
                 <option value="{{ $k->id }}" {{ request('kendaraan_id') == $k->id ? 'selected' : '' }}>{{ $k->nomor_kendaraan }}</option>
                 @endforeach
             </select>
-            <select name="jenis_perbaikan" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <select name="jenis_perbaikan" onchange="this.form.submit()" class="input">
                 <option value="">Semua Jenis</option>
                 <option value="Ban" {{ request('jenis_perbaikan') === 'Ban' ? 'selected' : '' }}>Ban</option>
                 <option value="Sparepart" {{ request('jenis_perbaikan') === 'Sparepart' ? 'selected' : '' }}>Sparepart</option>
                 <option value="Service" {{ request('jenis_perbaikan') === 'Service' ? 'selected' : '' }}>Service Rutin</option>
                 <option value="Perbaikan" {{ request('jenis_perbaikan') === 'Perbaikan' ? 'selected' : '' }}>Perbaikan Lainnya</option>
             </select>
-            <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
+            <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input">
+            <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input">
             <button type="submit" class="btn btn--primary btn--filter">Filter</button>
         </form>
     </div>

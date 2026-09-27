@@ -28,9 +28,9 @@
         </div>
         
         <form action="{{ route('admin.laporan.kendaraan') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
-            <input type="date" name="start_date" value="{{ request('start_date') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <input type="date" name="end_date" value="{{ request('end_date') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 200px;">
+            <input type="date" name="start_date" value="{{ request('start_date') }}" class="input">
+            <input type="date" name="end_date" value="{{ request('end_date') }}" class="input">
+            <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari..." style="width: 200px;">
             <button type="submit" class="btn btn--primary btn--filter">Filter</button>
             <a href="{{ route('admin.laporan.kendaraan') }}" class="btn btn--ghost btn--reset">Reset</a>
         </form>
