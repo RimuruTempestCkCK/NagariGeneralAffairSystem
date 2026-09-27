@@ -22,7 +22,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Riwayat Perjalanan Kendaraan</h2>
         </div>
-        <form method="GET" action="{{ route(Auth::user()->role . '.perjalanan-kendaraan.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.perjalanan-kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <select name="kendaraan_id" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Kendaraan</option>
                 @foreach($kendaraans as $k)
@@ -31,7 +31,7 @@
             </select>
             <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary btn--filter">Filter</button>
         </form>
     </div>
 
@@ -53,15 +53,15 @@
                     <td class="cell-name">{{ $p->kendaraan->nomor_kendaraan }}</td>
                     <td>{{ $p->tujuan }}</td>
                     <td>
-                        <strong style="color: var(--accent);">{{ number_format($p->jarak_tempuh, 0, ',', '.') }} Km</strong>
+                        <strong style="color: var(--primary);">{{ number_format($p->jarak_tempuh, 0, ',', '.') }} Km</strong>
                         <div style="font-size: 12px; color: var(--t-muted);">{{ $p->kilometer_awal }} - {{ $p->kilometer_akhir }}</div>
                     </td>
                     <td style="text-align: right;">
                         <div class="data-cell-actions" style="justify-content: flex-end;">
-                            <button type="button" onclick="openFormModal({{ $p->id }})" class="btn--icon" title="Edit">
+                            <button type="button" onclick="openFormModal({{ $p->id }})" class="btn--icon act--edit" title="Edit">
                                 <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
                             </button>
-                            <button type="button" onclick="deleteData({{ $p->id }}, 'perjalanan ke {{ $p->tujuan }}')" class="btn--icon" style="color:var(--danger)" title="Hapus">
+                            <button type="button" onclick="deleteData({{ $p->id }}, 'perjalanan ke {{ $p->tujuan }}')" class="btn--icon act--delete" title="Hapus">
                                 <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                             </button>
                         </div>

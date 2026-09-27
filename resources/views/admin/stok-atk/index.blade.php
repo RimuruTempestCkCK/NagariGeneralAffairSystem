@@ -12,20 +12,20 @@
         <p class="hero-sub">Manajemen fisik stok, harga, dan Jurnal BYD.</p>
     </div>
     <div class="hero-actions">
-        <button type="button" onclick="openCreateModal('Stok Awal')" class="btn btn--ghost" style="margin-right: 10px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat Stok Awal</button>
+        <button type="button" onclick="openCreateModal('Stok Awal')" class="btn btn--ghost"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Catat Stok Awal</button>
         <button type="button" onclick="openCreateModal('Stok Masuk')" class="btn btn--primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Tambah Stok Masuk</button>
     </div>
 </section>
 
 <!-- Metric Cards -->
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
     <div class="card" style="padding: 20px;">
         <span style="font-size: 12px; color: var(--t-muted); text-transform: uppercase;">Total Jenis ATK</span>
         <h3 style="margin-top: 10px; font-size: 24px;">{{ number_format($totalItemAtk) }} Item</h3>
     </div>
     <div class="card" style="padding: 20px;">
         <span style="font-size: 12px; color: var(--t-muted); text-transform: uppercase;">Total Fisik Stok</span>
-        <h3 style="margin-top: 10px; font-size: 24px; color: var(--accent);">{{ number_format($totalStokFisik) }} Unit</h3>
+        <h3 style="margin-top: 10px; font-size: 24px; color: var(--primary);">{{ number_format($totalStokFisik) }} Unit</h3>
     </div>
     <div class="card" style="padding: 20px;">
         <span style="font-size: 12px; color: var(--t-muted); text-transform: uppercase;">Total Nilai Persediaan</span>
@@ -39,14 +39,14 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Riwayat Transaksi Stok</h2>
         </div>
-        <form method="GET" action="{{ route('admin.stok-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route('admin.stok-atk.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. Jurnal / Keterangan / ATK..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 250px;">
             <select name="jenis_transaksi" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Transaksi</option>
                 <option value="Stok Awal" {{ request('jenis_transaksi') === 'Stok Awal' ? 'selected' : '' }}>Stok Awal</option>
                 <option value="Stok Masuk" {{ request('jenis_transaksi') === 'Stok Masuk' ? 'selected' : '' }}>Stok Masuk</option>
             </select>
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary btn--filter">Filter</button>
         </form>
     </div>
 
@@ -90,7 +90,7 @@
                     <td style="font-family: monospace; color: var(--t-muted);">{{ $stok->no_jurnal ?? '-' }}</td>
                     <td style="text-align: right;">
                         <div class="data-cell-actions" style="justify-content: flex-end;">
-                            <button type="button" onclick="openDetailModal({{ $stok->id }})" class="btn--icon" title="Detail">
+                            <button type="button" onclick="openDetailModal({{ $stok->id }})" class="btn--icon act--view" title="Detail">
                                 <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>
@@ -163,7 +163,7 @@
             </div>
             <div style="background: var(--bg-muted); padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; margin-bottom: 15px;">
                 <span>Estimasi Total Pembukuan:</span>
-                <strong style="color: var(--accent);" id="previewTotal">Rp 0</strong>
+                <strong style="color: var(--primary);" id="previewTotal">Rp 0</strong>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
@@ -234,13 +234,31 @@
     function closeDetailModal() { document.getElementById('modalDetailStok').classList.remove('flex'); }
 
     async function openDetailModal(id) {
-        try {
-            const res = await fetch(`/stok-atk/${id}`);
-            const data = await res.json();
-            if (!data.success) return Swal.fire('Error', data.message, 'error');
+        // URL detail harus lewat named route 'admin.stok-atk.show' (= /admin/stok-atk/{id}).
+        // Sebelumnya fetch('/stok-atk/${id}') tanpa prefix 'admin' sehingga 404.
+        const detailUrl = @json(route('admin.stok-atk.show', ['id' => '__ID__']));
+        const url = detailUrl.replace('__ID__', encodeURIComponent(id));
 
-            const s = data.data;
-            document.getElementById('detailStokContent').innerHTML = `
+        let res;
+        try {
+            res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        } catch (e) {
+            Swal.fire('Error', 'Gagal menghubungi server: ' + e.message, 'error');
+            return;
+        }
+
+        if (!res.ok) {
+            let msg = 'HTTP ' + res.status + ' ' + res.statusText;
+            try { const j = await res.json(); if (j && j.message) msg = j.message; } catch (e) {}
+            Swal.fire('Error', 'Gagal memuat detail transaksi. ' + msg, 'error');
+            return;
+        }
+
+        const data = await res.json();
+        if (!data.success) return Swal.fire('Error', data.message, 'error');
+
+        const s = data.data;
+        document.getElementById('detailStokContent').innerHTML = `
                 <div style="background:var(--bg-muted); padding: 15px; border-radius: 8px; margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div style="grid-column: 1 / -1;"><strong>Jenis:</strong> <span class="tag t-active">${s.jenis_transaksi}</span></div>
                     <div style="grid-column: 1 / -1;"><strong>Barang:</strong> ${s.atk ? s.atk.nama_atk : '-'}</div>
@@ -258,8 +276,7 @@
                     <p><strong>Keterangan:</strong><br>${s.keterangan || '-'}</p>
                 </div>
             `;
-            document.getElementById('modalDetailStok').classList.add('flex');
-        } catch (e) { Swal.fire('Error', 'Gagal memuat detail transaksi.', 'error'); }
+        document.getElementById('modalDetailStok').classList.add('flex');
     }
 
     async function handleStokSubmit(e) {
@@ -272,7 +289,7 @@
         };
 
         try {
-            const res = await fetch('/admin/stok-atk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const res = await fetch(@json(route('admin.stok-atk.store')), { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
             const data = await res.json();
             if (data.success) location.reload();
             else Swal.fire('Gagal', data.message, 'error');

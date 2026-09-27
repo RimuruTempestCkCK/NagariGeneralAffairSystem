@@ -14,7 +14,7 @@
 </section>
 
 <!-- Stats Grid -->
-<div class="grid kpi-grid" style="margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+<div class="grid kpi-grid grid--kpi">
     <!-- Master ATK -->
     <div class="card" style="padding:20px;">
         <span class="eyebrow">Master ATK</span>
@@ -56,7 +56,7 @@
 </div>
 
 <!-- Charts Grid -->
-<div class="grid" style="margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+<div class="grid grid--charts">
     <!-- Chart A: Status Permintaan ATK -->
     <div class="card" style="padding:20px;">
         <div class="card-head">
@@ -108,6 +108,7 @@
         </div>
         <a class="card-action" href="{{ route("admin.permintaan-atk.index") }}">Semua Transaksi &rarr;</a>
     </div>
+    <div class="table-scroll">
     <table class="table">
         <thead>
             <tr>
@@ -142,6 +143,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 </section>
 @endsection
 

@@ -1,7 +1,7 @@
 <aside class="d-sidebar">
     <div class="brand">
         <div class="brand-logo" style="background: transparent; border: none; box-shadow: none; width: auto; height: auto; padding: 0;">
-            <img src="{{ asset('images/bank-nagari-logo.svg') }}" style="height:40px; width:auto;" alt="Bank Nagari">
+            <img src="{{ asset('brand/bank-nagari-logo.svg') }}" style="height:40px; width:auto;" alt="Bank Nagari">
         </div>
     </div>
 

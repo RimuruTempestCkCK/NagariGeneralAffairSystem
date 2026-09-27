@@ -24,3 +24,8 @@ Homestead.yaml
 Thumbs.db
 
 /templete/
+
+# Credential hasil catatan manual - tidak boleh masuk repo.
+# Sumber credential development ada di database/seeders/UserSeeder.php.
+akun*.txt
+*.credential

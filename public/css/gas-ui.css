@@ -1,0 +1,335 @@
+/* ==========================================================================
+   GAS - UI Design System Layer
+   Additive override for resources/adminator_templete/style.css. Light mode only.
+
+   Purpose: one consistent button + action-icon standard across every GAS page,
+   built on top of Adminator's own design tokens (--primary, --danger, --info,
+   --success, --bg-hover, --t-muted, ...). Nothing here invents a new look or a
+   new colour: every value reuses a token Adminator already ships, so the
+   result still reads as Adminator.
+
+   Loaded AFTER style.css so equal-specificity rules win on source order, and
+   AFTER gas-responsive.css so the responsive tiers stay authoritative for
+   width/flex behaviour on filters and tables.
+
+   What this file replaces (inline styles that made buttons look different
+   from page to page):
+     style="padding: 5px 15px"                     -> .btn--filter
+     style="padding: 2px 8px; font-size: 12px"     -> .btn--xs
+     style="padding: 4px 8px"                      -> .btn--xs
+     style="background:#28a745 / #dc3545 / #2c3e50" -> .btn--success/.btn--danger/.btn--secondary
+     style="color: var(--danger) / var(--success)"  -> .act--delete / .act--approve
+     style="color: var(--accent)"                   -> .act--* (--accent is not a real token)
+     style="margin-right: 5px / 10px" on button rows -> .btn-group
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. BUTTON HEIGHT / RADIUS / PADDING - deterministic sizing
+
+   Adminator's .btn derives its height from padding + line-height, so any
+   inline padding override produced a different height on every page. The size
+   variants below pin an explicit min-height so a given variant always renders
+   at the same height regardless of which page uses it.
+
+   min-height is used (not height) so a long label can still grow the button
+   instead of being clipped.
+   -------------------------------------------------------------------------- */
+.btn {
+    min-height: 36px;
+}
+
+.btn--sm {
+    min-height: 30px;
+}
+
+.btn--xs {
+    font-size: 11px;
+    gap: 5px;
+    min-height: 26px;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+/* The recurring "Filter" submit button used to carry padding:5px 15px on ten
+   separate pages. One class keeps them all identical. */
+.btn--filter {
+    font-size: 12.5px;
+    min-height: 30px;
+    padding: 5px 14px;
+}
+
+/* Reset link rendered as a ghost button (laporan pages) uses the same height
+   as its sibling .btn--filter so the pair lines up. */
+.btn--reset {
+    font-size: 12.5px;
+    min-height: 30px;
+    padding: 5px 14px;
+    text-decoration: none;
+}
+
+/* Full-width button. Replaces style="width: 100%" on the scan-page submit and
+   print label. flex-basis on a flex child is needed too, otherwise
+   width:100% resolves against the content box and the button still shrinks. */
+.btn--block {
+    display: flex;
+    flex: 1 1 100%;
+    width: 100%;
+    text-decoration: none;
+}
+
+/* Icon-only button: square hit area, same on every page. */
+.btn--icon {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    min-height: 28px;
+    min-width: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   2. ICON ALIGNMENT / GAP
+
+   Adminator already sizes .btn svg (14px) and .btn--icon svg (13px). These
+   rules only guarantee the icon never stretches and never sits on a different
+   baseline than its label.
+   -------------------------------------------------------------------------- */
+.btn > svg,
+.btn > svg + span {
+    flex: 0 0 auto;
+}
+
+.btn > svg {
+    height: 14px;
+    width: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   3. HOVER / FOCUS / DISABLED - one behaviour for every button
+
+   Adminator defines hover per colour variant but ships no focus-visible ring
+   and no disabled state, so keyboard focus was invisible and disabled buttons
+   still looked clickable.
+   -------------------------------------------------------------------------- */
+.btn:focus-visible,
+.btn--icon:focus-visible,
+.btn-group > .btn:focus-visible,
+a.btn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[disabled],
+.btn[aria-disabled="true"],
+.btn--icon:disabled,
+.btn--icon[disabled] {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.btn:disabled:hover,
+.btn[disabled]:hover {
+    transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   4. ACTION ICON SYSTEM (kolom "Aksi")
+
+   One icon standard for the whole application:
+     - container: .btn--icon, 28x28, radius 6px (from Adminator)
+     - icon:      13px stroke icon (from Adminator)
+     - colour:    by meaning, expressed as a modifier class instead of an
+                  inline style
+     - hover:     matching *-soft background, same hue
+
+   Meaning map (semantic variants, deliberately limited - no extra colours):
+     view/detail   neutral      read-only
+     edit/submit   primary      modifies data
+     delete        danger       destructive
+     reject        danger       destructive
+     approve       success      grants
+     download      success      produces a file
+     set-jurnal    info         bookkeeping step
+     print         neutral      read-only
+   -------------------------------------------------------------------------- */
+.act--view,
+.act--print {
+    color: var(--t-muted);
+}
+
+.act--edit,
+.act--submit {
+    color: var(--primary);
+}
+
+.act--delete,
+.act--reject {
+    color: var(--danger);
+}
+
+.act--approve,
+.act--download {
+    color: var(--success);
+}
+
+.act--set {
+    color: var(--info);
+}
+
+/* Hover keeps the same hue and swaps in the matching soft background, which is
+   how Adminator's own soft-* button variants behave. */
+.act--view:hover,
+.act--print:hover {
+    background: var(--bg-hover);
+    color: var(--t-base);
+}
+
+.act--edit:hover,
+.act--submit:hover {
+    background: var(--primary-soft);
+    color: var(--primary);
+}
+
+.act--delete:hover,
+.act--reject:hover {
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+.act--approve:hover,
+.act--download:hover {
+    background: var(--success-soft);
+    color: var(--success);
+}
+
+.act--set:hover {
+    background: var(--info-soft);
+    color: var(--info);
+}
+
+/* Consistent spacing between consecutive action icons. Adminator ships
+   gap:2px on .data-cell-actions, which is tight enough to read as a cluster;
+   4px keeps the targets visually separate without widening the column. */
+.data-cell-actions {
+    gap: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   5. BUTTON GROUP - replaces margin-right/margin-left hacks
+
+   Used for the Excel / PDF / Print row on the report pages and for the
+   header action rows, so the gap is identical everywhere.
+   -------------------------------------------------------------------------- */
+.btn-group {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btn-group--end {
+    justify-content: flex-end;
+}
+
+/* --------------------------------------------------------------------------
+   6. MODAL CLOSE BUTTON
+
+   Two modal close buttons shipped with no class at all and relied on a raw
+   inline style block, so they did not match the rest of the UI. One class
+   gives them the same size, alignment and focus ring as every other control.
+   -------------------------------------------------------------------------- */
+.modal-close {
+    align-items: center;
+    background: none;
+    border: 0;
+    border-radius: 6px;
+    color: var(--t-muted);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 20px;
+    height: 30px;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    transition: background 0.14s, color 0.14s;
+    width: 30px;
+}
+
+.modal-close:hover {
+    background: var(--bg-hover);
+    color: var(--t-base);
+}
+
+.modal-close:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   7. TEXT LINK USED AS AN ACTION
+
+   Several views styled a plain <a> with var(--accent). --accent is not a
+   token Adminator ships, so color:var(--accent) is invalid at computed-value
+   time and silently fell back to the inherited colour - which is why links
+   looked different from page to page. .link-action pins them to --primary.
+   -------------------------------------------------------------------------- */
+.link-action {
+    color: var(--primary);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.link-action:hover {
+    color: var(--primary-dark, var(--primary));
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   7b. DROPDOWN ITEM RENDERED AS <button>
+
+   The logout entry is a <form> submit, so the browser's default button
+   styling had to be suppressed inline - and that inline block also overrode
+   Adminator's .dd-menu-item padding (10px 18px -> 10px 15px) and gap
+   (12px -> 10px), so it did not line up with the other dropdown items.
+   This class resets only the button defaults and leaves Adminator's own
+   padding/gap/flex in charge.
+   -------------------------------------------------------------------------- */
+.dd-menu-btn {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    width: 100%;
+}
+
+.dd-menu-btn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+}
+
+/* Login submit button: the 15px offset used to be an inline style, which is
+   what made the auth screen's spacing drift away from the rest of the app. */
+.auth-submit {
+    margin-top: 15px;
+}
+
+/* --------------------------------------------------------------------------
+   8. RESPONSIVE SAFETY (does not fight gas-responsive.css)
+
+   gas-responsive.css owns width/flex for filters and tables and is loaded
+   first; these rules only stop buttons from being clipped or overflowing on
+   the narrowest phones.
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+    .btn-group {
+        width: 100%;
+    }
+
+    .btn-group > .btn {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}

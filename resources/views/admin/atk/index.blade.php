@@ -30,7 +30,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Data ATK</h2>
         </div>
-        <form action="{{ route('admin.atk.index') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
+        <form action="{{ route('admin.atk.index') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari kode/nama ATK..." style="width: 200px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <select name="jenis_atk" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Jenis</option>
@@ -43,9 +43,9 @@
                 <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
                 <option value="Nonaktif" {{ request('status') == 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
             </select>
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary btn--filter">Filter</button>
             @if(request()->anyFilled(['search', 'jenis_atk', 'status']))
-                <a href="{{ route('admin.atk.index') }}" style="color: var(--t-muted); font-size: 14px;">Reset</a>
+                <a href="{{ route('admin.atk.index') }}" class="btn btn--ghost btn--reset">Reset</a>
             @endif
         </form>
     </div>
@@ -81,17 +81,17 @@
                         </td>
                         <td style="text-align: right;">
                             <div class="data-cell-actions" style="justify-content: flex-end;">
-                                <button type="button" onclick="showDetailModal({{ $item->id }})" class="btn--icon" aria-label="View" title="Lihat Detail">
+                                <button type="button" onclick="showDetailModal({{ $item->id }})" class="btn--icon act--view" aria-label="View" title="Lihat Detail">
                                     <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 </button>
-                                <a href="{{ route('admin.atk.print-qr', $item->id) }}" target="_blank" class="btn--icon" title="Cetak QR Code">
+                                <a href="{{ route('admin.atk.print-qr', $item->id) }}" target="_blank" class="btn--icon act--print" title="Cetak QR Code">
                                     <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                                 </a>
                                 @if(Auth::user()->role === 'admin')
-                                    <button type="button" onclick="openEditModal({{ $item->id }})" class="btn--icon" aria-label="Edit" title="Edit ATK">
+                                    <button type="button" onclick="openEditModal({{ $item->id }})" class="btn--icon act--edit" aria-label="Edit" title="Edit ATK">
                                         <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
                                     </button>
-                                    <button type="button" onclick="confirmDelete({{ $item->id }}, '{{ $item->nama_atk }}')" class="btn--icon" aria-label="Delete" title="Hapus ATK">
+                                    <button type="button" onclick="confirmDelete({{ $item->id }}, '{{ $item->nama_atk }}')" class="btn--icon act--delete" aria-label="Delete" title="Hapus ATK">
                                         <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                                     </button>
                                 @endif
@@ -216,7 +216,21 @@
     </div>
 </div>
 
+@php
+    $atkRoutes = [
+        'show'    => route('admin.atk.show', ['id' => '__ID__']),
+        'store'   => route('admin.atk.store'),
+        'update'  => route('admin.atk.update', ['id' => '__ID__']),
+        'destroy' => route('admin.atk.destroy', ['id' => '__ID__']),
+    ];
+@endphp
 <script>
+    const ATK_ROUTES = @json($atkRoutes);
+
+    function atkUrl(key, id) {
+        return ATK_ROUTES[key].replace('__ID__', id);
+    }
+
     function toggleSelectAll(source) {
         let checkboxes = document.querySelectorAll('.row-checkbox');
         for(let i=0, n=checkboxes.length;i<n;i++) {
@@ -250,7 +264,7 @@
     }
 
     function openEditModal(id) {
-        fetch(`/atk/${id}`)
+        fetch(atkUrl('show', id))
             .then(res => res.json())
             .then(res => {
                 if (res.success) {
@@ -276,7 +290,7 @@
         e.preventDefault();
         const id = document.getElementById('atk-id').value;
         const isEdit = !!id;
-        const url = isEdit ? `/atk/${id}` : '/atk';
+        const url = isEdit ? atkUrl('update', id) : ATK_ROUTES.store;
         const method = isEdit ? 'PUT' : 'POST';
 
         const payload = {
@@ -315,7 +329,7 @@
     }
 
     function showDetailModal(id) {
-        fetch(`/atk/${id}`)
+        fetch(atkUrl('show', id))
             .then(res => res.json())
             .then(res => {
                 if (res.success) {
@@ -346,7 +360,7 @@
             confirmButtonText: 'Ya, Hapus!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/atk/${id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                fetch(atkUrl('destroy', id), { method: 'DELETE', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                 .then(res => res.json())
                 .then(res => {
                     if (res.success) location.reload();

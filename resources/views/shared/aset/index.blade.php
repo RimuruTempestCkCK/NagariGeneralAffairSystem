@@ -12,9 +12,9 @@
             <h2 class="card-title">Manajemen Aset Perusahaan</h2>
         </div>
         <div class="card-action">
-            <form action="{{ route(Auth::user()->role . '.aset.index') }}" method="GET" style="display:inline-block; margin-right: 15px;">
+            <form action="{{ route(Auth::user()->role . '.aset.index') }}" method="GET" class="filter-bar">
                 <input type="text" name="search" value="{{ request('search') }}" class="input" style="width:250px; display:inline-block; padding: 6px 10px; margin:0;" placeholder="Cari Sertifikat / Cabang...">
-                <button type="submit" class="btn btn--primary" style="padding: 6px 12px; margin-left: 5px;">Cari</button>
+                <button type="submit" class="btn btn--primary btn--filter">Cari</button>
             </form>
 
             @if(Auth::user()->role === 'admin')
@@ -25,6 +25,7 @@
         </div>
     </div>
     
+    <div class="table-scroll">
     <table class="table">
         <thead>
             <tr>
@@ -58,10 +59,10 @@
                     <span class="tag {{ $statusClass }}">{{ $aset->status_sertifikat }}</span>
                 </td>
                 <td style="text-align:right; white-space: nowrap;">
-                    <button class="btn btn--ghost" style="padding: 4px 8px;" onclick="openDetailModal({{ $aset->id }})">Detail</button>
+                    <button class="btn btn--ghost btn--xs" onclick="openDetailModal({{ $aset->id }})">Detail</button>
                     @if(Auth::user()->role === 'admin')
-                    <button class="btn btn--ghost" style="padding: 4px 8px;" onclick="openFormModal({{ $aset->id }})">Edit</button>
-                    <button class="btn btn--ghost" style="padding: 4px 8px; color: #e74c3c;" onclick="deleteData({{ $aset->id }}, '{{ $aset->nomor_sertifikat }}')">Hapus</button>
+                    <button class="btn btn--ghost btn--xs" onclick="openFormModal({{ $aset->id }})">Edit</button>
+                    <button class="btn btn--outline-danger btn--xs" onclick="deleteData({{ $aset->id }}, '{{ $aset->nomor_sertifikat }}')">Hapus</button>
                     @endif
                 </td>
             </tr>
@@ -72,6 +73,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     <div style="padding: 15px;">
         {{ $asets->links() }}
     </div>
@@ -82,7 +84,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3 id="modalFormTitle">Tambah Aset</h3>
-            <button onclick="closeFormModal()" style="background:none; border:none; color:inherit; font-size: 20px; cursor: pointer;">&times;</button>
+            <button type="button" class="modal-close" onclick="closeFormModal()" aria-label="Tutup modal">&times;</button>
         </div>
         <form id="formData" onsubmit="handleFormSubmit(event)" enctype="multipart/form-data">
             <input type="hidden" id="aset_id" name="id">
@@ -140,7 +142,7 @@
     <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header">
             <h3>Detail Aset</h3>
-            <button onclick="closeDetailModal()" style="background:none; border:none; color:inherit; font-size: 20px; cursor: pointer;">&times;</button>
+            <button type="button" class="modal-close" onclick="closeDetailModal()" aria-label="Tutup modal">&times;</button>
         </div>
         
         <div id="detailContent" style="font-size: 14px; line-height: 1.6;">
@@ -182,7 +184,7 @@
                         document.getElementById('keterangan').value = p.keterangan || '';
                         
                         if (p.lampiran_url) {
-                            document.getElementById('current_lampiran').innerHTML = `File saat ini: <a href="${p.lampiran_url}" target="_blank" style="color:var(--accent); text-decoration:underline;">Lihat File</a> (Pilih file baru untuk mengganti)`;
+                            document.getElementById('current_lampiran').innerHTML = `File saat ini: <a href="${p.lampiran_url}" target="_blank" style="color:var(--primary); text-decoration:underline;">Lihat File</a> (Pilih file baru untuk mengganti)`;
                         }
                         
                         document.getElementById('modalForm').classList.add('flex');
@@ -215,7 +217,7 @@
                     else if (p.status_sertifikat === 'Sudah Jatuh Tempo') statusColor = '#e74c3c';
 
                     let fileLink = p.lampiran_url 
-                        ? `<a href="${p.lampiran_url}" target="_blank" style="color:var(--accent); font-weight:bold; text-decoration:underline;">Tampilkan Dokumen</a>`
+                        ? `<a href="${p.lampiran_url}" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:underline;">Tampilkan Dokumen</a>`
                         : '<span style="color:var(--t-muted)">Tidak ada lampiran</span>';
 
                     document.getElementById('detailContent').innerHTML = `

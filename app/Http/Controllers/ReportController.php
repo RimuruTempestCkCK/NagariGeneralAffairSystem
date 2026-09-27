@@ -47,10 +47,15 @@ class ReportController extends Controller
         $lastStok = $atk->stokHistori->where('no_jurnal', '!=', null)->sortByDesc('created_at')->first();
         $lastPakai = $atk->pemakaian->where('no_jurnal_beban', '!=', null)->sortByDesc('tanggal')->first();
         
-        $atk->jurnal_info = [];
-        if ($lastStok) $atk->jurnal_info[] = 'Masuk: ' . $lastStok->no_jurnal;
-        if ($lastPakai) $atk->jurnal_info[] = 'Beban: ' . $lastPakai->no_jurnal_beban;
-        
+        // 'jurnal_info' bukan kolom DB dan tidak punya accessor/cast, sehingga
+        // $atk->jurnal_info[] = ... menulis pada array hasil __get() yang
+        // dikembalikan by-value ("Indirect modification ... has no effect").
+        // Susun pada array lokal lalu assign utuh sekali.
+        $jurnalInfo = [];
+        if ($lastStok) $jurnalInfo[] = 'Masuk: ' . $lastStok->no_jurnal;
+        if ($lastPakai) $jurnalInfo[] = 'Beban: ' . $lastPakai->no_jurnal_beban;
+        $atk->jurnal_info = $jurnalInfo;
+
         return $atk;
     }
 
@@ -72,7 +77,7 @@ class ReportController extends Controller
         ]);
 
         if ($request->filled('search')) {
-            $query->where('plat_nomor', 'like', '%' . $request->search . '%')
+            $query->where('nomor_kendaraan', 'like', '%' . $request->search . '%')
                   ->orWhere('jenis_kendaraan', 'like', '%' . $request->search . '%');
         }
 
@@ -228,7 +233,7 @@ class ReportController extends Controller
             fputcsv($file, ['Plat Nomor', 'Jenis Kendaraan', 'Jarak Tempuh', 'Biaya BBM (Rp)', 'Biaya Pemeliharaan (Rp)', 'Status']);
             foreach ($kendaraans as $k) {
                 fputcsv($file, [
-                    $k->plat_nomor,
+                    $k->nomor_kendaraan,
                     $k->jenis_kendaraan,
                     $k->total_jarak,
                     $k->total_bbm,

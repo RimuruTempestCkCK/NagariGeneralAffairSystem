@@ -24,7 +24,7 @@
         <tbody>
             @foreach($kendaraans as $k)
             <tr>
-                <td>{{ $k->plat_nomor }}</td>
+                <td>{{ $k->nomor_kendaraan }}</td>
                 <td>{{ $k->jenis_kendaraan }}</td>
                 <td class="text-right">{{ number_format($k->total_jarak, 0, ',', '.') }} Km</td>
                 <td class="text-right">Rp {{ number_format($k->total_bbm, 0, ',', '.') }}</td>

@@ -58,7 +58,7 @@
                 <div style="background: var(--bg-muted); padding: 20px; border-radius: 8px; border: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <div>
                         <span style="font-size: 11px; text-transform: uppercase; color: var(--t-muted); font-weight: bold;">Kode ATK</span>
-                        <h2 id="res-kode" style="margin: 5px 0 0 0; font-size: 24px; color: var(--accent);"></h2>
+                        <h2 id="res-kode" style="margin: 5px 0 0 0; font-size: 24px; color: var(--primary);"></h2>
                     </div>
                     <span id="res-status" class="tag" style="font-size: 14px;"></span>
                 </div>
@@ -96,7 +96,7 @@
 
                 @if(Auth::user()->role === 'admin')
                 <div style="margin-top: 20px;">
-                    <a id="res-print-link" href="#" target="_blank" class="btn btn--primary" style="width: 100%; text-align: center;">
+                    <a id="res-print-link" href="#" target="_blank" class="btn btn--primary btn--block">
                         Cetak Label QR
                     </a>
                 </div>
@@ -117,7 +117,7 @@
                             <label class="form-label">Keperluan (Opsional)</label>
                             <textarea id="pemakaian-keperluan" class="textarea" rows="2" placeholder="Keperluan..."></textarea>
                         </div>
-                        <button type="submit" class="btn btn--primary" style="width: 100%; text-align: center; justify-content: center;">
+                        <button type="submit" class="btn btn--primary btn--block">
                             Submit Pemakaian
                         </button>
                     </form>

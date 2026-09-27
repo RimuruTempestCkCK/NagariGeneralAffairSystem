@@ -8,10 +8,11 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
     <!-- Adminator Scripts -->
-    <script defer="defer" src="{{ asset('adminator_templete/runtime.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator_templete/vendors.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator_templete/2026.js') }}"></script>
-    <link href="{{ asset('adminator_templete/style.css') }}" rel="stylesheet">
+    <script defer="defer" src="{{ asset('adminator_templete/runtime.js?v=' . time()) }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/vendors.js?v=' . time()) }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/2026.js?v=' . time()) }}"></script>
+    <link href="{{ asset('adminator_templete/style.css?v=' . time()) }}" rel="stylesheet">
+<link href="{{ asset('css/gas-ui.css?v=' . time()) }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -88,7 +89,7 @@
     <div class="auth-shell">
         <main class="auth-main">
             <div class="login-logo">
-                <img src="{{ asset('images/bank-nagari-logo.svg') }}" alt="Bank Nagari">
+                <img src="{{ asset('brand/bank-nagari-logo.svg') }}" alt="Bank Nagari">
             </div>
             
             <div class="auth-card">
@@ -128,7 +129,7 @@
                         @enderror
                     </div>
                     
-                    <button class="btn btn--primary auth-submit" type="submit" style="margin-top: 15px; width: 100%;">
+                    <button class="btn btn--primary btn--block auth-submit" type="submit">
                         Sign In 
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
                     </button>

@@ -48,7 +48,7 @@ class CheckDocumentExpiry extends Command
                 NotificationService::notifyAdminDocumentExpiry(
                     'STNK_EXPIRED',
                     'STNK Kendaraan Kadaluarsa',
-                    "STNK kendaraan {$k->plat_nomor} telah kadaluarsa sejak " . abs($diffDays) . " hari lalu.",
+                    "STNK kendaraan {$k->nomor_kendaraan} telah kadaluarsa sejak " . abs($diffDays) . " hari lalu.",
                     route('kendaraan.index'),
                     $k->id,
                     $uniqueKey
@@ -59,7 +59,7 @@ class CheckDocumentExpiry extends Command
                 NotificationService::notifyAdminDocumentExpiry(
                     'STNK_EXPIRING',
                     'STNK Kendaraan Akan Jatuh Tempo',
-                    "STNK kendaraan {$k->plat_nomor} akan jatuh tempo dalam {$diffDays} hari.",
+                    "STNK kendaraan {$k->nomor_kendaraan} akan jatuh tempo dalam {$diffDays} hari.",
                     route('kendaraan.index'),
                     $k->id,
                     $uniqueKey

@@ -12,9 +12,9 @@
         <p class="hero-sub">Daftar Kepemilikan Aset (Kondisi Saat Ini: {{ \Carbon\Carbon::now()->format('d F Y') }})</p>
     </div>
     <div class="hero-actions">
-        <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn--primary" style="background: #28a745; border-color: #28a745; margin-right: 5px;">Excel</a>
-        <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn--primary" style="background: #dc3545; border-color: #dc3545; margin-right: 5px;">PDF</a>
-        <button class="btn btn--primary" onclick="window.print()" style="background: #2c3e50; border-color: #2c3e50;">
+        <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn--success">Excel</a>
+        <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn--danger">PDF</a>
+        <button class="btn btn--secondary" onclick="window.print()">
             Print Laporan
         </button>
     </div>
@@ -27,7 +27,7 @@
             <h2 class="card-title">Kepemilikan Aset</h2>
         </div>
         
-        <form action="{{ route('admin.laporan.aset') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
+        <form action="{{ route('admin.laporan.aset') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari aset..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 200px;">
             <select name="status" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Status</option>
@@ -35,8 +35,8 @@
                 <option value="Akan Jatuh Tempo" {{ request('status') == 'Akan Jatuh Tempo' ? 'selected' : '' }}>Akan Jatuh Tempo</option>
                 <option value="Sudah Jatuh Tempo" {{ request('status') == 'Sudah Jatuh Tempo' ? 'selected' : '' }}>Sudah Jatuh Tempo</option>
             </select>
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
-            <a href="{{ route('admin.laporan.aset') }}" class="btn btn--ghost" style="padding: 5px 15px; text-decoration: none;">Reset</a>
+            <button type="submit" class="btn btn--primary btn--filter">Filter</button>
+            <a href="{{ route('admin.laporan.aset') }}" class="btn btn--ghost btn--reset">Reset</a>
         </form>
     </div>
     
@@ -95,7 +95,7 @@
             <tfoot>
                 <tr style="background: var(--bg-muted); font-weight: bold;">
                     <td colspan="3" style="text-align:right; padding: 12px;">TOTAL KESELURUHAN LUAS TANAH</td>
-                    <td style="text-align:right; color: var(--accent);">{{ number_format($totalLuas, 2, ',', '.') }} m&sup2;</td>
+                    <td style="text-align:right; color: var(--primary);">{{ number_format($totalLuas, 2, ',', '.') }} m&sup2;</td>
                     <td colspan="3"></td>
                 </tr>
             </tfoot>

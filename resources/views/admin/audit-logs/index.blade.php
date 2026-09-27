@@ -17,7 +17,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Data Audit Log</h2>
         </div>
-        <form action="{{ route('admin.audit-logs.index') }}" method="GET" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <form action="{{ route('admin.audit-logs.index') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <select name="user_id" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua User</option>
                 @foreach($users as $user)
@@ -32,9 +32,9 @@
                 <option value="Kendaraan" {{ request('module') == 'Kendaraan' ? 'selected' : '' }}>Kendaraan</option>
                 <option value="PO" {{ request('module') == 'PO' ? 'selected' : '' }}>PO</option>
             </select>
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary btn--filter">Filter</button>
             @if(request()->anyFilled(['user_id', 'module']))
-                <a href="{{ route('admin.audit-logs.index') }}" style="color: var(--t-muted); font-size: 14px;">Reset</a>
+                <a href="{{ route('admin.audit-logs.index') }}" class="btn btn--ghost btn--reset">Reset</a>
             @endif
         </form>
     </div>
@@ -63,7 +63,7 @@
                     <td>{{ $log->ip_address }}</td>
                     <td>
                         <div class="data-cell-actions">
-                            <button type="button" onclick="showDetailModal({{ $log->id }})" class="btn--icon" title="Lihat Detail">
+                            <button type="button" onclick="showDetailModal({{ $log->id }})" class="btn--icon act--view" title="Lihat Detail">
                                 <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                         </div>

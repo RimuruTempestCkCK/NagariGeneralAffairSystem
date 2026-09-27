@@ -12,9 +12,9 @@
         <p class="hero-sub">Periode: {{ request('start_date') ? date('d M Y', strtotime(request('start_date'))) : 'Awal' }} s.d {{ request('end_date') ? date('d M Y', strtotime(request('end_date'))) : 'Sekarang' }}</p>
     </div>
     <div class="hero-actions">
-        <a href="{{ route('admin.laporan.kendaraan.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn--primary" style="background: #28a745; border-color: #28a745; margin-right: 5px;">Excel</a>
-        <a href="{{ route('admin.laporan.kendaraan.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn--primary" style="background: #dc3545; border-color: #dc3545; margin-right: 5px;">PDF</a>
-        <button class="btn btn--primary" onclick="window.print()" style="background: #2c3e50; border-color: #2c3e50;">
+        <a href="{{ route('admin.laporan.kendaraan.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn--success">Excel</a>
+        <a href="{{ route('admin.laporan.kendaraan.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn--danger">PDF</a>
+        <button class="btn btn--secondary" onclick="window.print()">
             Print Laporan
         </button>
     </div>
@@ -27,12 +27,12 @@
             <h2 class="card-title">Eksploitasi Kendaraan</h2>
         </div>
         
-        <form action="{{ route('admin.laporan.kendaraan') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
+        <form action="{{ route('admin.laporan.kendaraan') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="date" name="start_date" value="{{ request('start_date') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="date" name="end_date" value="{{ request('end_date') }}" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 200px;">
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
-            <a href="{{ route('admin.laporan.kendaraan') }}" class="btn btn--ghost" style="padding: 5px 15px; text-decoration: none;">Reset</a>
+            <button type="submit" class="btn btn--primary btn--filter">Filter</button>
+            <a href="{{ route('admin.laporan.kendaraan') }}" class="btn btn--ghost btn--reset">Reset</a>
         </form>
     </div>
     
@@ -70,7 +70,7 @@
                     $totalEksploitasi = $k->total_bbm + $k->total_pemeliharaan;
                 @endphp
                 <tr>
-                    <td><strong>{{ $k->plat_nomor }}</strong></td>
+                    <td><strong>{{ $k->nomor_kendaraan }}</strong></td>
                     <td class="cell-name">{{ $k->jenis_kendaraan }}</td>
                     <td style="text-align:right; font-weight: bold;">{{ number_format($k->total_jarak, 0, ',', '.') }}</td>
                     <td style="text-align:right">{{ number_format($k->total_bbm, 0, ',', '.') }}</td>

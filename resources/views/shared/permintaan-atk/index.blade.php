@@ -22,7 +22,7 @@
             <span class="eyebrow">Daftar PO</span>
             <h2 class="card-title">Purchase Order ATK</h2>
         </div>
-        <form method="GET" action="{{ route(Auth::user()->role . '.permintaan-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.permintaan-atk.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. PO / Unit..." style="width: 220px;">
             <select name="status" onchange="this.form.submit()" class="select" style="width: 150px;">
                 <option value="">Semua Status</option>
@@ -31,7 +31,7 @@
                 <option value="APPROVED" {{ request('status') === 'APPROVED' ? 'selected' : '' }}>APPROVED</option>
                 <option value="REJECTED" {{ request('status') === 'REJECTED' ? 'selected' : '' }}>REJECTED</option>
             </select>
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary btn--filter">Filter</button>
         </form>
     </div>
 
@@ -71,27 +71,27 @@
                     </td>
                     <td style="text-align: right;">
                         <div class="data-cell-actions" style="justify-content: flex-end;">
-                            <button type="button" onclick="openDetailModal({{ $p->id }})" class="btn--icon" title="Detail">
+                            <button type="button" onclick="openDetailModal({{ $p->id }})" class="btn--icon act--view" title="Detail">
                                 <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
 
                             @if($p->status === 'DRAFT' && (Auth::user()->role === 'staff' || Auth::user()->role === 'admin'))
-                                <button type="button" onclick="submitPo({{ $p->id }}, '{{ $p->nomor_po }}')" class="btn--icon" style="color:var(--success)" title="Submit">
+                                <button type="button" onclick="submitPo({{ $p->id }}, '{{ $p->nomor_po }}')" class="btn--icon act--submit" title="Submit">
                                     <svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
                                 </button>
-                                <button type="button" onclick="openEditModal({{ $p->id }})" class="btn--icon" title="Edit">
+                                <button type="button" onclick="openEditModal({{ $p->id }})" class="btn--icon act--edit" title="Edit">
                                     <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
                                 </button>
-                                <button type="button" onclick="deletePo({{ $p->id }}, '{{ $p->nomor_po }}')" class="btn--icon" style="color:var(--danger)" title="Hapus">
+                                <button type="button" onclick="deletePo({{ $p->id }}, '{{ $p->nomor_po }}')" class="btn--icon act--delete" title="Hapus">
                                     <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                                 </button>
                             @endif
 
                             @if(Auth::user()->role === 'admin' && $p->status === 'PENDING')
-                                <button type="button" onclick="approvePo({{ $p->id }}, '{{ $p->nomor_po }}')" class="btn--icon" style="color:var(--success)" title="Approve">
+                                <button type="button" onclick="approvePo({{ $p->id }}, '{{ $p->nomor_po }}')" class="btn--icon act--approve" title="Approve">
                                     <svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
                                 </button>
-                                <button type="button" onclick="rejectPo({{ $p->id }}, '{{ $p->nomor_po }}')" class="btn--icon" style="color:var(--danger)" title="Reject">
+                                <button type="button" onclick="rejectPo({{ $p->id }}, '{{ $p->nomor_po }}')" class="btn--icon act--delete" title="Reject">
                                     <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
                                 </button>
                             @endif
@@ -165,7 +165,7 @@
             <div class="form-group">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                     <label style="margin: 0;">Daftar Item Barang ATK *</label>
-                    <button type="button" onclick="addItemRow()" class="btn btn--ghost" style="padding: 2px 8px; font-size: 12px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Tambah</button>
+                    <button type="button" onclick="addItemRow()" class="btn btn--ghost btn--xs"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Tambah</button>
                 </div>
                 <div id="itemsContainer" style="max-height: 300px; overflow-y: auto; padding: 15px; border: 1px solid var(--border-soft); border-radius: 8px; background: transparent; display: flex; flex-direction: column; gap: 5px;">
                     <!-- Rows injected via JS -->
@@ -173,7 +173,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
-                <button type="submit" name="submit_action" value="draft" class="btn btn--ghost" style="background:var(--bg-muted);">Simpan Draft</button>
+                <button type="submit" name="submit_action" value="draft" class="btn btn--secondary">Simpan Draft</button>
                 <button type="submit" name="submit_action" value="submit" class="btn btn--primary">Submit Langsung</button>
             </div>
         </form>
@@ -220,7 +220,7 @@
                     <input type="number" name="jumlah_diminta" value="${jumlah}" min="1" required class="input" placeholder="Qty">
                 </div>
                 <span id="satuan_${rowId}" style="width: 70px; font-size: 13px; color: var(--t-muted); font-weight: 500;">Satuan</span>
-                <button type="button" onclick="removeItemRow('${rowId}')" class="btn btn--icon" style="color:var(--danger); background: var(--danger-soft); border-radius: 6px; padding: 6px;">
+                <button type="button" onclick="removeItemRow('${rowId}')" class="btn btn--icon act--delete">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 6L6 18M6 6l12 12"></path></svg>
                 </button>
             </div>

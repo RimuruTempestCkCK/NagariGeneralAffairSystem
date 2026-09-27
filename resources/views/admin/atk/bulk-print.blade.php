@@ -27,7 +27,7 @@
             <div class="qr-wrapper" style="margin-bottom: 10px; display: flex; justify-content: center;">
                 {!! QrCode::format('svg')->size(100)->generate($atk->kode_atk) !!}
             </div>
-            <div class="label-code" style="font-weight: bold; font-size: 16px; margin-bottom: 5px; color: var(--accent);">{{ $atk->kode_atk }}</div>
+            <div class="label-code" style="font-weight: bold; font-size: 16px; margin-bottom: 5px; color: var(--primary);">{{ $atk->kode_atk }}</div>
             <div class="label-name" style="font-size: 13px; color: var(--t-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $atk->nama_atk }}</div>
         </div>
     @endforeach

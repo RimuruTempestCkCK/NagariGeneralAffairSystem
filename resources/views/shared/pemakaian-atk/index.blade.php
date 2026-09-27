@@ -34,9 +34,9 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Riwayat Pemakaian ATK</h2>
         </div>
-        <form method="GET" action="{{ route(Auth::user()->role . '.pemakaian-atk.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.pemakaian-atk.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari Unit / No. Jurnal / ATK..." style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft); width: 250px;">
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Cari</button>
+            <button type="submit" class="btn btn--primary btn--filter">Cari</button>
         </form>
     </div>
 
@@ -75,11 +75,11 @@
                     </td>
                     <td style="text-align: right;">
                         <div class="data-cell-actions" style="justify-content: flex-end;">
-                            <button type="button" onclick="openDetailModal({{ $pem->id }})" class="btn--icon" title="Detail">
+                            <button type="button" onclick="openDetailModal({{ $pem->id }})" class="btn--icon act--view" title="Detail">
                                 <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                             @if(Auth::user()->role === 'admin')
-                                <button type="button" onclick="openJurnalModal({{ $pem->id }}, '{{ $pem->no_jurnal_beban ?? '' }}')" class="btn--icon" style="color: var(--accent);" title="Set Jurnal">
+                                <button type="button" onclick="openJurnalModal({{ $pem->id }}, '{{ $pem->no_jurnal_beban ?? '' }}')" class="btn--icon act--set" title="Set Jurnal">
                                     <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                                 </button>
                             @endif
@@ -250,7 +250,7 @@
                     <div><strong>Total Beban:</strong> <br><strong style="color:var(--danger)">Rp ${parseInt(p.total_beban_biaya).toLocaleString('id-ID')}</strong></div>
                 </div>
                 <div style="background:var(--bg-muted); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                    <p><strong>Jurnal Pembebanan:</strong> <span style="font-family: monospace; color: var(--accent);">${p.no_jurnal_beban || 'Belum Dibukukan'}</span></p>
+                    <p><strong>Jurnal Pembebanan:</strong> <span style="font-family: monospace; color: var(--primary);">${p.no_jurnal_beban || 'Belum Dibukukan'}</span></p>
                     <p><strong>Petugas Input:</strong> ${p.user ? p.user.name : '-'}</p>
                 </div>
                 <div style="background:var(--bg-muted); padding: 15px; border-radius: 8px;">

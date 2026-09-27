@@ -8,10 +8,11 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
     <!-- Adminator Scripts -->
-    <script defer="defer" src="{{ asset('adminator_templete/runtime.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator_templete/vendors.js') }}"></script>
-    <script defer="defer" src="{{ asset('adminator_templete/2026.js') }}"></script>
-    <link href="{{ asset('adminator_templete/style.css') }}" rel="stylesheet">
+    <script defer="defer" src="{{ asset('adminator_templete/runtime.js?v=' . time()) }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/vendors.js?v=' . time()) }}"></script>
+    <script defer="defer" src="{{ asset('adminator_templete/2026.js?v=' . time()) }}"></script>
+    <link href="{{ asset('adminator_templete/style.css?v=' . time()) }}" rel="stylesheet">
+<link href="{{ asset('css/gas-ui.css?v=' . time()) }}" rel="stylesheet">
     
     <style>
         body {

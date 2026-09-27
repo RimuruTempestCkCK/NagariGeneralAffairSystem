@@ -35,7 +35,7 @@
                 <tr style="{{ is_null($notif->read_at) ? 'background-color: rgba(33, 150, 243, 0.05);' : '' }}">
                     <td style="width: 50px; text-align: center;">
                         @if(is_null($notif->read_at))
-                            <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: var(--accent);"></span>
+                            <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: var(--primary);"></span>
                         @else
                             <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: var(--border-soft);"></span>
                         @endif
@@ -46,12 +46,12 @@
                         
                         <div style="margin-top: 8px; display: flex; gap: 15px; font-size: 13px;">
                             @if(!empty($notif->data['url']))
-                                <a href="{{ route(Auth::user()->role . '.notifications.markAndRedirect', $notif->id) }}" style="color: var(--accent); font-weight: 500; text-decoration: none;">Lihat Detail</a>
+                                <a href="{{ route(Auth::user()->role . '.notifications.markAndRedirect', $notif->id) }}" class="link-action">Lihat Detail</a>
                             @endif
                             @if(is_null($notif->read_at))
                                 <form action="{{ route(Auth::user()->role . '.notifications.markAsRead', $notif->id) }}" method="POST" style="margin: 0;">
                                     @csrf
-                                    <button type="submit" style="background: none; border: none; color: var(--t-muted); cursor: pointer; padding: 0; font-family: inherit;">Tandai Dibaca</button>
+                                    <button type="submit" class="btn btn--ghost btn--xs">Tandai Dibaca</button>
                                 </form>
                             @endif
                         </div>

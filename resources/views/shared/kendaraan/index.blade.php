@@ -22,7 +22,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Data Kendaraan</h2>
         </div>
-        <form method="GET" action="{{ route(Auth::user()->role . '.kendaraan.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <form method="GET" action="{{ route(Auth::user()->role . '.kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari Plat Nomor / Jenis..." style="width: 200px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
             <select name="status_kendaraan" onchange="this.form.submit()" class="input" style="padding: 5px; border-radius: 4px; border: 1px solid var(--border-soft);">
                 <option value="">Semua Status</option>
@@ -35,7 +35,7 @@
                 <option value="Servis" {{ request('kondisi') === 'Servis' ? 'selected' : '' }}>Servis</option>
                 <option value="Rusak" {{ request('kondisi') === 'Rusak' ? 'selected' : '' }}>Rusak</option>
             </select>
-            <button type="submit" class="btn btn--primary" style="padding: 5px 15px;">Filter</button>
+            <button type="submit" class="btn btn--primary btn--filter">Filter</button>
         </form>
     </div>
 
@@ -87,13 +87,13 @@
                     </td>
                     <td style="text-align: right;">
                         <div class="data-cell-actions" style="justify-content: flex-end;">
-                            <button type="button" onclick="openDetailModal({{ $k->id }})" class="btn--icon" aria-label="View" title="Detail">
+                            <button type="button" onclick="openDetailModal({{ $k->id }})" class="btn--icon act--view" aria-label="View" title="Detail">
                                 <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
-                            <button type="button" onclick="openFormModal({{ $k->id }})" class="btn--icon" aria-label="Edit" title="Edit">
+                            <button type="button" onclick="openFormModal({{ $k->id }})" class="btn--icon act--edit" aria-label="Edit" title="Edit">
                                 <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
                             </button>
-                            <button type="button" onclick="deleteData({{ $k->id }}, '{{ $k->nomor_kendaraan }}')" class="btn--icon" aria-label="Delete" title="Hapus">
+                            <button type="button" onclick="deleteData({{ $k->id }}, '{{ $k->nomor_kendaraan }}')" class="btn--icon act--delete" aria-label="Delete" title="Hapus">
                                 <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                             </button>
                         </div>

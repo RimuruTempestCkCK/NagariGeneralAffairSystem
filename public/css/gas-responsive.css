@@ -1,0 +1,260 @@
+/* ==========================================================================
+   GAS - Responsive Filter Layer
+   Additive override for adminator_templete/style.css. Light mode only.
+
+   Breakpoints reused from Adminator (no new values):
+     max-width:1100px -> sidebar becomes 72px rail  (tablet tier)
+     max-width:720px  -> sidebar becomes drawer     (mobile tier)
+     max-width:480px  -> small phone
+
+   Loaded after style.css so equal-specificity rules win on source order.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESKTOP (>= 1101px) - base tier
+
+   Root cause of the messy desktop filter, verified in
+   adminator_templete/style.css:
+
+       .card-head{ display:flex; justify-content:space-between; align-items:flex-end }
+       .card-head>:last-child{ flex-shrink:0; padding-bottom:2px }
+
+   The filter form is the last child of .card-head, so it inherited
+   flex-shrink:0 and could never shrink. Combined with the inline
+   width:...px on every control it was pushed against the right card
+   edge, squeezed the title, and could overflow the card.
+
+   Fix: give the filter its own full-width row underneath the title and
+   re-enable shrinking. flex-basis:100% does the work, so the inline
+   width on the controls never has to be overridden and no !important
+   is needed anywhere.
+   -------------------------------------------------------------------------- */
+form.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Adminator declares .input/.select/.textarea with width:100%, so inside a
+   wrapping form every control claimed a full row of its own. Size them to
+   their content here so the desktop filter reads as one tidy toolbar. The
+   tablet/mobile tiers below re-assert flex-basis, so this never fights the
+   stacked layout. Pages that set an inline width keep it - the inline style
+   wins, and flex:0 1 auto still lets those controls shrink. */
+form.filter-bar > .input,
+form.filter-bar > .select,
+form.filter-bar > .textarea {
+    width: auto;
+    min-width: 150px;
+    max-width: 100%;
+    flex: 0 1 auto;
+}
+
+form.filter-bar > .btn,
+form.filter-bar > a {
+    max-width: 100%;
+}
+
+.card-head .card-action {
+    flex-wrap: wrap;
+    max-width: 100%;
+    gap: 8px;
+}
+
+.card-head .card-action > .btn {
+    max-width: 100%;
+}
+
+/* .card-head default-nya nowrap, sehingga flex-basis:100% di bawah hanya
+   akan membuat form filter menyusut di samping title, bukan turun ke baris
+   sendiri. Wrap diaktifkan sejak tier desktop. */
+.card-head {
+    flex-wrap: wrap;
+}
+
+/* Pattern A - the form itself is the last child of .card-head */
+.card-head > form.filter-bar {
+    flex: 1 1 100%;
+}
+
+.card-head > form.filter-bar:last-child {
+    flex-shrink: 1;
+    padding-bottom: 0;
+}
+
+/* Pattern B - the form sits inside .card-action. :has() is required so a
+   plain .card-action link (e.g. the "Semua Transaksi" link on
+   permintaan-atk) keeps sitting on the title row instead of being pushed
+   onto the filter row. */
+.card-head > .card-action:has(> form.filter-bar) {
+    flex: 1 1 100%;
+    flex-shrink: 1;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   2. TABLET (<= 1100px) - covers 1024, 900, 768
+   The filter takes its own full-width row, so the search field can own a
+   whole line while the dropdowns share the next one.
+   A definite flex-basis makes the browser ignore the inline width:...px on
+   the controls, which is why no !important is needed anywhere.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+    .card-head {
+        flex-wrap: wrap;
+    }
+
+    .card-head > form.filter-bar,
+    .card-head .card-action > form.filter-bar {
+        flex: 1 1 100%;
+    }
+
+    .card-head .card-action {
+        flex: 1 1 100%;
+    }
+
+    form.filter-bar > input[type="text"] {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    form.filter-bar > .select {
+        flex: 1 1 calc(50% - 5px);
+        min-width: 0;
+    }
+
+    form.filter-bar > input[type="date"],
+    form.filter-bar > input[type="number"] {
+        flex: 1 1 calc(50% - 5px);
+        min-width: 132px;
+    }
+
+    form.filter-bar > .btn,
+    form.filter-bar > a {
+        flex: 0 0 auto;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   3. MOBILE (<= 720px) - covers 414, 390, 375, 320
+   Everything stacks. Filter and Reset share one line so the form does not
+   grow taller than necessary (120px + 120px + 8px gap fits inside 320px).
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+    .card-head {
+        align-items: stretch;
+    }
+
+    form.filter-bar {
+        gap: 8px;
+    }
+
+    form.filter-bar > input,
+    form.filter-bar > .input,
+    form.filter-bar > .select,
+    form.filter-bar > .textarea {
+        flex: 1 1 100%;
+        min-width: 0;
+        min-height: 40px;
+    }
+
+    form.filter-bar > .btn,
+    form.filter-bar > a {
+        flex: 1 1 auto;
+        justify-content: center;
+        min-width: 120px;
+        min-height: 40px;
+        text-align: center;
+    }
+
+    .card-head .card-action > .btn {
+        flex: 1 1 auto;
+        justify-content: center;
+        min-width: 120px;
+        min-height: 40px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. SMALL PHONE (<= 480px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+    form.filter-bar {
+        gap: 8px;
+    }
+
+    form.filter-bar > .btn,
+    form.filter-bar > a {
+        min-width: 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   5. TABLE / CARD RELATIONSHIP
+   .table-scroll already declares overflow-x:auto, but .table had no
+   min-width, so the scroll container never engaged and the columns were
+   squeezed until the text wrapped per character on small screens.
+   The min-width is applied only at <=1100px so the desktop table keeps its
+   current width:100% behaviour, and because the scroll container is
+   width:100% + overflow-x:auto, the overflow stays confined to it.
+   Declared before the 480px tier on purpose so the narrower value wins.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+    .table-scroll .table {
+        min-width: 680px;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-scroll .table {
+        min-width: 600px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   6. DASHBOARD GRIDS
+
+   These two grids used to carry their layout inline in the view:
+     .grid.kpi-grid  -> repeat(auto-fit, minmax(240px, 1fr))
+     .grid           -> repeat(auto-fit, minmax(320px, 1fr))
+
+   The 320px minimum is the bug: at a 320px viewport the content box is only
+   273px wide (320 minus the 16px page padding on each side), so auto-fit still
+   created a single 320px track, the three chart cards hung 31px past the right
+   edge and the whole dashboard gained a horizontal scrollbar.
+
+   min() is the general fix - it lets the track shrink to the available width
+   instead of insisting on a fixed floor. The <=480px tier below is what the
+   dashboard actually needs, and it is a no-op for 375-480px because auto-fit
+   already collapsed to a single column there (2 x 320px + 20px gap > 448px of
+   content). So the desktop column counts are unchanged.
+   -------------------------------------------------------------------------- */
+.grid--kpi,
+.grid--charts {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.grid--kpi {
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+}
+
+.grid--charts {
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+}
+
+@media (max-width: 480px) {
+    .grid--kpi,
+    .grid--charts {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
