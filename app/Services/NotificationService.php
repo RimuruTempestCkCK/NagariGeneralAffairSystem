@@ -17,7 +17,7 @@ class NotificationService
         $admins = User::where('role', 'admin')->get();
         $title = 'Permintaan ATK Baru';
         $message = "PO {$po->nomor_po} diajukan oleh {$po->user->name}.";
-        $url = route('permintaan-atk.index'); // Admin views all POs here
+        $url = route('admin.permintaan-atk.index'); // Admin views all POs here
 
         foreach ($admins as $admin) {
             $admin->notify(new PoNotification('PO_NEW', $title, $message, $url, $po->id));
@@ -31,7 +31,7 @@ class NotificationService
     {
         $title = 'Permintaan ATK Disetujui';
         $message = "PO {$po->nomor_po} telah disetujui.";
-        $url = route('permintaan-atk.index');
+        $url = route('staff.permintaan-atk.index');
 
         if ($po->user) {
             $po->user->notify(new PoNotification('PO_APPROVED', $title, $message, $url, $po->id));
@@ -47,7 +47,7 @@ class NotificationService
         // The reason is already stored in $po->alasan_reject, we use it directly
         // We will escape it in the view, but safe to store as is
         $message = "PO {$po->nomor_po} ditolak. Alasan: {$po->alasan_reject}";
-        $url = route('permintaan-atk.index');
+        $url = route('staff.permintaan-atk.index');
 
         if ($po->user) {
             $po->user->notify(new PoNotification('PO_REJECTED', $title, $message, $url, $po->id));

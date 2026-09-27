@@ -149,6 +149,10 @@ class AtkController extends Controller
 
     public function printQr($id)
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'staff') {
+            abort(403, 'Unauthorized access.');
+        }
+
         $atk = Atk::findOrFail($id);
         $qrImage = base64_encode(QrCode::format('svg')->size(180)->generate($atk->kode_atk));
 

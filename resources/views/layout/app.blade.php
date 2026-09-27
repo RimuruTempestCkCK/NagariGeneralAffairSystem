@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Adminator - General Affair System')</title>
-    <script>!function(){try{var t=localStorage.getItem("dash26-theme"),e=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.setAttribute("data-theme",t||(e?"dark":"light"))}catch(t){document.documentElement.setAttribute("data-theme","light")}}()</script>
     <script>window.GAS_USER_ROLE = "{{ Auth::check() ? Auth::user()->role : 'staff' }}";</script>
     <script defer="defer" src="{{ asset('adminator_templete/runtime.js?v=' . time()) }}"></script>
     <script defer="defer" src="{{ asset('adminator_templete/vendor-fullcalendar.js?v=' . time()) }}"></script>
@@ -73,8 +72,64 @@
         .modal-header h3 {
             margin: 0;
         }
+        /* Fallback to ensure dropdown appears */
+        .dd-wrap.is-active .dd-menu {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
     </style>
     @stack('styles')
+    <style>
+        /* Mobile Sidebar Backdrop */
+        .drawer-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 90;
+        }
+        body.has-drawer-open .drawer-backdrop {
+            display: block;
+        }
+        /* Ensure sidebar is above backdrop */
+        .d-sidebar {
+            z-index: 100 !important;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var hamburger = document.querySelector('.hamburger');
+            var body = document.body;
+            
+            if (hamburger) {
+                // Create backdrop
+                var backdrop = document.createElement('div');
+                backdrop.className = 'drawer-backdrop';
+                document.body.appendChild(backdrop);
+
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    body.classList.toggle('has-drawer-open');
+                });
+
+                backdrop.addEventListener('click', function() {
+                    body.classList.remove('has-drawer-open');
+                });
+                
+                // Close sidebar when clicking a link inside it on mobile
+                var sidebarLinks = document.querySelectorAll('.d-sidebar a');
+                sidebarLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        if(window.innerWidth <= 720) {
+                            body.classList.remove('has-drawer-open');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 </head>
 <body data-active="@yield('active_menu', 'dashboard')" data-crumbs="@yield('breadcrumbs', 'Dashboard')">
     <div class="shell">
@@ -95,6 +150,27 @@
     </div>
     
     @stack('scripts')
+    
+    <script>
+        // Fix for Adminator Dropdowns (e.g., Profile/Logout)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                const trigger = e.target.closest('[data-dropdown]');
+                if (trigger) {
+                    e.preventDefault();
+                    const wrap = trigger.closest('.dd-wrap');
+                    if (wrap) {
+                        wrap.classList.toggle('is-active');
+                    }
+                } else if (!e.target.closest('.dd-wrap')) {
+                    // Close all if clicked outside
+                    document.querySelectorAll('.dd-wrap.is-active').forEach(function(el) {
+                        el.classList.remove('is-active');
+                    });
+                }
+            });
+        });
+    </script>
     
     <style>
         @media print {

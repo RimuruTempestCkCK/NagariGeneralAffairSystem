@@ -6,10 +6,10 @@
 
 @section('content')
 <div class="px-4 pt-6 no-print">
-    <div class="p-4 bg-white border border-gray-200 rounded-2xl shadow-sm mb-6 dark:border-gray-700 dark:bg-gray-800 flex justify-between items-center">
+    <div class="p-4 bg-white border border-gray-200 rounded-2xl shadow-sm mb-6   flex justify-between items-center">
         <div>
-            <h1 class="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">Cetak QR Code Massal</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cetak beberapa label QR Code secara bersamaan.</p>
+            <h1 class="text-xl font-bold text-gray-900 sm:text-2xl ">Cetak QR Code Massal</h1>
+            <p class="text-sm text-gray-500  mt-1">Cetak beberapa label QR Code secara bersamaan.</p>
         </div>
         <div class="flex gap-3">
             <button class="btn btn--ghost" onclick="window.close()">Tutup</button>

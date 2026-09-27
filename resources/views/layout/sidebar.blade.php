@@ -108,13 +108,15 @@
     </nav>
     @endif
 
-        <nav class="nav-section">
+    @if(Auth::user()->role === 'admin')
+    <nav class="nav-section">
         <div class="nav-label">Sistem</div>
         <a class="nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'is-active' : '' }}" href="{{ route('admin.audit-logs.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             <span>Audit Trail</span>
         </a>
     </nav>
+    @endif
     <div class="sidebar-footer">
         <div class="workspace">
             <div class="workspace-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}</div>

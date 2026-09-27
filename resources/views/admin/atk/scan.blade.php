@@ -109,37 +109,91 @@
 @push('scripts')
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
+    let isLookingUp = false;
+    let html5QrcodeScanner = null;
+
     document.addEventListener('DOMContentLoaded', function () {
         if (typeof Html5QrcodeScanner !== 'undefined') {
-            const scanner = new Html5QrcodeScanner("reader", { 
+            html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
                 fps: 10, 
-                qrbox: { width: 250, height: 250 } 
+                qrbox: { width: 250, height: 250 },
+                rememberLastUsedCamera: true
             });
 
-            scanner.render(onScanSuccess, onScanFailure);
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
             function onScanSuccess(decodedText) {
+                if(isLookingUp) return;
+                
                 let code = decodedText.trim();
                 if (code.includes('/')) {
                     const parts = code.split('/');
                     code = parts[parts.length - 1];
                 }
+                
+                // Pause scanner while looking up
+                if(html5QrcodeScanner) {
+                    html5QrcodeScanner.pause(true);
+                }
+                
                 lookupCode(code);
             }
 
-            function onScanFailure(error) {}
+            function onScanFailure(error) {
+                // Ignore silent background scanning failures
+            }
+        }
+        
+        // USB Scanner support (Enter key on manual input)
+        const manualInput = document.getElementById('manual-code');
+        if(manualInput) {
+            manualInput.addEventListener('keypress', function(e) {
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    lookupCode(this.value);
+                }
+            });
         }
     });
 
+    function resumeScanner() {
+        if(html5QrcodeScanner && html5QrcodeScanner.getState() === 2 /* SCANNING/PAUSED state internal */) {
+            try { html5QrcodeScanner.resume(); } catch(e){}
+        }
+        isLookingUp = false;
+    }
+
     function lookupCode(code) {
-        if (!code) {
-            Swal.fire('Perhatian', 'Silakan masukkan kode ATK terlebih dahulu.', 'warning');
+        if (!code || code.trim() === '') {
+            Swal.fire('Perhatian', 'Silakan masukkan kode ATK terlebih dahulu.', 'warning').then(() => {
+                resumeScanner();
+            });
             return;
         }
 
+        if(isLookingUp) return;
+        isLookingUp = true;
+        
+        code = code.trim();
         const role = window.GAS_USER_ROLE || 'staff';
+        
+        // Show loading state
+        Swal.fire({
+            title: 'Mencari Data...',
+            text: 'Tunggu sebentar.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         fetch(`/${role}/atk/scan/lookup/${encodeURIComponent(code)}`)
-            .then(res => res.json())
+            .then(res => {
+                if(!res.ok && res.status === 403) {
+                    throw new Error("Akses ditolak (403). Anda tidak berhak melihat data ini.");
+                }
+                return res.json();
+            })
             .then(res => {
                 if (res.success) {
                     const d = res.data;
@@ -171,15 +225,24 @@
                         icon: 'success',
                         title: 'ATK Ditemukan!',
                         text: `${d.nama_atk} (${d.kode_atk})`,
-                        timer: 1500,
+                        timer: 2000,
                         showConfirmButton: false
+                    }).then(() => {
+                        resumeScanner();
                     });
+                    
+                    // Clear input
+                    document.getElementById('manual-code').value = '';
                 } else {
-                    Swal.fire('Data Tidak Ditemukan', res.message || 'Data ATK tidak ditemukan.', 'error');
+                    Swal.fire('Data Tidak Ditemukan', res.message || 'Data ATK tidak ditemukan.', 'error').then(() => {
+                        resumeScanner();
+                    });
                 }
             })
-            .catch(() => {
-                Swal.fire('Data Tidak Ditemukan', 'Data ATK tidak ditemukan untuk kode: ' + code, 'error');
+            .catch((e) => {
+                Swal.fire('Error', e.message || 'Terjadi kesalahan jaringan atau akses ditolak.', 'error').then(() => {
+                    resumeScanner();
+                });
             });
     }
 </script>
