@@ -170,7 +170,7 @@
             document.getElementById('modalForm').classList.add('flex');
         } else {
             document.getElementById('modalFormTitle').textContent = 'Edit Perjalanan';
-            fetch(`/${window.GAS_USER_ROLE}/perjalanan-kendaraan/${id}`)
+            fetch(`/${window.NGAS_USER_ROLE}/perjalanan-kendaraan/${id}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -198,7 +198,7 @@
         if (akhir < awal) return Swal.fire('Validasi', 'Kilometer akhir harus lebih besar atau sama dengan awal!', 'warning');
 
         const id = document.getElementById('perjalanan_id').value;
-        const url = id ? `/${window.GAS_USER_ROLE}/perjalanan-kendaraan/${id}` : `/${window.GAS_USER_ROLE}/perjalanan-kendaraan`;
+        const url = id ? `/${window.NGAS_USER_ROLE}/perjalanan-kendaraan/${id}` : `/${window.NGAS_USER_ROLE}/perjalanan-kendaraan`;
         const method = id ? 'PUT' : 'POST';
 
         const payload = {
@@ -223,7 +223,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/${window.GAS_USER_ROLE}/perjalanan-kendaraan/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
+                    const res = await fetch(`/${window.NGAS_USER_ROLE}/perjalanan-kendaraan/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _token: '{{ csrf_token() }}' }) });
                     const data = await res.json();
                     if (data.success) location.reload();
                     else Swal.fire('Gagal', data.message, 'error');

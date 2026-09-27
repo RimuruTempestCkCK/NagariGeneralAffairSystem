@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@banknagari.co.id'],
             [
-                'name' => 'Administrator GAS',
+                'name' => 'Administrator NGAS',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
             ]

@@ -7,4 +7,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-\Illuminate\Support\Facades\Schedule::command('gas:check-expiry')->daily();
+\Illuminate\Support\Facades\Schedule::command('ngas:check-expiry')->daily();

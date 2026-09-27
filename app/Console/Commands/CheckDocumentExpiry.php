@@ -15,7 +15,7 @@ class CheckDocumentExpiry extends Command
      *
      * @var string
      */
-    protected $signature = 'gas:check-expiry';
+    protected $signature = 'ngas:check-expiry';
 
     /**
      * The console command description.
@@ -33,8 +33,8 @@ class CheckDocumentExpiry extends Command
         $today = Carbon::today();
         
         // Configurable thresholds, defaulting to reasonable business logic
-        $stnkWarningDays = config('gas.stnk_warning_days', 30);
-        $assetWarningDays = config('gas.asset_warning_days', 60);
+        $stnkWarningDays = config('ngas.stnk_warning_days', 30);
+        $assetWarningDays = config('ngas.asset_warning_days', 60);
 
         // 1. Check STNK Kendaraan
         $kendaraans = Kendaraan::whereNotNull('jatuh_tempo_stnk')->get();

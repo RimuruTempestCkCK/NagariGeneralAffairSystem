@@ -293,7 +293,7 @@
         isLookingUp = true;
         
         code = code.trim();
-        const role = window.GAS_USER_ROLE || 'staff';
+        const role = window.NGAS_USER_ROLE || 'staff';
         
         Swal.fire({
             title: 'Mencari Data...',
@@ -358,7 +358,7 @@
             return;
         }
         
-        const role = window.GAS_USER_ROLE || 'staff';
+        const role = window.NGAS_USER_ROLE || 'staff';
         const payload = {
             atk_id: currentAtkId,
             unit_kerja: document.getElementById('pemakaian-unit').value,

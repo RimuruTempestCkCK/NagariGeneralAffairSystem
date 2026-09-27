@@ -1,4 +1,4 @@
-# Laporan Status Implementasi General Affair System (GAS)
+# Laporan Status Implementasi General Affair System (NGAS)
 
 Dokumen ini berisi pencatatan mengenai apa saja yang telah diimplementasikan dan apa yang belum/perlu diperbaiki berdasarkan requirement utama (BRD) dan instruksi awal.
 

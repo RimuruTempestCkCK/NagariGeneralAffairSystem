@@ -223,7 +223,7 @@
             document.getElementById('modalForm').classList.add('flex');
         } else {
             document.getElementById('modalFormTitle').textContent = 'Edit Kendaraan Operasional';
-            fetch(`/${window.GAS_USER_ROLE}/kendaraan/${id}`)
+            fetch(`/${window.NGAS_USER_ROLE}/kendaraan/${id}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -253,7 +253,7 @@
     }
 
     function openDetailModal(id) {
-        fetch(`/${window.GAS_USER_ROLE}/kendaraan/${id}`)
+        fetch(`/${window.NGAS_USER_ROLE}/kendaraan/${id}`)
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -281,7 +281,7 @@
     async function handleFormSubmit(e) {
         e.preventDefault();
         const id = document.getElementById('kendaraan_id').value;
-        const url = id ? `/${window.GAS_USER_ROLE}/kendaraan/${id}` : `/${window.GAS_USER_ROLE}/kendaraan`;
+        const url = id ? `/${window.NGAS_USER_ROLE}/kendaraan/${id}` : `/${window.NGAS_USER_ROLE}/kendaraan`;
         const method = id ? 'PUT' : 'POST';
 
         const payload = {
@@ -325,7 +325,7 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch(`/${window.GAS_USER_ROLE}/kendaraan/${id}`, {
+                    const res = await fetch(`/${window.NGAS_USER_ROLE}/kendaraan/${id}`, {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                         body: JSON.stringify({ _token: '{{ csrf_token() }}' })

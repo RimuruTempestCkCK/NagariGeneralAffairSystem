@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>@yield('title') - GAS Nagari</title>
+    <title>@yield('title') - NGAS Nagari</title>
     
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
@@ -12,7 +12,7 @@
     <script defer="defer" src="{{ asset('adminator_templete/vendors.js?v=' . time()) }}"></script>
     <script defer="defer" src="{{ asset('adminator_templete/2026.js?v=' . time()) }}"></script>
     <link href="{{ asset('adminator_templete/style.css?v=' . time()) }}" rel="stylesheet">
-<link href="{{ asset('css/gas-ui.css?v=' . time()) }}" rel="stylesheet">
+<link href="{{ asset('css/ngas-ui.css?v=' . time()) }}" rel="stylesheet">
     
     <style>
         body {
@@ -116,7 +116,7 @@
             
             <div class="error-meta">
                 <span><strong>STATUS</strong> @yield('code')</span> 
-                <span><strong>APP</strong> GAS Nagari</span>
+                <span><strong>APP</strong> NGAS Nagari</span>
             </div>
         </div>
     </div>

@@ -24,7 +24,7 @@
 <div class="print-area">
     <div class="qr-card" style="background: #ffffff; border: 2px dashed #9ca3af; border-radius: 12px; width: 320px; padding: 24px; text-align: center; margin: 0 auto; color: #111827;">
         <div class="logo-header" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-            <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.5px;">DIVISI UMUM (GAS)</span>
+            <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.5px;">DIVISI UMUM (NGAS)</span>
         </div>
         
         <div class="kode-badge" style="background-color: #eff6ff; color: #1d4ed8; font-size: 16px; font-weight: 800; padding: 6px 12px; border-radius: 6px; display: inline-block; margin-bottom: 8px;">{{ $atk->kode_atk }}</div>

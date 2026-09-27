@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>GAS - Bank Nagari Login</title>
+    <title>NGAS - Bank Nagari Login</title>
     
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
@@ -12,7 +12,7 @@
     <script defer="defer" src="{{ asset('adminator_templete/vendors.js?v=' . time()) }}"></script>
     <script defer="defer" src="{{ asset('adminator_templete/2026.js?v=' . time()) }}"></script>
     <link href="{{ asset('adminator_templete/style.css?v=' . time()) }}" rel="stylesheet">
-<link href="{{ asset('css/gas-ui.css?v=' . time()) }}" rel="stylesheet">
+<link href="{{ asset('css/ngas-ui.css?v=' . time()) }}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>

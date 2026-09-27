@@ -25,7 +25,7 @@
 <body onload="window.print()">
     <div class="header">
         <h2>@yield('report_title')</h2>
-        <p>General Affair System (GAS)</p>
+        <p>General Affair System (NGAS)</p>
     </div>
     
     <div class="filter-info">

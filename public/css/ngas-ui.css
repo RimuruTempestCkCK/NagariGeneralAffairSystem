@@ -1,15 +1,15 @@
 /* ==========================================================================
-   GAS - UI Design System Layer
+   NGAS - UI Design System Layer
    Additive override for resources/adminator_templete/style.css. Light mode only.
 
-   Purpose: one consistent button + action-icon standard across every GAS page,
+   Purpose: one consistent button + action-icon standard across every NGAS page,
    built on top of Adminator's own design tokens (--primary, --danger, --info,
    --success, --bg-hover, --t-muted, ...). Nothing here invents a new look or a
    new colour: every value reuses a token Adminator already ships, so the
    result still reads as Adminator.
 
    Loaded AFTER style.css so equal-specificity rules win on source order, and
-   AFTER gas-responsive.css so the responsive tiers stay authoritative for
+   AFTER ngas-responsive.css so the responsive tiers stay authoritative for
    width/flex behaviour on filters and tables.
 
    What this file replaces (inline styles that made buttons look different
@@ -317,9 +317,9 @@ a.btn:focus-visible {
 }
 
 /* --------------------------------------------------------------------------
-   8. RESPONSIVE SAFETY (does not fight gas-responsive.css)
+   8. RESPONSIVE SAFETY (does not fight ngas-responsive.css)
 
-   gas-responsive.css owns width/flex for filters and tables and is loaded
+   ngas-responsive.css owns width/flex for filters and tables and is loaded
    first; these rules only stop buttons from being clipped or overflowing on
    the narrowest phones.
    -------------------------------------------------------------------------- */
