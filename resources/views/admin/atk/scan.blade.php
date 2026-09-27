@@ -18,7 +18,7 @@
     </div>
 </section>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 20px; max-width: 600px; margin: 0 auto;">
     <!-- Area Kamera Scanner -->
     <section class="card">
         <div class="card-head">
@@ -100,6 +100,28 @@
                         Cetak Label QR
                     </a>
                 </div>
+                @else
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-soft);">
+                    <h3 style="margin-bottom: 15px;">Catat Pemakaian ATK</h3>
+                    <form id="form-pemakaian-scan" onsubmit="submitPemakaian(event)">
+                        <input type="hidden" id="pemakaian-atk-id">
+                        <div class="form-group">
+                            <label class="form-label">Unit Kerja</label>
+                            <input type="text" id="pemakaian-unit" class="input" required placeholder="Contoh: Divisi IT">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Jumlah Pemakaian</label>
+                            <input type="number" id="pemakaian-qty" class="input" min="1" required placeholder="Jumlah yang diambil">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Keperluan (Opsional)</label>
+                            <textarea id="pemakaian-keperluan" class="textarea" rows="2" placeholder="Keperluan..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn--primary" style="width: 100%; text-align: center; justify-content: center;">
+                            Submit Pemakaian
+                        </button>
+                    </form>
+                </div>
                 @endif
             </div>
         </div>
@@ -110,64 +132,160 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     let isLookingUp = false;
-    let html5QrcodeScanner = null;
+    let html5Qrcode = null;
+    let currentAtkId = null;
+    let currentMaxStok = 0;
+    
+    let scannerStarting = false;
+    let scannerRunning = false;
 
-    document.addEventListener('DOMContentLoaded', function () {
-        if (typeof Html5QrcodeScanner !== 'undefined') {
-            html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
-                fps: 10, 
-                qrbox: { width: 250, height: 250 },
-                rememberLastUsedCamera: true
-            });
-
-            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-
-            function onScanSuccess(decodedText) {
-                if(isLookingUp) return;
-                
-                let code = decodedText.trim();
-                if (code.includes('/')) {
-                    const parts = code.split('/');
-                    code = parts[parts.length - 1];
-                }
-                
-                // Pause scanner while looking up
-                if(html5QrcodeScanner) {
-                    html5QrcodeScanner.pause(true);
-                }
-                
-                lookupCode(code);
-            }
-
-            function onScanFailure(error) {
-                // Ignore silent background scanning failures
-            }
+    document.addEventListener('DOMContentLoaded', async function () {
+        if (typeof Html5Qrcode === 'undefined') {
+            console.error("[Scanner] Html5Qrcode library failed to load.");
+            document.getElementById('reader').innerHTML = '<div style="padding:20px;color:red;">Library scanner gagal dimuat. Periksa koneksi internet.</div>';
+            return;
         }
-        
-        // USB Scanner support (Enter key on manual input)
-        const manualInput = document.getElementById('manual-code');
-        if(manualInput) {
-            manualInput.addEventListener('keypress', function(e) {
-                if(e.key === 'Enter') {
-                    e.preventDefault();
-                    lookupCode(this.value);
-                }
-            });
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showCameraError(new Error("API Kamera (MediaDevices) tidak tersedia."), "Pastikan akses menggunakan HTTPS.");
+            return;
+        }
+
+        console.log("[Scanner] Environment validated. Requesting initial permission...");
+
+        try {
+            // Permission Primer
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            console.log("[Scanner] Initial permission SUCCESS");
+            stream.getTracks().forEach(track => track.stop());
+            
+            // Allow hardware to release before starting the real scanner
+            setTimeout(startScanner, 200);
+        } catch (err) {
+            console.error("[Scanner] Initial permission FAILED:", err);
+            showCameraError(err, "Gagal mendapatkan izin awal kamera dari browser.");
         }
     });
 
+    async function startScanner() {
+        if (scannerStarting || scannerRunning) return;
+        scannerStarting = true;
+
+        html5Qrcode = new Html5Qrcode("reader");
+
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        };
+
+        try {
+            console.log("[Scanner] Starting Html5Qrcode with { facingMode: 'environment' }");
+            // Menggunakan facingMode: "environment" sesuai spesifikasi ketat library
+            await html5Qrcode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure);
+            console.log("[Scanner] Scanner started successfully");
+            scannerRunning = true;
+            scannerStarting = false;
+        } catch (err1) {
+            console.warn("[Scanner] facingMode 'environment' failed:", err1);
+            
+            try {
+                console.log("[Scanner] Starting enumeration fallback");
+                const devices = await Html5Qrcode.getCameras();
+                if (devices && devices.length > 0) {
+                    let cameraId = null;
+                    for (let i = 0; i < devices.length; i++) {
+                        const label = devices[i].label.toLowerCase();
+                        if (label.includes('back') || label.includes('rear') || label.includes('environment')) {
+                            cameraId = devices[i].id;
+                            break;
+                        }
+                    }
+                    if (!cameraId) cameraId = devices[devices.length - 1].id;
+
+                    await html5Qrcode.start(cameraId, config, onScanSuccess, onScanFailure);
+                    console.log("[Scanner] Scanner started via fallback camera ID");
+                    scannerRunning = true;
+                    scannerStarting = false;
+                } else {
+                    scannerStarting = false;
+                    showCameraError(new Error("Daftar kamera kosong."), "Kamera tidak terdeteksi saat enumerasi.");
+                }
+            } catch (enumErr) {
+                scannerStarting = false;
+                console.error("[Scanner] Fallback enumeration failed:", enumErr);
+                showCameraError(enumErr, "Gagal menggunakan kamera secara murni dan fallback enumerasi perangkat ditolak.");
+            }
+        }
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        if(isLookingUp) return;
+        let code = decodedText.trim();
+        if (code.includes('/')) {
+            const parts = code.split('/');
+            code = parts[parts.length - 1];
+        }
+        
+        if (html5Qrcode && html5Qrcode.getState() === 2) {
+            html5Qrcode.pause();
+        }
+        
+        lookupCode(code);
+    }
+
+    function onScanFailure(errorMessage) {
+        // Ignore silent background scan errors
+    }
+
+    function showCameraError(err, contextMsg = "") {
+        console.error("Camera error object:", err);
+        
+        let errName = err && err.name ? err.name : "Unknown";
+        let errMsg = err && err.message ? err.message : String(err);
+        
+        let msg = 'Terjadi kendala saat mengakses kamera.';
+        
+        if (errName === 'NotAllowedError') {
+            msg = 'Akses kamera ditolak oleh pengguna.';
+        } else if (errName === 'NotFoundError') {
+            msg = 'Kamera tidak ditemukan di perangkat ini.';
+        } else if (errName === 'NotReadableError') {
+            msg = 'Kamera sedang digunakan oleh aplikasi lain atau hardware bermasalah.';
+        } else if (errName === 'OverconstrainedError') {
+            msg = 'Kamera tidak memenuhi constraint yang diminta.';
+        } else if (errName === 'SecurityError') {
+            msg = 'Akses ditolak karena masalah keamanan. Pastikan akses dari HTTPS.';
+        } else if (errName === 'AbortError') {
+            msg = 'Proses dibatalkan.';
+        }
+        
+        let finalHtml = `<div style="padding:20px;color:red; background: var(--bg-muted); border: 1px solid var(--border-soft); border-radius: 8px;">
+            <strong style="font-size: 16px;">${msg}</strong><br><br>
+            <div style="font-family: monospace; font-size: 12px; color: var(--t-muted); word-break: break-all;">
+                Error Name: ${errName}<br>
+                Error Message: ${errMsg}
+            </div>
+        `;
+        
+        if (contextMsg) {
+            finalHtml += `<br><div style="font-size: 13px; font-weight: bold; color: var(--danger);">Konteks: ${contextMsg}</div>`;
+        }
+        
+        finalHtml += `</div>`;
+        document.getElementById('reader').innerHTML = finalHtml;
+    }
+
     function resumeScanner() {
-        if(html5QrcodeScanner && html5QrcodeScanner.getState() === 2 /* SCANNING/PAUSED state internal */) {
-            try { html5QrcodeScanner.resume(); } catch(e){}
+        if(html5Qrcode && html5Qrcode.getState() === 3 /* PAUSED */) {
+            try { html5Qrcode.resume(); } catch(e){}
         }
         isLookingUp = false;
     }
 
     function lookupCode(code) {
         if (!code || code.trim() === '') {
-            Swal.fire('Perhatian', 'Silakan masukkan kode ATK terlebih dahulu.', 'warning').then(() => {
-                resumeScanner();
-            });
+            Swal.fire('Perhatian', 'Silakan masukkan kode ATK terlebih dahulu.', 'warning').then(() => { resumeScanner(); });
             return;
         }
 
@@ -177,21 +295,16 @@
         code = code.trim();
         const role = window.GAS_USER_ROLE || 'staff';
         
-        // Show loading state
         Swal.fire({
             title: 'Mencari Data...',
             text: 'Tunggu sebentar.',
             allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
+            didOpen: () => { Swal.showLoading(); }
         });
 
         fetch(`/${role}/atk/scan/lookup/${encodeURIComponent(code)}`)
             .then(res => {
-                if(!res.ok && res.status === 403) {
-                    throw new Error("Akses ditolak (403). Anda tidak berhak melihat data ini.");
-                }
+                if(!res.ok && res.status === 403) throw new Error("Akses ditolak (403).");
                 return res.json();
             })
             .then(res => {
@@ -210,40 +323,71 @@
 
                     const statusBadge = document.getElementById('res-status');
                     statusBadge.innerText = d.status;
-                    if (d.status === 'Aktif') {
-                        statusBadge.className = 'tag t-active';
-                    } else {
-                        statusBadge.className = 'tag t-unavail';
-                    }
+                    statusBadge.className = d.status === 'Aktif' ? 'tag t-active' : 'tag t-unavail';
 
                     const printLink = document.getElementById('res-print-link');
-                    if(printLink) {
-                        printLink.href = `/admin/atk/${d.id}/print-qr`;
+                    if(printLink) printLink.href = `/admin/atk/${d.id}/print-qr`;
+                    
+                    const atkIdInput = document.getElementById('pemakaian-atk-id');
+                    if(atkIdInput) {
+                        atkIdInput.value = d.id;
+                        currentAtkId = d.id;
+                        currentMaxStok = d.jumlah;
+                        document.getElementById('pemakaian-qty').max = d.jumlah;
+                        document.getElementById('pemakaian-qty').value = '';
                     }
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ATK Ditemukan!',
-                        text: `${d.nama_atk} (${d.kode_atk})`,
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        resumeScanner();
-                    });
-                    
-                    // Clear input
+                    Swal.fire({ icon: 'success', title: 'ATK Ditemukan!', text: `${d.nama_atk} (${d.kode_atk})`, timer: 1500, showConfirmButton: false }).then(() => { resumeScanner(); });
                     document.getElementById('manual-code').value = '';
                 } else {
-                    Swal.fire('Data Tidak Ditemukan', res.message || 'Data ATK tidak ditemukan.', 'error').then(() => {
-                        resumeScanner();
-                    });
+                    Swal.fire('Data Tidak Ditemukan', res.message || 'Data ATK tidak ditemukan.', 'error').then(() => { resumeScanner(); });
                 }
             })
             .catch((e) => {
-                Swal.fire('Error', e.message || 'Terjadi kesalahan jaringan atau akses ditolak.', 'error').then(() => {
+                Swal.fire('Error', e.message || 'Terjadi kesalahan jaringan.', 'error').then(() => { resumeScanner(); });
+            });
+    }
+
+    async function submitPemakaian(e) {
+        e.preventDefault();
+        if(!currentAtkId) return;
+        
+        const qty = parseInt(document.getElementById('pemakaian-qty').value) || 0;
+        if (qty > currentMaxStok) {
+            Swal.fire('Stok Kurang', `Jumlah (${qty}) melebihi stok tersedia (${currentMaxStok}).`, 'error');
+            return;
+        }
+        
+        const role = window.GAS_USER_ROLE || 'staff';
+        const payload = {
+            atk_id: currentAtkId,
+            unit_kerja: document.getElementById('pemakaian-unit').value,
+            tanggal: new Date().toISOString().split('T')[0],
+            jumlah: qty,
+            keperluan: document.getElementById('pemakaian-keperluan').value,
+            _token: '{{ csrf_token() }}'
+        };
+        
+        Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        
+        try {
+            const res = await fetch(`/${role}/pemakaian-atk`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            
+            if(data.success) {
+                Swal.fire('Berhasil!', data.message, 'success').then(() => {
+                    document.getElementById('scan-result').style.display = 'none';
+                    document.getElementById('scan-placeholder').style.display = 'block';
+                    currentAtkId = null;
+                    document.getElementById('form-pemakaian-scan').reset();
                     resumeScanner();
                 });
-            });
+            } else {
+                Swal.fire('Gagal', data.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Error', 'Terjadi kesalahan server.', 'error');
+        }
     }
 </script>
 @endpush
