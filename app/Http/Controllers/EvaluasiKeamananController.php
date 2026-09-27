@@ -35,6 +35,10 @@ class EvaluasiKeamananController extends Controller
 
     public function store(Request $request)
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'staff') {
+            return response()->json(['success' => false, 'message' => 'Unauthorized. Hanya Admin yang dapat mengelola evaluasi.'], 403);
+        }
+
         $validated = $request->validate([
             'jenis_evaluasi' => 'required|in:Triwulan,Tahunan',
             'lokasi_pengamanan' => 'required|in:Kantor Pusat,Kantor Cabang,Unit Kerja / KCP / Kas',
@@ -45,7 +49,7 @@ class EvaluasiKeamananController extends Controller
             'rekomendasi' => 'nullable|string',
         ]);
 
-        $validated['user_id'] = Auth::id();
+        $validated['user_id'] = \Illuminate\Support\Facades\Auth::id();
 
         $evaluasi = EvaluasiKeamanan::create($validated);
 
@@ -58,12 +62,12 @@ class EvaluasiKeamananController extends Controller
 
     public function show($id)
     {
-        $evaluasi = EvaluasiKeamanan::with('user')->findOrFail($id);
-        
-        if (Auth::user()->role === 'staff' && $evaluasi->user_id !== Auth::id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'staff') {
+            return response()->json(['success' => false, 'message' => 'Unauthorized.'], 403);
         }
 
+        $evaluasi = EvaluasiKeamanan::with('user')->findOrFail($id);
+        
         return response()->json([
             'success' => true,
             'data' => $evaluasi,
@@ -72,12 +76,12 @@ class EvaluasiKeamananController extends Controller
 
     public function update(Request $request, $id)
     {
-        $evaluasi = EvaluasiKeamanan::findOrFail($id);
-        
-        if (Auth::user()->role === 'staff' && $evaluasi->user_id !== Auth::id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'staff') {
+            return response()->json(['success' => false, 'message' => 'Unauthorized.'], 403);
         }
 
+        $evaluasi = EvaluasiKeamanan::findOrFail($id);
+        
         $validated = $request->validate([
             'jenis_evaluasi' => 'required|in:Triwulan,Tahunan',
             'lokasi_pengamanan' => 'required|in:Kantor Pusat,Kantor Cabang,Unit Kerja / KCP / Kas',
@@ -99,11 +103,11 @@ class EvaluasiKeamananController extends Controller
 
     public function destroy($id)
     {
-        $evaluasi = EvaluasiKeamanan::findOrFail($id);
-        
-        if (Auth::user()->role === 'staff' && $evaluasi->user_id !== Auth::id()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'staff') {
+            return response()->json(['success' => false, 'message' => 'Unauthorized.'], 403);
         }
+
+        $evaluasi = EvaluasiKeamanan::findOrFail($id);
         
         $evaluasi->delete();
 

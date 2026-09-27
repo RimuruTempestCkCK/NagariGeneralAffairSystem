@@ -12,7 +12,7 @@ class AsetSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Aset::insert([
+        $asets = [
             [
                 'kode_cabang' => 'CBG-001',
                 'nomor_sertifikat' => 'SRT-001/Milik/2026',
@@ -21,8 +21,6 @@ class AsetSeeder extends Seeder
                 'luas_tanah' => 1250.50,
                 'jatuh_tempo_sertifikat' => now()->addYears(10)->toDateString(),
                 'lampiran_bukti' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'kode_cabang' => 'CBG-002',
@@ -32,9 +30,14 @@ class AsetSeeder extends Seeder
                 'luas_tanah' => 850.00,
                 'jatuh_tempo_sertifikat' => now()->addYears(5)->toDateString(),
                 'lampiran_bukti' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
             ]
-        ]);
+        ];
+
+        foreach ($asets as $aset) {
+            \App\Models\Aset::updateOrCreate(
+                ['nomor_sertifikat' => $aset['nomor_sertifikat']],
+                $aset
+            );
+        }
     }
 }

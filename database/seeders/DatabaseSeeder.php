@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             AtkSeeder::class,
             KendaraanSeeder::class,
             AsetSeeder::class,
+            WorkflowSeeder::class,
         ]);
     }
 }

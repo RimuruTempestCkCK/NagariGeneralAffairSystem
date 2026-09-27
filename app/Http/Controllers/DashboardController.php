@@ -26,7 +26,7 @@ class DashboardController extends Controller
     {
         $totalAtk = Atk::count();
         $totalStok = Atk::sum('jumlah');
-        $pendingPermintaan = PermintaanAtk::where('status', 'Pending')->count();
+        $pendingPermintaan = PermintaanAtk::where('status', 'PENDING')->count();
         
         $totalKendaraan = Kendaraan::count();
         // Check vehicles where stnk is expiring in <= 30 days
@@ -54,7 +54,7 @@ class DashboardController extends Controller
     private function staffDashboard($user)
     {
         $myPermintaan = PermintaanAtk::where('user_id', $user->id)->count();
-        $pendingPermintaan = PermintaanAtk::where('user_id', $user->id)->where('status', 'Pending')->count();
+        $pendingPermintaan = PermintaanAtk::where('user_id', $user->id)->where('status', 'PENDING')->count();
         
         $myKeamanan = Keamanan::where('user_id', $user->id)->count();
         

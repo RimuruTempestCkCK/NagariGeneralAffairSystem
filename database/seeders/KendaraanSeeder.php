@@ -12,7 +12,7 @@ class KendaraanSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Kendaraan::insert([
+        $kendaraans = [
             [
                 'nomor_kendaraan' => 'BA 1234 XY',
                 'status_kendaraan' => 'Milik',
@@ -21,8 +21,6 @@ class KendaraanSeeder extends Seeder
                 'nomor_bpkb' => 'BPKB-123456789',
                 'nomor_stnk' => 'STNK-123456789',
                 'jatuh_tempo_stnk' => now()->addMonths(6)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'nomor_kendaraan' => 'BA 5678 ZA',
@@ -32,9 +30,14 @@ class KendaraanSeeder extends Seeder
                 'nomor_bpkb' => 'BPKB-987654321',
                 'nomor_stnk' => 'STNK-987654321',
                 'jatuh_tempo_stnk' => now()->addMonths(2)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
             ]
-        ]);
+        ];
+
+        foreach ($kendaraans as $k) {
+            \App\Models\Kendaraan::updateOrCreate(
+                ['nomor_kendaraan' => $k['nomor_kendaraan']],
+                $k
+            );
+        }
     }
 }

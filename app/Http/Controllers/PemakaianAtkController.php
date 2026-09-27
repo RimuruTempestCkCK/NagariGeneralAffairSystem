@@ -85,6 +85,11 @@ class PemakaianAtkController extends Controller
             $hargaSatuan = $atk->harga;
             $totalBeban = $validated['jumlah'] * $hargaSatuan;
 
+            $jurnalBeban = null;
+            if (\Illuminate\Support\Facades\Auth::user()->role === 'admin') {
+                $jurnalBeban = $validated['no_jurnal_beban'] ?? null;
+            }
+
             $pemakaian = PemakaianAtk::create([
                 'atk_id' => $atk->id,
                 'user_id' => Auth::id(),
@@ -92,7 +97,7 @@ class PemakaianAtkController extends Controller
                 'jumlah' => $validated['jumlah'],
                 'harga_satuan' => $hargaSatuan,
                 'total_beban_biaya' => $totalBeban,
-                'no_jurnal_beban' => $validated['no_jurnal_beban'] ?? null,
+                'no_jurnal_beban' => $jurnalBeban,
                 'keperluan' => $validated['keperluan'] ?? null,
                 'tanggal' => $validated['tanggal'],
             ]);

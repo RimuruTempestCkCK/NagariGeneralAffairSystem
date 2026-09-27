@@ -65,6 +65,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporan/atk/export', [ReportController::class, 'exportAtk'])->name('laporan.atk.export');
         Route::get('/laporan/kendaraan/export', [ReportController::class, 'exportKendaraan'])->name('laporan.kendaraan.export');
         Route::get('/laporan/aset/export', [ReportController::class, 'exportAset'])->name('laporan.aset.export');
+
+        // Modul Manajemen Aset dan Evaluasi Keamanan (Admin Only)
+        Route::resource('aset', AsetController::class)->except(['create', 'edit']);
+        Route::resource('evaluasi-keamanan', EvaluasiKeamananController::class)->except(['create', 'edit']);
     });
 
     // Shared Modules (Admin & Staff)
@@ -103,12 +107,8 @@ Route::middleware('auth')->group(function () {
             Route::resource('bbm-kendaraan', BbmKendaraanController::class)->except(['create', 'edit']);
             Route::resource('pemeliharaan-kendaraan', PemeliharaanKendaraanController::class)->except(['create', 'edit']);
 
-            // Modul Keamanan
+            // Modul Keamanan Laporan Harian (Shared)
             Route::resource('keamanan', KeamananController::class)->except(['create', 'edit']);
-            Route::resource('evaluasi-keamanan', EvaluasiKeamananController::class)->except(['create', 'edit']);
-
-            // Modul Aset
-            Route::resource('aset', AsetController::class)->except(['create', 'edit']);
         });
     }
 });

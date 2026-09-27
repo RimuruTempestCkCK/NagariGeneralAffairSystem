@@ -12,7 +12,7 @@ class AtkSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Atk::insert([
+        $atks = [
             [
                 'kode_atk' => 'ATK-001',
                 'nama_atk' => 'Kertas HVS A4 80gr',
@@ -23,8 +23,6 @@ class AtkSeeder extends Seeder
                 'rekening_penampungan' => '100.111.001',
                 'rekening_biaya' => '500.111.001',
                 'status' => 'Aktif',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'kode_atk' => 'ATK-002',
@@ -36,8 +34,6 @@ class AtkSeeder extends Seeder
                 'rekening_penampungan' => '100.111.002',
                 'rekening_biaya' => '500.111.002',
                 'status' => 'Aktif',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'kode_atk' => 'ATK-003',
@@ -49,8 +45,6 @@ class AtkSeeder extends Seeder
                 'rekening_penampungan' => '100.111.003',
                 'rekening_biaya' => '500.111.003',
                 'status' => 'Aktif',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'kode_atk' => 'ATK-004',
@@ -62,9 +56,14 @@ class AtkSeeder extends Seeder
                 'rekening_penampungan' => '100.111.004',
                 'rekening_biaya' => '500.111.004',
                 'status' => 'Aktif',
-                'created_at' => now(),
-                'updated_at' => now(),
             ]
-        ]);
+        ];
+
+        foreach ($atks as $atkData) {
+            \App\Models\Atk::updateOrCreate(
+                ['kode_atk' => $atkData['kode_atk']],
+                $atkData
+            );
+        }
     }
 }
