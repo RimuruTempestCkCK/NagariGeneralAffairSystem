@@ -57,13 +57,16 @@
         .content { padding: 0 !important; }
         .print-area {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 10px;
         }
         .qr-card {
             border: 1px solid #000 !important;
             page-break-inside: avoid;
+            transform: scale(0.6);
+            transform-origin: top left;
+            margin: 0 !important;
         }
     }
 </style>

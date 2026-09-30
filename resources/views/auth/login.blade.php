@@ -37,7 +37,7 @@
             justify-content: center !important;
             width: 100vw !important;
             height: 100vh !important;
-            background: url('{{ asset('images/login-bg.jpeg') }}') no-repeat center center fixed !important;
+            background: url("{{ asset('images/login-bg.jpeg') }}") no-repeat center center fixed !important;
             background-size: cover !important;
             z-index: 9999;
         }
