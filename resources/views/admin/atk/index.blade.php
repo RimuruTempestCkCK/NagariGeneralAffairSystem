@@ -30,7 +30,7 @@
             <span class="eyebrow">Daftar</span>
             <h2 class="card-title">Data ATK</h2>
         </div>
-        <form action="{{ route('admin.atk.index') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
+        <!-- <form action="{{ route('admin.atk.index') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari kode/nama ATK..." style="width: 200px;">
             <select name="jenis_atk" onchange="this.form.submit()" class="input">
                 <option value="">Semua Jenis</option>
@@ -47,7 +47,54 @@
             @if(request()->anyFilled(['search', 'jenis_atk', 'status']))
                 <a href="{{ route('admin.atk.index') }}" class="btn btn--ghost btn--reset">Reset</a>
             @endif
-        </form>
+        </form> -->
+        <form action="{{ route('admin.atk.index') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
+    <input
+        type="text"
+        name="search"
+        value="{{ request('search') }}"
+        class="input"
+        placeholder="Cari kode/nama ATK..."
+        style="width: 200px;"
+    >
+
+    <select name="jenis_atk" onchange="this.form.submit()" class="input">
+        <option value="">Semua Jenis</option>
+        @foreach($jenisList as $j)
+            <option value="{{ $j }}" {{ request('jenis_atk') == $j ? 'selected' : '' }}>
+                {{ $j }}
+            </option>
+        @endforeach
+    </select>
+
+    <select name="status" onchange="this.form.submit()" class="input">
+        <option value="">Semua Status</option>
+        <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>
+            Aktif
+        </option>
+        <option value="Nonaktif" {{ request('status') == 'Nonaktif' ? 'selected' : '' }}>
+            Nonaktif
+        </option>
+    </select>
+
+    <button type="submit" class="btn btn--primary btn--filter">
+        Filter
+    </button>
+
+    @if(request()->anyFilled(['search', 'jenis_atk', 'status']))
+        <a href="{{ route('admin.atk.index') }}" class="btn btn--ghost btn--reset">
+            Reset
+        </a>
+    @endif
+
+    <a
+        href="{{ route('admin.atk.print', request()->only(['search', 'jenis_atk', 'status'])) }}"
+        target="_blank"
+        class="btn btn--ghost"
+    >
+        Cetak Data
+    </a>
+</form>
     </div>
 
     <div class="table-scroll">
