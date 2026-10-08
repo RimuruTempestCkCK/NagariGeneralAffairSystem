@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>NGAS - Bank Nagari Login</title>
-    
+
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    
+
     <!-- Adminator Scripts -->
     <script defer="defer" src="{{ asset('adminator_templete/runtime.js?v=' . time()) }}"></script>
     <script defer="defer" src="{{ asset('adminator_templete/vendors.js?v=' . time()) }}"></script>
@@ -33,11 +33,12 @@
             right: 0 !important;
             bottom: 0 !important;
             display: flex !important;
-            align-items: flex-start !important; /* Start from top */
+            align-items: center !important; /* Centered vertically */
             justify-content: center !important;
             width: 100vw !important;
             height: 100vh !important;
-            background-color: #f7f9fa !important;
+            background: url("{{ asset('images/login-bg.jpeg') }}") no-repeat center center fixed !important;
+            background-size: cover !important;
             z-index: 9999;
         }
         .auth-main {
@@ -47,27 +48,40 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 15px; /* Adjust gap precisely here */
-            margin-top: 20vh !important; /* Push everything down */
+            gap: 15px;
+            padding: 15px !important; /* Mobile responsiveness */
+            box-sizing: border-box !important;
+            margin: auto !important; /* Ensures it stays dead center */
         }
         .auth-card {
             width: 100%;
-            background: var(--bg-base);
+            background: #ffffff !important;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 30px 20px !important; /* Adjusted for mobile */
             border: none;
-            margin-top: 0 !important;
+            margin: 0 !important;
+            text-align: center; /* Center contents */
+            box-sizing: border-box !important;
+        }
+        @media (min-width: 576px) {
+            .auth-card {
+                padding: 40px !important; /* Original padding for larger screens */
+            }
         }
         .login-logo {
-            text-align: center;
-            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 24px !important;
         }
         .login-logo img {
             height: 48px;
             width: auto;
             border: none;
             outline: none;
+            margin: 0 auto;
         }
         .toggle-password {
             position: absolute;
@@ -88,15 +102,15 @@
 <body>
     <div class="auth-shell">
         <main class="auth-main">
-            <div class="login-logo">
-                <img src="{{ asset('brand/bank-nagari-logo.svg') }}" alt="Bank Nagari">
-            </div>
-            
             <div class="auth-card">
+                <div class="login-logo" style="margin-bottom: 24px;">
+                    <img src="{{ asset('brand/bank-nagari-logo.svg') }}" alt="Bank Nagari">
+                </div>
+
                 <h2>Selamat Datang</h2>
-                <p class="sub">Silakan masuk menggunakan kredensial Anda.</p>
-                
-                <form class="auth-form" method="POST" action="{{ route('login.post') }}">
+                <p class="sub">Silakan masuk.</p>
+
+                <form class="auth-form" method="POST" action="{{ route('login.post') }}" style="text-align: left;">
                     @csrf
                     <div class="field">
                         <label class="field-label" for="email">Alamat Email</label>
@@ -110,10 +124,10 @@
                             <span style="color: #e74c3c; font-size: 12px; margin-top: 5px; display: block;">{{ $message }}</span>
                         @enderror
                     </div>
-                    
+
                     <div class="field">
                         <div class="field-row">
-                            <label class="field-label" for="password">Kata Sandi</label> 
+                            <label class="field-label" for="password">Kata Sandi</label>
                         </div>
                         <div class="input-icon" style="position: relative;">
                             <span class="ico">
@@ -128,20 +142,20 @@
                             <span style="color: #e74c3c; font-size: 12px; margin-top: 5px; display: block;">{{ $message }}</span>
                         @enderror
                     </div>
-                    
-                    <button class="btn btn--primary btn--block auth-submit" type="submit">
-                        Sign In 
+
+                    <button class="btn btn--primary btn--block auth-submit" type="submit" style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+                        Sign In
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
                     </button>
                 </form>
             </div>
-            
-            <div class="auth-main-bottom" style="margin-top: 20px; color: var(--t-muted); text-align: center; font-size: 12px;">
+
+            <!-- <div class="auth-main-bottom" style="margin-top: 20px; color: var(--t-muted); text-align: center; font-size: 12px;">
                 Hanya untuk penggunaan internal Bank Nagari.
-            </div>
+            </div> -->
         </main>
     </div>
-    
+
     @if($errors->has('email') || $errors->has('password'))
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -154,17 +168,17 @@
         });
     </script>
     @endif
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const togglePassword = document.querySelector("#togglePassword");
             const password = document.querySelector("#password");
-            
+
             if (togglePassword && password) {
                 togglePassword.addEventListener("click", function () {
                     const type = password.getAttribute("type") === "password" ? "text" : "password";
                     password.setAttribute("type", type);
-                    
+
                     if (type === "text") {
                         this.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
                     } else {
