@@ -21,22 +21,49 @@
     </div>
 </div>
 
-<div class="print-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 20px;">
+<div class="print-container">
     @foreach($atks as $atk)
-        <div class="label-box" style="border: 2px dashed var(--border-soft); padding: 15px; text-align: center; border-radius: 8px; background: var(--bg-base);">
-            <div class="qr-wrapper" style="margin-bottom: 10px; display: flex; justify-content: center;">
-                {!! QrCode::format('svg')->size(100)->generate($atk->kode_atk) !!}
+        <div class="label-box">
+            <div class="qr-wrapper">
+                {!! QrCode::format('svg')->size(136)->generate($atk->kode_atk) !!}
             </div>
-            <div class="label-code" style="font-weight: bold; font-size: 16px; margin-bottom: 5px; color: var(--primary);">{{ $atk->kode_atk }}</div>
-            <div class="label-name" style="font-size: 13px; color: var(--t-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $atk->nama_atk }}</div>
+            <div class="label-details">
+                <div class="label-name">{{ $atk->nama_atk }}</div>
+                <div class="label-code">{{ $atk->kode_atk }}</div>
+            </div>
         </div>
     @endforeach
 </div>
 
 @push('styles')
 <style>
+    .print-container {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 20px;
+    }
+    .label-box {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        gap: 4mm;
+        width: 100mm;
+        height: 40mm;
+        padding: 2mm;
+        color: #111;
+        background: #fff;
+        font-family: Arial, sans-serif;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+    }
+    .qr-wrapper { flex: 0 0 34mm; width: 34mm; height: 34mm; }
+    .qr-wrapper svg { display: block; width: 100%; height: 100%; }
+    .label-details { min-width: 0; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2mm; }
+    .label-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; max-width: 100%; font-size: 16pt; line-height: 1.1; font-weight: 700; overflow-wrap: anywhere; }
+    .label-code { max-width: 100%; padding: 1mm 3mm; border-radius: 10mm; background: #f3f4f6; font-size: 14pt; line-height: 1.2; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     @media print {
-        .d-sidebar, .d-topbar, .no-print, [data-shell-sidebar], [data-shell-topbar] {
+        .d-sidebar, .d-topbar, .d-footer, .no-print, [data-shell-sidebar], [data-shell-topbar] {
             display: none !important;
         }
         body, html {
@@ -46,28 +73,35 @@
         }
         .main { margin: 0 !important; }
         .content { padding: 0 !important; }
-        .label-box { 
-            border: 1px solid #000 !important; 
+        .label-box {
             break-inside: avoid;
             page-break-inside: avoid;
             background: white !important;
+            border-radius: 0;
+            box-shadow: none;
         }
         .print-container {
-            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 5mm;
+            padding: 0;
         }
-        @page { margin: 1cm; size: A4 portrait; }
+        @page { margin: 10mm; size: A4 portrait; }
     }
 </style>
 @endpush
 
 @push('scripts')
 <script>
-    window.onload = function() {
-        // Otomatis trigger print setelah render
-        setTimeout(() => {
+    window.addEventListener('load', function () {
+        if (window.__bulkPrintTriggered) {
+            return;
+        }
+
+        window.__bulkPrintTriggered = true;
+
+        setTimeout(function () {
             window.print();
         }, 500);
-    }
+    });
 </script>
 @endpush
 @endsection

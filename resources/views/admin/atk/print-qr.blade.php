@@ -22,30 +22,50 @@
 </div>
 
 <div class="print-area">
-    <div class="qr-card" style="background: #ffffff; border: 2px dashed #9ca3af; border-radius: 12px; width: 320px; padding: 24px; text-align: center; margin: 0 auto; color: #111827;">
-        <div class="logo-header" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-            <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.5px;">DIVISI UMUM (NGAS)</span>
+    <div class="qr-label">
+        <div class="qr-wrapper">
+            <img src="data:image/svg+xml;base64,{{ $qrImage }}" alt="QR Code {{ $atk->kode_atk }}">
         </div>
-        
-        <div class="kode-badge" style="background-color: #eff6ff; color: #1d4ed8; font-size: 16px; font-weight: 800; padding: 6px 12px; border-radius: 6px; display: inline-block; margin-bottom: 8px;">{{ $atk->kode_atk }}</div>
-        
-        <div class="qr-wrapper" style="margin: 14px auto; display: flex; justify-content: center;">
-            <img src="data:image/svg+xml;base64,{{ $qrImage }}" alt="QR Code {{ $atk->kode_atk }}" style="width: 170px; height: 170px;">
-        </div>
-
-        <div class="item-name" style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">{{ $atk->nama_atk }}</div>
-        <div class="item-category" style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">Jenis: {{ $atk->jenis_atk }} | Satuan: {{ $atk->satuan }}</div>
-
-        <div class="footer-text" style="border-top: 1px solid #e5e7eb; padding-top: 8px; font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">
-            Sistem Inventaris ATK &bull; Bank Nagari
+        <div class="label-details">
+            <div class="label-name">{{ $atk->nama_atk }}</div>
+            <div class="label-code">{{ $atk->kode_atk }}</div>
         </div>
     </div>
 </div>
 
 @push('styles')
 <style>
+    .print-area {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 280px;
+        margin-top: 8px;
+        padding: 24px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.58);
+    }
+    .qr-label {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        gap: 4mm;
+        width: 100mm;
+        height: 40mm;
+        padding: 2mm;
+        background: #fff;
+        color: #111;
+        font-family: Arial, sans-serif;
+        border-radius: 10px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+    }
+    .qr-wrapper { flex: 0 0 34mm; width: 34mm; height: 34mm; }
+    .qr-wrapper img { display: block; width: 100%; height: 100%; }
+    .label-details { min-width: 0; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2mm; }
+    .label-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; max-width: 100%; font-size: 16pt; line-height: 1.1; font-weight: 700; overflow-wrap: anywhere; }
+    .label-code { max-width: 100%; padding: 1mm 3mm; border-radius: 10mm; background: #f3f4f6; font-size: 14pt; line-height: 1.2; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     @media print {
-        .d-sidebar, .d-topbar, .no-print, [data-shell-sidebar], [data-shell-topbar] {
+        .d-sidebar, .d-topbar, .d-footer, .no-print, [data-shell-sidebar], [data-shell-topbar] {
             display: none !important;
         }
         body, html {
@@ -54,20 +74,27 @@
             margin: 0 !important;
         }
         .main { margin: 0 !important; }
-        .content { padding: 0 !important; }
+        .shell { display: block !important; }
+        .content { width: 100% !important; min-height: 0 !important; padding: 0 !important; }
         .print-area {
             display: flex;
-            justify-content: flex-start;
-            align-items: flex-start;
-            padding: 10px;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 277mm;
+            margin: 0;
+            padding: 0;
+            border-radius: 0;
+            background: #fff !important;
         }
-        .qr-card {
-            border: 1px solid #000 !important;
+        .qr-label {
             page-break-inside: avoid;
-            transform: scale(0.6);
-            transform-origin: top left;
             margin: 0 !important;
+            border-radius: 0;
+            box-shadow: none;
         }
+        @page { size: A4 portrait; margin: 10mm; }
     }
 </style>
 @endpush

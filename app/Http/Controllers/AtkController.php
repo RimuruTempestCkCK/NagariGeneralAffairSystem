@@ -35,6 +35,32 @@ class AtkController extends Controller
         return view('admin.atk.index', compact('atks', 'jenisList'));
     }
 
+    public function printInventory(Request $request)
+    {
+        $query = Atk::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_atk', 'like', "%{$search}%")
+                  ->orWhere('nama_atk', 'like', "%{$search}%")
+                  ->orWhere('jenis_atk', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('jenis_atk')) {
+            $query->where('jenis_atk', $request->jenis_atk);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $atks = $query->orderBy('kode_atk', 'asc')->get();
+
+        return view('admin.atk.print-inventory', compact('atks'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

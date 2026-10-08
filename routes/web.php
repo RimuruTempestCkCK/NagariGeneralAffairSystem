@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
         // Master ATK CRUD (Admin Only)
         Route::get('/atk', [AtkController::class, 'index'])->name('atk.index');
         Route::post('/atk', [AtkController::class, 'store'])->name('atk.store');
+        Route::get('/atk/print', [AtkController::class, 'printInventory'])->name('atk.print');
         Route::get('/atk/bulk-print', [AtkController::class, 'bulkPrint'])->name('atk.bulk-print');
         Route::get('/atk/{id}', [AtkController::class, 'show'])->name('atk.show')->where('id', '[0-9]+');
         Route::put('/atk/{id}', [AtkController::class, 'update'])->name('atk.update')->where('id', '[0-9]+');
