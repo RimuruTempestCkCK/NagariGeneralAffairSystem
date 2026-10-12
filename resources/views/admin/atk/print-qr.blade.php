@@ -89,11 +89,20 @@
             background: #fff !important;
         }
         .qr-label {
+            width: 40mm;
+            height: 15mm;
+            gap: 1mm;
+            padding: 1mm;
             page-break-inside: avoid;
             margin: 0 !important;
-            border-radius: 0;
+            border: 0.4mm solid #6db6d5;
+            border-radius: 2mm;
             box-shadow: none;
         }
+        .qr-wrapper { flex: 0 0 12mm; width: 12mm; height: 12mm; }
+        .label-details { gap: 0.5mm; }
+        .label-name { color: #2786ad; font-size: 6pt; line-height: 1.05; }
+        .label-code { padding: 0; border-radius: 0; background: transparent; color: #333; font-size: 5pt; line-height: 1.1; }
         @page { size: A4 portrait; margin: 10mm; }
     }
 </style>

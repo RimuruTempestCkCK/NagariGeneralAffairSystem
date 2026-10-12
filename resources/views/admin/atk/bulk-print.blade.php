@@ -74,14 +74,28 @@
         .main { margin: 0 !important; }
         .content { padding: 0 !important; }
         .label-box {
+            width: 40mm;
+            height: 15mm;
+            gap: 1mm;
+            padding: 1mm;
             break-inside: avoid;
             page-break-inside: avoid;
             background: white !important;
-            border-radius: 0;
+            border: 0.4mm solid #6db6d5;
+            border-radius: 2mm;
             box-shadow: none;
         }
+        .qr-wrapper { flex: 0 0 12mm; width: 12mm; height: 12mm; }
+        .label-details { gap: 0.5mm; }
+        .label-name { color: #2786ad; font-size: 6pt; line-height: 1.05; }
+        .label-code { padding: 0; border-radius: 0; background: transparent; color: #333; font-size: 5pt; line-height: 1.1; }
         .print-container {
-            gap: 5mm;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 40mm);
+            justify-content: center;
+            gap: 2mm 3mm;
+            box-sizing: border-box;
+            width: 100%;
             padding: 0;
         }
         @page { margin: 10mm; size: A4 portrait; }
