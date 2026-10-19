@@ -25,6 +25,9 @@
     <div class="qr-label">
         <div class="qr-wrapper">
             <img src="data:image/svg+xml;base64,{{ $qrImage }}" alt="QR Code {{ $atk->kode_atk }}">
+            <span class="qr-logo">
+                <img src="{{ asset('favicon-32x32.png') }}" alt="">
+            </span>
         </div>
         <div class="label-details">
             <div class="label-name">{{ $atk->nama_atk }}</div>
@@ -59,8 +62,10 @@
         border-radius: 10px;
         box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
     }
-    .qr-wrapper { flex: 0 0 34mm; width: 34mm; height: 34mm; }
+    .qr-wrapper { position: relative; flex: 0 0 34mm; width: 34mm; height: 34mm; }
     .qr-wrapper img { display: block; width: 100%; height: 100%; }
+    .qr-wrapper .qr-logo { position: absolute; top: 50%; left: 50%; display: flex; box-sizing: border-box; width: 34%; height: 34%; align-items: center; justify-content: center; padding: 1.5%; transform: translate(-50%, -50%); border: 0.25mm solid #e5e7eb; border-radius: 1.2mm; background: #fff; }
+    .qr-wrapper .qr-logo img { width: 100%; height: 100%; object-fit: contain; }
     .label-details { min-width: 0; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2mm; }
     .label-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; max-width: 100%; font-size: 16pt; line-height: 1.1; font-weight: 700; overflow-wrap: anywhere; }
     .label-code { max-width: 100%; padding: 1mm 3mm; border-radius: 10mm; background: #f3f4f6; font-size: 14pt; line-height: 1.2; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

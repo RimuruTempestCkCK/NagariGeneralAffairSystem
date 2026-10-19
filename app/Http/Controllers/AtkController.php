@@ -180,7 +180,7 @@ class AtkController extends Controller
         }
 
         $atk = Atk::findOrFail($id);
-        $qrImage = base64_encode(QrCode::format('svg')->size(180)->generate($atk->kode_atk));
+        $qrImage = base64_encode(QrCode::format('svg')->size(180)->errorCorrection('H')->generate($atk->kode_atk));
 
         return view('admin.atk.print-qr', compact('atk', 'qrImage'));
     }
@@ -207,4 +207,3 @@ class AtkController extends Controller
         ]);
     }
 }
-
