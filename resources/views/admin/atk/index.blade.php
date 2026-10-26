@@ -220,8 +220,18 @@
                     <input class="input" type="text" id="form-satuan" required>
                 </div>
                 <div class="form-group">
-                    <label>Jumlah / Stok *</label>
-                    <input class="input" type="number" id="form-jumlah" required>
+                    <label>Jumlah / Stok Awal *</label>
+                    <input class="input" type="number" id="form-jumlah" required min="0">
+                    <small>Perubahan stok berikutnya dicatat pada menu Stok ATK.</small>
+                </div>
+                <div class="form-group">
+                    <label>Cabang Stok Awal *</label>
+                    <select class="select" id="form-kode-cabang" required>
+                        <option value="">Pilih Cabang...</option>
+                        @foreach($branches as $kode => $nama)
+                        <option value="{{ $kode }}">{{ $kode }} - {{ $nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Harga Barang (Rp) *</label>
@@ -311,6 +321,9 @@
         document.getElementById('atk-form').reset();
         document.getElementById('atk-id').value = '';
         document.getElementById('form-kode').removeAttribute('readonly');
+        document.getElementById('form-jumlah').removeAttribute('readonly');
+        document.getElementById('form-kode-cabang').disabled = false;
+        document.getElementById('form-kode-cabang').value = '';
         openModal('atk-modal');
     }
 
@@ -328,6 +341,8 @@
                     document.getElementById('form-jenis').value = d.jenis_atk;
                     document.getElementById('form-satuan').value = d.satuan;
                     document.getElementById('form-jumlah').value = d.jumlah;
+                    document.getElementById('form-jumlah').setAttribute('readonly', true);
+                    document.getElementById('form-kode-cabang').disabled = true;
                     document.getElementById('form-harga').value = d.harga;
                     document.getElementById('form-rekening-penampungan').value = d.rekening_penampungan || '';
                     document.getElementById('form-rekening-biaya').value = d.rekening_biaya || '';
@@ -349,12 +364,15 @@
             nama_atk: document.getElementById('form-nama').value,
             jenis_atk: document.getElementById('form-jenis').value,
             satuan: document.getElementById('form-satuan').value,
-            jumlah: document.getElementById('form-jumlah').value,
             harga: document.getElementById('form-harga').value,
             rekening_penampungan: document.getElementById('form-rekening-penampungan').value,
             rekening_biaya: document.getElementById('form-rekening-biaya').value,
             status: document.getElementById('form-status').value,
         };
+        if (!isEdit) {
+            payload.jumlah = document.getElementById('form-jumlah').value;
+            payload.kode_cabang = document.getElementById('form-kode-cabang').value;
+        }
 
         fetch(url, {
             method: method,

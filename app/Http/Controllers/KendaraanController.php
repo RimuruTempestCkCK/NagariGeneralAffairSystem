@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
+use App\Models\Branch;
 use Illuminate\Http\Request;
 
 class KendaraanController extends Controller
@@ -30,9 +31,16 @@ class KendaraanController extends Controller
             $query->where('kondisi', $request->kondisi);
         }
 
+        if (array_key_exists($request->query('kode_cabang'), Branch::options())) {
+            $query->where('kode_cabang', $request->query('kode_cabang'));
+        }
+
         $kendaraans = $query->orderBy('nomor_kendaraan', 'asc')->paginate(10)->withQueryString();
 
-        return view('shared.kendaraan.index', compact('kendaraans'));
+        return view('shared.kendaraan.index', [
+            'kendaraans' => $kendaraans,
+            'branches' => Branch::options(),
+        ]);
     }
 
     /**
@@ -46,6 +54,7 @@ class KendaraanController extends Controller
 
         $validated = $request->validate([
             'nomor_kendaraan' => 'required|string|max:50|unique:kendaraans,nomor_kendaraan',
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys(Branch::options()))],
             'status_kendaraan' => 'required|in:Milik,Sewa',
             'jenis_kendaraan' => 'required|string|max:100',
             'tahun_kendaraan' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
@@ -105,6 +114,7 @@ class KendaraanController extends Controller
 
         $validated = $request->validate([
             'nomor_kendaraan' => 'required|string|max:50|unique:kendaraans,nomor_kendaraan,' . $id,
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys(Branch::options()))],
             'status_kendaraan' => 'required|in:Milik,Sewa',
             'jenis_kendaraan' => 'required|string|max:100',
             'tahun_kendaraan' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
@@ -141,4 +151,3 @@ class KendaraanController extends Controller
         ]);
     }
 }
-

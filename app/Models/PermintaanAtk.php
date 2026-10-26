@@ -13,6 +13,7 @@ class PermintaanAtk extends Model
         'nomor_po',
         'user_id',
         'unit_kerja',
+        'kode_cabang',
         'status',
         'catatan',
         'approved_by',
@@ -34,5 +35,10 @@ class PermintaanAtk extends Model
     public function items()
     {
         return $this->hasMany(PermintaanAtkItem::class, 'permintaan_atk_id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'kode_cabang', 'kode');
     }
 }

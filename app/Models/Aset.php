@@ -19,9 +19,14 @@ class Aset extends Model
         'jatuh_tempo_sertifikat',
         'lampiran_bukti',
         'keterangan',
+        'lampiran_files',
     ];
     
     protected $appends = ['status_sertifikat'];
+
+    protected $casts = [
+        'lampiran_files' => 'array',
+    ];
 
     public function getStatusSertifikatAttribute()
     {

@@ -18,6 +18,7 @@ class BbmKendaraan extends Model
         'total_biaya',
         'jenis_bbm',
         'catatan',
+        'foto_struk',
     ];
 
     public function kendaraan()

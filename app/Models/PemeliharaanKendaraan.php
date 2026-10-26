@@ -20,6 +20,7 @@ class PemeliharaanKendaraan extends Model
         'total_biaya',
         'bengkel',
         'catatan',
+        'foto_nota',
     ];
 
     public function kendaraan()

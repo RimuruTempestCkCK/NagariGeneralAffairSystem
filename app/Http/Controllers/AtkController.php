@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atk;
+use App\Models\AtkCabangStok;
+use App\Models\Branch;
+use App\Models\StokAtk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AtkController extends Controller
@@ -32,7 +37,9 @@ class AtkController extends Controller
         $atks = $query->orderBy('kode_atk', 'asc')->paginate(10)->withQueryString();
         $jenisList = Atk::select('jenis_atk')->distinct()->pluck('jenis_atk');
 
-        return view('admin.atk.index', compact('atks', 'jenisList'));
+        $branches = Branch::options();
+
+        return view('admin.atk.index', compact('atks', 'jenisList', 'branches'));
     }
 
     public function printInventory(Request $request)
@@ -69,6 +76,7 @@ class AtkController extends Controller
             'jenis_atk' => 'required|string|max:100',
             'satuan' => 'required|string|max:50',
             'jumlah' => 'required|integer|min:0',
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys(Branch::options()))],
             'harga' => 'required|numeric|min:0',
             'rekening_penampungan' => 'nullable|string|max:100',
             'rekening_biaya' => 'nullable|string|max:100',
@@ -77,7 +85,33 @@ class AtkController extends Controller
 
         $validated['qr_code'] = $validated['kode_atk'];
 
-        $atk = Atk::create($validated);
+        $kodeCabang = $validated['kode_cabang'];
+        unset($validated['kode_cabang']);
+
+        $atk = DB::transaction(function () use ($validated, $kodeCabang) {
+            $atk = Atk::create($validated);
+            AtkCabangStok::create([
+                'atk_id' => $atk->id,
+                'kode_cabang' => $kodeCabang,
+                'jumlah' => $atk->jumlah,
+            ]);
+
+            if ($atk->jumlah > 0) {
+                StokAtk::create([
+                    'atk_id' => $atk->id,
+                    'user_id' => Auth::id(),
+                    'kode_cabang' => $kodeCabang,
+                    'jenis_transaksi' => 'Stok Awal',
+                    'jumlah' => $atk->jumlah,
+                    'harga_satuan' => $atk->harga,
+                    'total_harga' => $atk->jumlah * $atk->harga,
+                    'no_jurnal' => null,
+                    'tanggal' => now()->toDateString(),
+                ]);
+            }
+
+            return $atk;
+        });
 
         return response()->json([
             'success' => true,
@@ -104,7 +138,6 @@ class AtkController extends Controller
             'nama_atk' => 'required|string|max:255',
             'jenis_atk' => 'required|string|max:100',
             'satuan' => 'required|string|max:50',
-            'jumlah' => 'required|integer|min:0',
             'harga' => 'required|numeric|min:0',
             'rekening_penampungan' => 'nullable|string|max:100',
             'rekening_biaya' => 'nullable|string|max:100',

@@ -14,6 +14,12 @@
         <div class="card-action">
             <form action="{{ route(Auth::user()->role . '.aset.index') }}" method="GET" class="filter-bar">
                 <input type="text" name="search" value="{{ request('search') }}" class="input" style="width: 250px;" placeholder="Cari Sertifikat / Cabang...">
+                <select name="kode_cabang" class="input">
+                    <option value="">Semua Cabang</option>
+                    @foreach($branches as $kode => $nama)
+                    <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                    @endforeach
+                </select>
                 <button type="submit" class="btn btn--primary btn--filter">Cari</button>
             </form>
 
@@ -42,7 +48,8 @@
             <tr>
                 <td class="cell-name">{{ $aset->nomor_sertifikat }}</td>
                 <td>
-                    <strong>{{ $aset->kode_cabang }}</strong><br>
+                    <strong>{{ $branches[$aset->kode_cabang] ?? 'Belum ditentukan' }}</strong><br>
+                    <span style="font-size: 12px; color: var(--t-muted);">{{ $aset->kode_cabang }}</span><br>
                     <span style="font-size: 12px; color: var(--t-muted);">{{ Str::limit($aset->lokasi, 30) }}</span>
                 </td>
                 <td>{{ $aset->nama_pemilik }}</td>
@@ -100,7 +107,12 @@
             <div style="display: flex; gap: 15px;">
                 <div style="flex:1;">
                     <label class="form-label">Kode Cabang <span style="color:red">*</span></label>
-                    <input type="text" id="kode_cabang" name="kode_cabang" class="input" required placeholder="Contoh: CAB-001">
+                    <select id="kode_cabang" name="kode_cabang" class="input" required>
+                        <option value="">Pilih Cabang...</option>
+                        @foreach($branches as $kode => $nama)
+                        <option value="{{ $kode }}">{{ $kode }} - {{ $nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div style="flex:1;">
                     <label class="form-label">Nomor Sertifikat <span style="color:red">*</span></label>
@@ -128,8 +140,8 @@
                     <input type="date" id="jatuh_tempo_sertifikat" name="jatuh_tempo_sertifikat" class="input">
                 </div>
                 <div style="flex:1;">
-                    <label class="form-label">Lampiran Bukti (PDF/JPG/PNG, Max 5MB)</label>
-                    <input type="file" id="lampiran_bukti" name="lampiran_bukti" class="input" accept=".pdf,.jpg,.jpeg,.png">
+                    <label class="form-label">Dokumen Aset (PDF/JPG/PNG, maks. 10 MB per file)</label>
+                    <input type="file" id="lampiran_files" name="lampiran_files[]" class="input" accept=".pdf,.jpg,.jpeg,.png" multiple>
                     <div id="current_lampiran" style="font-size: 12px; margin-top: -5px; margin-bottom: 10px;"></div>
                 </div>
             </div>
@@ -191,9 +203,11 @@
                         document.getElementById('jatuh_tempo_sertifikat').value = p.jatuh_tempo_sertifikat || '';
                         document.getElementById('keterangan').value = p.keterangan || '';
                         
-                        if (p.lampiran_url) {
-                            document.getElementById('current_lampiran').innerHTML = `File saat ini: <a href="${p.lampiran_url}" target="_blank" style="color:var(--primary); text-decoration:underline;">Lihat File</a> (Pilih file baru untuk mengganti)`;
-                        }
+                        const documents = [...(p.lampiran_files_urls || [])];
+                        if (p.lampiran_url) documents.unshift({ url: p.lampiran_url, path: 'Lampiran lama' });
+                        document.getElementById('current_lampiran').innerHTML = documents.length
+                            ? `Dokumen tersimpan: ${documents.map((file, index) => `<a href="${file.url}" target="_blank" style="color:var(--primary); text-decoration:underline;">Dokumen ${index + 1}</a>`).join(', ')}. Dokumen baru akan ditambahkan.`
+                            : '';
                         
                         document.getElementById('modalForm').classList.add('flex');
                     } else {
@@ -206,6 +220,18 @@
 
     function closeFormModal() {
         document.getElementById('modalForm').classList.remove('flex');
+    }
+
+    const branchNames = @json($branches);
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, character => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        })[character]);
     }
 
     function closeDetailModal() {
@@ -224,14 +250,16 @@
                     else if (p.status_sertifikat === 'Akan Jatuh Tempo') statusColor = '#f39c12';
                     else if (p.status_sertifikat === 'Sudah Jatuh Tempo') statusColor = '#e74c3c';
 
-                    let fileLink = p.lampiran_url 
-                        ? `<a href="${p.lampiran_url}" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:underline;">Tampilkan Dokumen</a>`
+                    const documents = [...(p.lampiran_files_urls || [])];
+                    if (p.lampiran_url) documents.unshift({ url: p.lampiran_url });
+                    let fileLink = documents.length
+                        ? documents.map((file, index) => `<a href="${file.url}" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:underline;">Dokumen ${index + 1}</a>`).join('<br>')
                         : '<span style="color:var(--t-muted)">Tidak ada lampiran</span>';
 
                     document.getElementById('detailContent').innerHTML = `
                         <div style="background:var(--bg-muted); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                             <div style="margin-bottom: 8px;"><strong style="display:inline-block; width: 140px;">No. Sertifikat</strong>: ${p.nomor_sertifikat}</div>
-                            <div style="margin-bottom: 8px;"><strong style="display:inline-block; width: 140px;">Kode Cabang</strong>: ${p.kode_cabang}</div>
+                            <div style="margin-bottom: 8px;"><strong style="display:inline-block; width: 140px;">Cabang</strong>: ${escapeHtml(branchNames[p.kode_cabang] || 'Belum ditentukan')} (${escapeHtml(p.kode_cabang || '-')})</div>
                             <div style="margin-bottom: 8px;"><strong style="display:inline-block; width: 140px;">Nama Pemilik</strong>: ${p.nama_pemilik}</div>
                             <div style="margin-bottom: 8px;"><strong style="display:inline-block; width: 140px;">Luas Tanah</strong>: ${p.luas_tanah} m&sup2;</div>
                             <div style="margin-bottom: 8px;"><strong style="display:inline-block; width: 140px;">Lokasi</strong>: ${p.lokasi}</div>

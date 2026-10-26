@@ -25,7 +25,7 @@
         <tbody>
             @foreach($asets as $aset)
             <tr>
-                <td>{{ $aset->kode_cabang }}</td>
+                <td>{{ $branches[$aset->kode_cabang] ?? 'Belum ditentukan' }} ({{ $aset->kode_cabang }})</td>
                 <td>{{ $aset->nomor_sertifikat }}</td>
                 <td>{{ $aset->nama_pemilik }}</td>
                 <td class="text-right">{{ number_format($aset->luas_tanah, 0, ',', '.') }} mÂ²</td>
@@ -42,4 +42,3 @@
         </tbody>
     </table>
 @endsection
-

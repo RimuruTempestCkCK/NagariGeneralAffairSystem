@@ -20,6 +20,7 @@ class StokAtk extends Model
         'no_jurnal',
         'keterangan',
         'tanggal',
+        'kode_cabang',
     ];
 
     public function atk()

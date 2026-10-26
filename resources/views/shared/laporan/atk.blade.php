@@ -14,9 +14,6 @@
     <div class="hero-actions">
         <a href="{{ route('admin.laporan.atk.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn--success">Excel</a>
         <a href="{{ route('admin.laporan.atk.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn--danger">PDF</a>
-        <button class="btn btn--secondary" onclick="window.print()">
-            Print Laporan
-        </button>
     </div>
 </section>
 
@@ -31,6 +28,12 @@
             <input type="date" name="start_date" value="{{ request('start_date') }}" class="input">
             <input type="date" name="end_date" value="{{ request('end_date') }}" class="input">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari ATK..." style="width: 200px;">
+            <select name="kode_cabang" class="input">
+                <option value="">Semua Cabang</option>
+                @foreach($branches as $kode => $nama)
+                <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                @endforeach
+            </select>
             <button type="submit" class="btn btn--primary btn--filter">Filter</button>
             <a href="{{ route('admin.laporan.atk') }}" class="btn btn--ghost btn--reset">Reset</a>
         </form>
@@ -48,6 +51,7 @@
         <table class="table" style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
+                    <th>No.</th>
                     <th>Kode ATK</th>
                     <th>Nama ATK</th>
                     <th style="text-align:right">Stok Masuk</th>
@@ -69,6 +73,7 @@
                     $totalNilai += $atk->nilai_persediaan_saat_ini;
                 @endphp
                 <tr>
+                    <td>{{ $loop->iteration }}</td>
                     <td><strong>{{ $atk->kode_atk }}</strong></td>
                     <td class="cell-name">{{ $atk->nama_atk }}</td>
                     <td style="text-align:right; color: var(--success);">+{{ number_format($atk->stok_masuk_periode, 0, ',', '.') }} {{ $atk->satuan }}</td>
@@ -86,14 +91,14 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" style="text-align:center; padding: 30px; color: var(--t-muted);">Data tidak ditemukan.</td>
+                    <td colspan="9" style="text-align:center; padding: 30px; color: var(--t-muted);">Data tidak ditemukan.</td>
                 </tr>
                 @endforelse
             </tbody>
             @if(count($atks) > 0)
             <tfoot>
                 <tr style="background: var(--bg-muted); font-weight: bold;">
-                    <td colspan="5" style="text-align:right; padding: 12px;">TOTAL KESELURUHAN</td>
+                    <td colspan="6" style="text-align:right; padding: 12px;">TOTAL KESELURUHAN</td>
                     <td style="text-align:right; color: var(--danger);">Rp {{ number_format($totalBeban, 0, ',', '.') }}</td>
                     <td style="text-align:right; color: var(--success);">Rp {{ number_format($totalNilai, 0, ',', '.') }}</td>
                     <td></td>
@@ -104,16 +109,4 @@
     </div>
 </section>
 
-@push('styles')
-<style>
-    @media print {
-        #heroSection, #filterSection, .sidebar, .top-nav { display: none !important; }
-        #printHeader { display: block !important; }
-        .table th, .table td { border: 1px solid #ddd; padding: 8px; }
-        .table { width: 100% !important; }
-        .card { box-shadow: none !important; border: none !important; }
-        @page { size: landscape; margin: 1cm; }
-    }
-</style>
-@endpush
 @endsection

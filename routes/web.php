@@ -14,6 +14,7 @@ use App\Http\Controllers\EvaluasiKeamananController;
 use App\Http\Controllers\AsetController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\BranchController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('audit-logs.index');
         Route::get('/audit-logs/{id}', [\App\Http\Controllers\AuditLogController::class, 'show'])->name('audit-logs.show');
+
+        Route::resource('branches', BranchController::class)->except(['create', 'edit', 'show']);
 
         // Master ATK CRUD (Admin Only)
         Route::get('/atk', [AtkController::class, 'index'])->name('atk.index');

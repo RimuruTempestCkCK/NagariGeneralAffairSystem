@@ -14,9 +14,6 @@
     <div class="hero-actions">
         <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'excel'])) }}" class="btn btn--success">Excel</a>
         <a href="{{ route('admin.laporan.aset.export', array_merge(request()->query(), ['format' => 'pdf'])) }}" target="_blank" class="btn btn--danger">PDF</a>
-        <button class="btn btn--secondary" onclick="window.print()">
-            Print Laporan
-        </button>
     </div>
 </section>
 
@@ -29,6 +26,12 @@
         
         <form action="{{ route('admin.laporan.aset') }}" method="GET" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari aset..." style="width: 200px;">
+            <select name="kode_cabang" class="input">
+                <option value="">Semua Cabang</option>
+                @foreach($branches as $kode => $nama)
+                <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                @endforeach
+            </select>
             <select name="status" class="input">
                 <option value="">Semua Status</option>
                 <option value="Aman" {{ request('status') == 'Aman' ? 'selected' : '' }}>Aman</option>
@@ -68,7 +71,7 @@
                 <tr>
                     <td><strong>{{ $aset->nomor_sertifikat }}</strong></td>
                     <td class="cell-name">
-                        {{ $aset->kode_cabang }}
+                        {{ $branches[$aset->kode_cabang] ?? 'Belum ditentukan' }} ({{ $aset->kode_cabang }})
                         <div style="font-size: 11px; color: var(--t-muted);">{{ Str::limit($aset->lokasi, 40) }}</div>
                     </td>
                     <td>{{ $aset->nama_pemilik }}</td>
@@ -104,16 +107,4 @@
     </div>
 </section>
 
-@push('styles')
-<style>
-    @media print {
-        #heroSection, #filterSection, .sidebar, .top-nav { display: none !important; }
-        #printHeader { display: block !important; }
-        .table th, .table td { border: 1px solid #ddd; padding: 8px; }
-        .table { width: 100% !important; }
-        .card { box-shadow: none !important; border: none !important; }
-        @page { size: landscape; margin: 1cm; }
-    }
-</style>
-@endpush
 @endsection

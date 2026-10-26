@@ -24,6 +24,12 @@
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari Plat Nomor / Jenis..." style="width: 200px;">
+            <select name="kode_cabang" class="input">
+                <option value="">Semua Cabang</option>
+                @foreach($branches as $kode => $nama)
+                <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                @endforeach
+            </select>
             <select name="status_kendaraan" onchange="this.form.submit()" class="input">
                 <option value="">Semua Status</option>
                 <option value="Milik" {{ request('status_kendaraan') === 'Milik' ? 'selected' : '' }}>Milik</option>
@@ -44,6 +50,7 @@
             <thead>
                 <tr>
                     <th>Nomor Kendaraan</th>
+                    <th>Cabang</th>
                     <th>Jenis</th>
                     <th>Status</th>
                     <th>Kondisi</th>
@@ -65,6 +72,7 @@
                 @endphp
                 <tr>
                     <td class="cell-name">{{ $k->nomor_kendaraan }}</td>
+                    <td>{{ $branches[$k->kode_cabang] ?? 'Belum ditentukan' }}</td>
                     <td>{{ $k->jenis_kendaraan }} <span style="font-size: 12px; color: var(--t-muted);">({{ $k->tahun_kendaraan }})</span></td>
                     <td>{{ $k->status_kendaraan }}</td>
                     <td>
@@ -101,7 +109,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 30px; color: var(--t-muted);">
+                    <td colspan="7" style="text-align: center; padding: 30px; color: var(--t-muted);">
                         Tidak ada data kendaraan operasional.
                     </td>
                 </tr>
@@ -157,6 +165,15 @@
                 <div class="form-group">
                     <label>Jenis Kendaraan *</label>
                     <input class="input" type="text" id="jenis_kendaraan" required>
+                </div>
+                <div class="form-group">
+                    <label>Cabang *</label>
+                    <select class="select" id="kode_cabang" required>
+                        <option value="">Pilih Cabang...</option>
+                        @foreach($branches as $kode => $nama)
+                        <option value="{{ $kode }}">{{ $kode }} - {{ $nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Tahun Pembuatan *</label>
@@ -215,6 +232,18 @@
 </div>
 
 <script>
+    const branchNames = @json($branches);
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, character => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        })[character]);
+    }
+
     function openFormModal(id = null) {
         if (!id) {
             document.getElementById('modalFormTitle').textContent = 'Tambah Kendaraan Operasional';
@@ -231,6 +260,7 @@
                         document.getElementById('kendaraan_id').value = k.id;
                         document.getElementById('nomor_kendaraan').value = k.nomor_kendaraan;
                         document.getElementById('jenis_kendaraan').value = k.jenis_kendaraan;
+                        document.getElementById('kode_cabang').value = k.kode_cabang || '';
                         document.getElementById('tahun_kendaraan').value = k.tahun_kendaraan;
                         document.getElementById('status_kendaraan').value = k.status_kendaraan;
                         document.getElementById('nomor_bpkb').value = k.nomor_bpkb || '';
@@ -263,6 +293,7 @@
                             <p><strong>Nomor Kendaraan:</strong> <span style="text-transform: uppercase;">${k.nomor_kendaraan}</span></p>
                             <p><strong>Status Kepemilikan:</strong> ${k.status_kendaraan}</p>
                             <p><strong>Jenis Kendaraan:</strong> ${k.jenis_kendaraan}</p>
+                            <p><strong>Cabang:</strong> ${escapeHtml(branchNames[k.kode_cabang] || 'Belum ditentukan')} (${escapeHtml(k.kode_cabang || '-')})</p>
                             <p><strong>Tahun:</strong> ${k.tahun_kendaraan}</p>
                             <p><strong>Kondisi:</strong> ${k.kondisi}</p>
                         </div>
@@ -287,6 +318,7 @@
         const payload = {
             nomor_kendaraan: document.getElementById('nomor_kendaraan').value.toUpperCase(),
             jenis_kendaraan: document.getElementById('jenis_kendaraan').value,
+            kode_cabang: document.getElementById('kode_cabang').value,
             tahun_kendaraan: document.getElementById('tahun_kendaraan').value,
             status_kendaraan: document.getElementById('status_kendaraan').value,
             nomor_bpkb: document.getElementById('nomor_bpkb').value,

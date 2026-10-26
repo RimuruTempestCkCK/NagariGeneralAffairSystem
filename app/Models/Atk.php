@@ -32,4 +32,9 @@ class Atk extends Model
     {
         return $this->hasMany(PemakaianAtk::class, 'atk_id');
     }
+
+    public function cabangStoks()
+    {
+        return $this->hasMany(AtkCabangStok::class);
+    }
 }

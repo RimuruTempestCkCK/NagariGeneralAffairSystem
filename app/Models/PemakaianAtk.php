@@ -19,6 +19,7 @@ class PemakaianAtk extends Model
         'no_jurnal_beban',
         'keperluan',
         'tanggal',
+        'kode_cabang',
     ];
 
     public function atk()

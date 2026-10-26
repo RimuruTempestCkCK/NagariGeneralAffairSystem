@@ -15,6 +15,7 @@ class KendaraanSeeder extends Seeder
         $kendaraans = [
             [
                 'nomor_kendaraan' => 'BA 1234 XY',
+                'kode_cabang' => '001',
                 'status_kendaraan' => 'Milik',
                 'jenis_kendaraan' => 'Mobil Dinas',
                 'tahun_kendaraan' => '2019',
@@ -24,6 +25,7 @@ class KendaraanSeeder extends Seeder
             ],
             [
                 'nomor_kendaraan' => 'BA 5678 ZA',
+                'kode_cabang' => '002',
                 'status_kendaraan' => 'Sewa',
                 'jenis_kendaraan' => 'Minibus',
                 'tahun_kendaraan' => '2021',
