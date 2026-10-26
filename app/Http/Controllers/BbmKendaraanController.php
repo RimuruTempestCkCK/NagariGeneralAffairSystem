@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BbmKendaraan;
+use App\Models\Branch;
 use App\Models\Kendaraan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,10 @@ class BbmKendaraanController extends Controller
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
             $query->whereBetween('tanggal', [$request->tanggal_mulai, $request->tanggal_akhir]);
         }
+
+        if (array_key_exists($request->query('kode_cabang'), Branch::options())) {
+            $query->whereHas('kendaraan', fn ($vehicle) => $vehicle->where('kode_cabang', $request->query('kode_cabang')));
+        }
         
         if (Auth::user()->role === 'staff') {
             $query->where('user_id', Auth::id());
@@ -31,7 +36,11 @@ class BbmKendaraanController extends Controller
         $bbms = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
         $kendaraans = Kendaraan::where('kondisi', '!=', 'Rusak')->orderBy('nomor_kendaraan', 'asc')->get();
 
-        return view('shared.bbm-kendaraan.index', compact('bbms', 'kendaraans'));
+        return view('shared.bbm-kendaraan.index', [
+            'bbms' => $bbms,
+            'kendaraans' => $kendaraans,
+            'branches' => Branch::options(),
+        ]);
     }
 
     /**
@@ -46,7 +55,12 @@ class BbmKendaraanController extends Controller
             'harga_per_liter' => 'required|numeric|min:0',
             'jenis_bbm' => 'required|string|max:100',
             'catatan' => 'nullable|string',
+            'foto_struk' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
+
+        if ($request->hasFile('foto_struk')) {
+            $validated['foto_struk'] = $request->file('foto_struk')->store('kendaraan/bbm', 'public');
+        }
 
         $validated['total_biaya'] = $validated['liter'] * $validated['harga_per_liter'];
         $validated['user_id'] = Auth::id();
@@ -95,7 +109,12 @@ class BbmKendaraanController extends Controller
             'harga_per_liter' => 'required|numeric|min:0',
             'jenis_bbm' => 'required|string|max:100',
             'catatan' => 'nullable|string',
+            'foto_struk' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
+
+        if ($request->hasFile('foto_struk')) {
+            $validated['foto_struk'] = $request->file('foto_struk')->store('kendaraan/bbm', 'public');
+        }
 
         $validated['total_biaya'] = $validated['liter'] * $validated['harga_per_liter'];
 
@@ -127,4 +146,3 @@ class BbmKendaraanController extends Controller
         ]);
     }
 }
-

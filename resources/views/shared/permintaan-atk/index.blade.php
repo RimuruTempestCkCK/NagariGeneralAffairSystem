@@ -53,7 +53,7 @@
                 <tr>
                     <td class="cell-name">{{ $p->nomor_po }}</td>
                     <td>{{ $p->user->name ?? '-' }}</td>
-                    <td>{{ $p->unit_kerja }}</td>
+                    <td>{{ $p->branch->nama ?? $p->unit_kerja }}</td>
                     <td class="cell-date">{{ date('d M Y', strtotime($p->tanggal_permintaan)) }}</td>
                     <td><strong>{{ $p->items->count() }}</strong> jenis</td>
                     <td>
@@ -150,8 +150,13 @@
             <input type="hidden" id="permintaan_id">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
-                    <label>Unit Kerja / Cabang *</label>
-                    <input class="input" type="text" id="unit_kerja" required>
+                    <label>Cabang *</label>
+                    <select class="select" id="kode_cabang" required>
+                        <option value="">-- Pilih Cabang --</option>
+                        @foreach($branches as $kode => $nama)
+                        <option value="{{ $kode }}">{{ $kode }} - {{ $nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Tanggal Permintaan *</label>
@@ -199,6 +204,16 @@
 <script>
     const atksMaster = @json($atks);
 
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, character => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        })[character]);
+    }
+
     function addItemRow(selectedAtkId = '', jumlah = 1) {
         const container = document.getElementById('itemsContainer');
         const rowId = Date.now() + Math.random().toString(36).substring(2, 7);
@@ -245,7 +260,7 @@
     function openCreateModal() {
         document.getElementById('modalFormTitle').textContent = 'Buat Permintaan ATK Baru';
         document.getElementById('permintaan_id').value = '';
-        document.getElementById('unit_kerja').value = '';
+        document.getElementById('kode_cabang').value = '';
         document.getElementById('tanggal_permintaan').value = new Date().toISOString().split('T')[0];
         document.getElementById('catatan').value = '';
         document.getElementById('itemsContainer').innerHTML = '';
@@ -264,7 +279,7 @@
                 const p = data.data;
                 document.getElementById('modalFormTitle').textContent = `Edit Permintaan ATK (${p.nomor_po})`;
                 document.getElementById('permintaan_id').value = p.id;
-                document.getElementById('unit_kerja').value = p.unit_kerja;
+                document.getElementById('kode_cabang').value = p.kode_cabang || '';
                 document.getElementById('tanggal_permintaan').value = p.tanggal_permintaan;
                 document.getElementById('catatan').value = p.catatan || '';
                 
@@ -300,7 +315,7 @@
                         <div><strong>Nomor PO:</strong> ${p.nomor_po}</div>
                         <div><strong>Status:</strong> ${p.status}</div>
                         <div><strong>Pemohon:</strong> ${p.user ? p.user.name : '-'}</div>
-                        <div><strong>Unit Kerja:</strong> ${p.unit_kerja}</div>
+                        <div><strong>Cabang:</strong> ${escapeHtml(p.branch ? p.branch.nama : p.unit_kerja)}</div>
                         <div><strong>Tanggal:</strong> ${p.tanggal_permintaan}</div>
                         <div><strong>Disetujui Oleh:</strong> ${p.approver ? p.approver.name : '-'}</div>
                     </div>
@@ -342,7 +357,7 @@
         if (items.length === 0) return Swal.fire('Perhatian', 'Pilih minimal satu barang ATK.', 'warning');
 
         const payload = {
-            unit_kerja: document.getElementById('unit_kerja').value,
+            kode_cabang: document.getElementById('kode_cabang').value,
             tanggal_permintaan: document.getElementById('tanggal_permintaan').value,
             catatan: document.getElementById('catatan').value,
             action: actionType,

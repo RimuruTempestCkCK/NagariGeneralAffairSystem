@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
+use App\Models\Branch;
 use App\Models\PemeliharaanKendaraan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,10 @@ class PemeliharaanKendaraanController extends Controller
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
             $query->whereBetween('tanggal', [$request->tanggal_mulai, $request->tanggal_akhir]);
         }
+
+        if (array_key_exists($request->query('kode_cabang'), Branch::options())) {
+            $query->whereHas('kendaraan', fn ($vehicle) => $vehicle->where('kode_cabang', $request->query('kode_cabang')));
+        }
         
         if (Auth::user()->role === 'staff') {
             $query->where('user_id', Auth::id());
@@ -35,7 +40,11 @@ class PemeliharaanKendaraanController extends Controller
         $pemeliharaans = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
         $kendaraans = Kendaraan::orderBy('nomor_kendaraan', 'asc')->get();
 
-        return view('shared.pemeliharaan-kendaraan.index', compact('pemeliharaans', 'kendaraans'));
+        return view('shared.pemeliharaan-kendaraan.index', [
+            'pemeliharaans' => $pemeliharaans,
+            'kendaraans' => $kendaraans,
+            'branches' => Branch::options(),
+        ]);
     }
 
     /**
@@ -52,7 +61,12 @@ class PemeliharaanKendaraanController extends Controller
             'biaya_jasa' => 'required|numeric|min:0',
             'bengkel' => 'nullable|string|max:255',
             'catatan' => 'nullable|string',
+            'foto_nota' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
+
+        if ($request->hasFile('foto_nota')) {
+            $validated['foto_nota'] = $request->file('foto_nota')->store('kendaraan/pemeliharaan', 'public');
+        }
 
         $validated['total_biaya'] = $validated['harga_onderdil'] + $validated['biaya_jasa'];
         $validated['user_id'] = Auth::id();
@@ -103,7 +117,12 @@ class PemeliharaanKendaraanController extends Controller
             'biaya_jasa' => 'required|numeric|min:0',
             'bengkel' => 'nullable|string|max:255',
             'catatan' => 'nullable|string',
+            'foto_nota' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
+
+        if ($request->hasFile('foto_nota')) {
+            $validated['foto_nota'] = $request->file('foto_nota')->store('kendaraan/pemeliharaan', 'public');
+        }
 
         $validated['total_biaya'] = $validated['harga_onderdil'] + $validated['biaya_jasa'];
 
@@ -135,4 +154,3 @@ class PemeliharaanKendaraanController extends Controller
         ]);
     }
 }
-

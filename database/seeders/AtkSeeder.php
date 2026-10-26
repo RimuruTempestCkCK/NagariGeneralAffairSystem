@@ -20,6 +20,7 @@ class AtkSeeder extends Seeder
                 'satuan' => 'Rim',
                 'harga' => 55000,
                 'jumlah' => 150,
+                'kode_cabang' => '001',
                 'rekening_penampungan' => '100.111.001',
                 'rekening_biaya' => '500.111.001',
                 'status' => 'Aktif',
@@ -31,6 +32,7 @@ class AtkSeeder extends Seeder
                 'satuan' => 'Botol',
                 'harga' => 85000,
                 'jumlah' => 45,
+                'kode_cabang' => '002',
                 'rekening_penampungan' => '100.111.002',
                 'rekening_biaya' => '500.111.002',
                 'status' => 'Aktif',
@@ -42,6 +44,7 @@ class AtkSeeder extends Seeder
                 'satuan' => 'Pcs',
                 'harga' => 25000,
                 'jumlah' => 80,
+                'kode_cabang' => '003',
                 'rekening_penampungan' => '100.111.003',
                 'rekening_biaya' => '500.111.003',
                 'status' => 'Aktif',
@@ -53,6 +56,7 @@ class AtkSeeder extends Seeder
                 'satuan' => 'Kotak',
                 'harga' => 35000,
                 'jumlah' => 30,
+                'kode_cabang' => '004',
                 'rekening_penampungan' => '100.111.004',
                 'rekening_biaya' => '500.111.004',
                 'status' => 'Aktif',
@@ -60,9 +64,16 @@ class AtkSeeder extends Seeder
         ];
 
         foreach ($atks as $atkData) {
+            $kodeCabang = $atkData['kode_cabang'];
+            unset($atkData['kode_cabang']);
             \App\Models\Atk::updateOrCreate(
                 ['kode_atk' => $atkData['kode_atk']],
                 $atkData
+            );
+            $atk = \App\Models\Atk::where('kode_atk', $atkData['kode_atk'])->firstOrFail();
+            \App\Models\AtkCabangStok::updateOrCreate(
+                ['atk_id' => $atk->id, 'kode_cabang' => $kodeCabang],
+                ['jumlah' => $atk->jumlah]
             );
         }
     }

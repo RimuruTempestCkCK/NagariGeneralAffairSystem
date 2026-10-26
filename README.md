@@ -57,3 +57,11 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Konfigurasi NGAS
+
+- Admin mengelola maksimal lima cabang melalui menu **Pengelolaan Cabang**. Kode cabang terdiri dari tiga karakter dan tidak dapat diubah setelah dibuat; nama cabang dapat diperbarui. Cabang yang sudah dipakai data tidak dapat dihapus.
+- `config/branches.php` hanya menjadi sumber daftar cabang awal ketika migrasi tabel cabang dijalankan pada instalasi baru.
+- Setelah mengambil perubahan aplikasi, jalankan migrasi dengan `php artisan migrate` dan pastikan penyimpanan berkas publik tersedia dengan `php artisan storage:link`.
+- Foto perjalanan, struk BBM, dan nota pemeliharaan menerima JPG, PNG, atau WebP hingga 5 MB per foto. Lampiran aset menerima PDF/JPG/PNG tanpa batas jumlah berkas, hingga 10 MB per berkas.
+- Kendaraan dan aset lama yang belum memakai salah satu dari lima kode cabang perlu diperbarui melalui formulirnya agar muncul pada filter cabang. Migrasi lanjutan memetakan data contoh ATK yang kode dan namanya cocok dengan seeder; data lain yang belum memiliki cabang tetap perlu diperiksa sebelum dialokasikan.

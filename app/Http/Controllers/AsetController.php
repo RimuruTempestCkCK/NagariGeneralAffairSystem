@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aset;
+use App\Models\Branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,10 +17,16 @@ class AsetController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('nomor_sertifikat', 'like', "%{$search}%")
-                  ->orWhere('kode_cabang', 'like', "%{$search}%")
-                  ->orWhere('lokasi', 'like', "%{$search}%")
-                  ->orWhere('nama_pemilik', 'like', "%{$search}%");
+            $query->where(function ($query) use ($search) {
+                $query->where('nomor_sertifikat', 'like', "%{$search}%")
+                    ->orWhere('kode_cabang', 'like', "%{$search}%")
+                    ->orWhere('lokasi', 'like', "%{$search}%")
+                    ->orWhere('nama_pemilik', 'like', "%{$search}%");
+            });
+        }
+
+        if (array_key_exists($request->query('kode_cabang'), Branch::options())) {
+            $query->where('kode_cabang', $request->query('kode_cabang'));
         }
         
         if (Auth::user()->role === 'staff') {
@@ -33,7 +40,10 @@ class AsetController extends Controller
 
         $asets = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
-        return view('shared.aset.index', compact('asets'));
+        return view('shared.aset.index', [
+            'asets' => $asets,
+            'branches' => Branch::options(),
+        ]);
     }
 
     public function store(Request $request)
@@ -44,13 +54,15 @@ class AsetController extends Controller
         }
 
         $validated = $request->validate([
-            'kode_cabang' => 'required|string|max:255',
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys(Branch::options()))],
             'nomor_sertifikat' => 'required|string|max:255|unique:asets',
             'nama_pemilik' => 'required|string|max:255',
             'lokasi' => 'required|string',
             'luas_tanah' => 'required|numeric|min:0',
             'jatuh_tempo_sertifikat' => 'nullable|date',
             'lampiran_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', // Max 5MB
+            'lampiran_files' => 'nullable|array',
+            'lampiran_files.*' => 'file|mimes:pdf,jpg,jpeg,png|max:10240',
             'keterangan' => 'nullable|string',
         ]);
 
@@ -59,6 +71,13 @@ class AsetController extends Controller
             $filename = Str::slug($validated['nomor_sertifikat']) . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('lampiran_aset', $filename, 'public');
             $validated['lampiran_bukti'] = $path;
+        }
+
+        if ($request->hasFile('lampiran_files')) {
+            $validated['lampiran_files'] = array_map(
+                fn ($file) => $file->store('lampiran_aset', 'public'),
+                $request->file('lampiran_files')
+            );
         }
 
         $aset = Aset::create($validated);
@@ -75,6 +94,9 @@ class AsetController extends Controller
         $aset = Aset::findOrFail($id);
         
         $aset->lampiran_url = $aset->lampiran_bukti ? asset('storage/' . $aset->lampiran_bukti) : null;
+        $aset->lampiran_files_urls = collect($aset->lampiran_files ?? [])
+            ->map(fn ($path) => ['path' => $path, 'url' => asset('storage/' . $path)])
+            ->values();
         
         return response()->json([
             'success' => true,
@@ -91,13 +113,15 @@ class AsetController extends Controller
         $aset = Aset::findOrFail($id);
 
         $validated = $request->validate([
-            'kode_cabang' => 'required|string|max:255',
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys(Branch::options()))],
             'nomor_sertifikat' => 'required|string|max:255|unique:asets,nomor_sertifikat,' . $id,
             'nama_pemilik' => 'required|string|max:255',
             'lokasi' => 'required|string',
             'luas_tanah' => 'required|numeric|min:0',
             'jatuh_tempo_sertifikat' => 'nullable|date',
             'lampiran_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'lampiran_files' => 'nullable|array',
+            'lampiran_files.*' => 'file|mimes:pdf,jpg,jpeg,png|max:10240',
             'keterangan' => 'nullable|string',
         ]);
 
@@ -106,7 +130,15 @@ class AsetController extends Controller
             if ($aset->lampiran_bukti && Storage::disk('public')->exists($aset->lampiran_bukti)) {
                 Storage::disk('public')->delete($aset->lampiran_bukti);
             }
-            
+
+            if ($request->hasFile('lampiran_files')) {
+                $newFiles = array_map(
+                    fn ($file) => $file->store('lampiran_aset', 'public'),
+                    $request->file('lampiran_files')
+                );
+                $validated['lampiran_files'] = array_merge($aset->lampiran_files ?? [], $newFiles);
+            }
+
             $file = $request->file('lampiran_bukti');
             $filename = Str::slug($validated['nomor_sertifikat']) . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('lampiran_aset', $filename, 'public');
@@ -133,6 +165,11 @@ class AsetController extends Controller
         if ($aset->lampiran_bukti && Storage::disk('public')->exists($aset->lampiran_bukti)) {
             Storage::disk('public')->delete($aset->lampiran_bukti);
         }
+        foreach ($aset->lampiran_files ?? [] as $file) {
+            if (Storage::disk('public')->exists($file)) {
+                Storage::disk('public')->delete($file);
+            }
+        }
 
         $aset->delete();
 
@@ -142,4 +179,3 @@ class AsetController extends Controller
         ]);
     }
 }
-

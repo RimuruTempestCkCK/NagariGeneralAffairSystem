@@ -36,6 +36,12 @@
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.pemakaian-atk.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari Unit / No. Jurnal / ATK..." style="width: 250px;">
+            <select name="kode_cabang" class="input">
+                <option value="">Semua Cabang</option>
+                @foreach($branches as $kode => $nama)
+                <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                @endforeach
+            </select>
             <button type="submit" class="btn btn--primary btn--filter">Cari</button>
         </form>
     </div>
@@ -46,6 +52,7 @@
                 <tr>
                     <th>Tanggal</th>
                     <th>Unit Kerja</th>
+                    <th>Cabang</th>
                     <th>Barang ATK</th>
                     <th>Jumlah</th>
                     <th>Harga Satuan</th>
@@ -59,6 +66,7 @@
                 <tr>
                     <td class="cell-date">{{ date('d M Y', strtotime($pem->tanggal)) }}</td>
                     <td class="cell-name">{{ $pem->unit_kerja }}</td>
+                    <td>{{ $branches[$pem->kode_cabang] ?? '-' }}</td>
                     <td>
                         <strong>{{ $pem->atk->nama_atk ?? '-' }}</strong>
                         <div style="font-size: 12px; color: var(--t-muted);">{{ $pem->atk->kode_atk ?? '' }}</div>
@@ -88,7 +96,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 30px; color: var(--t-muted);">
+                    <td colspan="9" style="text-align: center; padding: 30px; color: var(--t-muted);">
                         Belum ada riwayat pemakaian ATK.
                     </td>
                 </tr>
@@ -134,13 +142,23 @@
                 <select class="select" id="atk_id" required onchange="autoFillPriceAndStock()">
                     <option value="">-- Pilih Barang ATK --</option>
                     @foreach($atks as $atk)
-                        <option value="{{ $atk->id }}" data-harga="{{ $atk->harga }}" data-satuan="{{ $atk->satuan }}" data-stok="{{ $atk->jumlah }}">
-                            {{ $atk->kode_atk }} - {{ $atk->nama_atk }} (Tersedia: {{ $atk->jumlah }} {{ $atk->satuan }})
+                        <option value="{{ $atk->id }}" data-harga="{{ $atk->harga }}" data-satuan="{{ $atk->satuan }}" data-stocks='@json($atk->cabangStoks->pluck("jumlah", "kode_cabang"))'>
+                            {{ $atk->kode_atk }} - {{ $atk->nama_atk }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>Cabang *</label>
+                    <select class="select" id="kode_cabang" required onchange="autoFillPriceAndStock()">
+                        <option value="">Pilih Cabang...</option>
+                        @foreach($branches as $kode => $nama)
+                        <option value="{{ $kode }}">{{ $kode }} - {{ $nama }}</option>
+                        @endforeach
+                    </select>
+                    <small id="branchStockHelp"></small>
+                </div>
                 <div class="form-group">
                     <label>Unit Kerja / Cabang *</label>
                     <input class="input" type="text" id="unit_kerja" required placeholder="Contoh: Operasional Pusat">
@@ -202,12 +220,18 @@
         const opt = select.options[select.selectedIndex];
         if (opt && opt.dataset.harga) {
             currentSelectedPrice = parseFloat(opt.dataset.harga) || 0;
-            currentAvailableStock = parseInt(opt.dataset.stok) || 0;
+            const branch = document.getElementById('kode_cabang').value;
+            const stocks = opt.dataset.stocks ? JSON.parse(opt.dataset.stocks) : {};
+            currentAvailableStock = parseInt(stocks[branch]) || 0;
             document.getElementById('harga_satuan_label').value = 'Rp ' + currentSelectedPrice.toLocaleString('id-ID');
+            document.getElementById('branchStockHelp').textContent = branch
+                ? `Stok cabang: ${currentAvailableStock} ${opt.dataset.satuan || 'PCS'}`
+                : '';
         } else {
             currentSelectedPrice = 0;
             currentAvailableStock = 0;
             document.getElementById('harga_satuan_label').value = 'Rp 0';
+            document.getElementById('branchStockHelp').textContent = '';
         }
         calculateTotal();
     }
@@ -220,6 +244,7 @@
 
     function openCreateModal() {
         document.getElementById('atk_id').value = '';
+        document.getElementById('kode_cabang').value = '';
         document.getElementById('unit_kerja').value = '';
         document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
         document.getElementById('jumlah').value = '';
@@ -285,6 +310,7 @@
 
         const payload = {
             atk_id: document.getElementById('atk_id').value, unit_kerja: document.getElementById('unit_kerja').value,
+            kode_cabang: document.getElementById('kode_cabang').value,
             tanggal: document.getElementById('tanggal').value, jumlah: qty, no_jurnal_beban: document.getElementById('no_jurnal_beban').value,
             keperluan: document.getElementById('keperluan').value, _token: '{{ csrf_token() }}'
         };

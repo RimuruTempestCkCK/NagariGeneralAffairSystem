@@ -5,9 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Atk;
 use App\Models\Kendaraan;
 use App\Models\Aset;
+use App\Models\Branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\AuditLogService;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller
 {
@@ -15,27 +21,45 @@ class ReportController extends Controller
     
     public function buildAtkQuery(Request $request)
     {
+        $branches = Branch::options();
         $query = Atk::withTrashed()->with([
-            'stokHistori' => function($q) use ($request) {
-                if ($request->filled('start_date')) $q->whereDate('created_at', '>=', $request->start_date);
-                if ($request->filled('end_date')) $q->whereDate('created_at', '<=', $request->end_date);
-            },
-            'pemakaian' => function($q) use ($request) {
+            'stokHistori' => function ($q) use ($request, $branches) {
                 if ($request->filled('start_date')) $q->whereDate('tanggal', '>=', $request->start_date);
                 if ($request->filled('end_date')) $q->whereDate('tanggal', '<=', $request->end_date);
-            }
+                if (array_key_exists($request->query('kode_cabang'), $branches)) {
+                    $q->where('kode_cabang', $request->query('kode_cabang'));
+                }
+            },
+            'pemakaian' => function ($q) use ($request, $branches) {
+                if ($request->filled('start_date')) $q->whereDate('tanggal', '>=', $request->start_date);
+                if ($request->filled('end_date')) $q->whereDate('tanggal', '<=', $request->end_date);
+                if (array_key_exists($request->query('kode_cabang'), $branches)) {
+                    $q->where('kode_cabang', $request->query('kode_cabang'));
+                }
+            },
+            'cabangStoks' => function ($q) use ($request, $branches) {
+                if (array_key_exists($request->query('kode_cabang'), $branches)) {
+                    $q->where('kode_cabang', $request->query('kode_cabang'));
+                }
+            },
         ]);
 
         if ($request->filled('search')) {
-            $query->where('nama_atk', 'like', '%' . $request->search . '%')
-                  ->orWhere('kode_atk', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_atk', 'like', '%' . $request->search . '%')
+                    ->orWhere('kode_atk', 'like', '%' . $request->search . '%');
+            });
         }
 
         return $query;
     }
 
-    public function mapAtkRow($atk)
+    public function mapAtkRow($atk, bool $branchFilter = false)
     {
+        if ($atk->relationLoaded('cabangStoks') && $branchFilter) {
+            $atk->jumlah = $atk->cabangStoks->sum('jumlah');
+        }
+
         $atk->stok_masuk_periode = $atk->stokHistori->where('jenis_transaksi', 'Stok Masuk')->sum('jumlah');
         $atk->pemakaian_periode = $atk->pemakaian->sum('jumlah');
         $atk->beban_biaya_periode = $atk->pemakaian->sum('total_beban_biaya');
@@ -77,8 +101,14 @@ class ReportController extends Controller
         ]);
 
         if ($request->filled('search')) {
-            $query->where('nomor_kendaraan', 'like', '%' . $request->search . '%')
-                  ->orWhere('jenis_kendaraan', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('nomor_kendaraan', 'like', '%' . $request->search . '%')
+                    ->orWhere('jenis_kendaraan', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if (array_key_exists($request->query('kode_cabang'), Branch::options())) {
+            $query->where('kode_cabang', $request->query('kode_cabang'));
         }
 
         return $query;
@@ -102,9 +132,15 @@ class ReportController extends Controller
         $query = Aset::withTrashed();
 
         if ($request->filled('search')) {
-            $query->where('nomor_sertifikat', 'like', '%' . $request->search . '%')
-                  ->orWhere('lokasi', 'like', '%' . $request->search . '%')
-                  ->orWhere('kode_cabang', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('nomor_sertifikat', 'like', '%' . $request->search . '%')
+                    ->orWhere('lokasi', 'like', '%' . $request->search . '%')
+                    ->orWhere('kode_cabang', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if (array_key_exists($request->query('kode_cabang'), Branch::options())) {
+            $query->where('kode_cabang', $request->query('kode_cabang'));
         }
         
         if ($request->filled('status')) {
@@ -131,11 +167,15 @@ class ReportController extends Controller
     {
         if (Auth::user()->role === 'staff') abort(403, 'Unauthorized.');
 
-        $atks = $this->buildAtkQuery($request)->get()->map(function($atk) {
-            return $this->mapAtkRow($atk);
+        $branchFilter = array_key_exists($request->query('kode_cabang'), Branch::options());
+        $atks = $this->buildAtkQuery($request)->get()->map(function($atk) use ($branchFilter) {
+            return $this->mapAtkRow($atk, $branchFilter);
         });
 
-        return view('shared.laporan.atk', compact('atks'));
+        return view('shared.laporan.atk', [
+            'atks' => $atks,
+            'branches' => Branch::options(),
+        ]);
     }
 
     public function kendaraan(Request $request)
@@ -146,7 +186,10 @@ class ReportController extends Controller
             return $this->mapKendaraanRow($k);
         });
 
-        return view('shared.laporan.kendaraan', compact('kendaraans'));
+        return view('shared.laporan.kendaraan', [
+            'kendaraans' => $kendaraans,
+            'branches' => Branch::options(),
+        ]);
     }
 
     public function aset(Request $request)
@@ -155,7 +198,10 @@ class ReportController extends Controller
 
         $asets = $this->buildAsetQuery($request)->get();
 
-        return view('shared.laporan.aset', compact('asets'));
+        return view('shared.laporan.aset', [
+            'asets' => $asets,
+            'branches' => Branch::options(),
+        ]);
     }
     // --- EXPORT LOGIC ---
 
@@ -164,8 +210,9 @@ class ReportController extends Controller
         if (Auth::user()->role === 'staff') abort(403, 'Unauthorized.');
         
         $format = $request->query('format', 'excel');
-        $atks = $this->buildAtkQuery($request)->get()->map(function($atk) {
-            return $this->mapAtkRow($atk);
+        $branchFilter = array_key_exists($request->query('kode_cabang'), Branch::options());
+        $atks = $this->buildAtkQuery($request)->get()->map(function($atk) use ($branchFilter) {
+            return $this->mapAtkRow($atk, $branchFilter);
         });
 
         if ($format === 'pdf') {
@@ -219,31 +266,86 @@ class ReportController extends Controller
             return view('shared.laporan.export.kendaraan_pdf', compact('kendaraans', 'request'));
         }
 
-        AuditLogService::log('EXPORT', 'KENDARAAN_REPORT', 'User exported Laporan Kendaraan to Excel (CSV)', Auth::user());
-        $filename = 'laporan_kendaraan_' . ($request->start_date ?? 'all') . '_' . ($request->end_date ?? 'all') . '.csv';
-        $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        ];
-        $callback = function() use($kendaraans) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['Plat Nomor', 'Jenis Kendaraan', 'Jarak Tempuh', 'Biaya BBM (Rp)', 'Biaya Pemeliharaan (Rp)', 'Status']);
-            foreach ($kendaraans as $k) {
-                fputcsv($file, [
-                    $k->nomor_kendaraan,
-                    $k->jenis_kendaraan,
-                    $k->total_jarak,
-                    $k->total_bbm,
-                    $k->total_pemeliharaan,
-                    $k->trashed() ? 'Dihapus (Histori)' : 'Aktif'
-                ]);
+        AuditLogService::log('EXPORT', 'KENDARAAN_REPORT', 'User exported Laporan Kendaraan to XLSX', Auth::user());
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Laporan Kendaraan');
+        $sheet->fromArray([
+            'Plat Nomor',
+            'Jenis Kendaraan',
+            'Total Jarak (KM)',
+            'Biaya BBM (Rp)',
+            'Biaya Pemeliharaan (Rp)',
+            'Status',
+            'Tanggal Perjalanan',
+            'Kilometer (Awal - Akhir)',
+            'Foto KM Berangkat',
+            'Foto KM Sampai',
+        ], null, 'A1');
+
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true)->getColor()->setRGB('FFFFFF');
+        $sheet->getStyle('A1:J1')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('2C3E50');
+        foreach (['A' => 18, 'B' => 20, 'C' => 18, 'D' => 20, 'E' => 24, 'F' => 16, 'G' => 20, 'H' => 24, 'I' => 22, 'J' => 22] as $column => $width) {
+            $sheet->getColumnDimension($column)->setWidth($width);
+        }
+
+        $row = 2;
+        foreach ($kendaraans as $kendaraan) {
+            $perjalanans = $kendaraan->perjalanans->values();
+            $rows = $perjalanans->isEmpty() ? [null] : $perjalanans;
+
+            foreach ($rows as $index => $perjalanan) {
+                if ($index === 0) {
+                    $sheet->fromArray([
+                        $kendaraan->nomor_kendaraan,
+                        $kendaraan->jenis_kendaraan,
+                        $kendaraan->total_jarak,
+                        $kendaraan->total_bbm,
+                        $kendaraan->total_pemeliharaan,
+                        $kendaraan->trashed() ? 'Dihapus (Histori)' : 'Aktif',
+                    ], null, "A{$row}");
+                }
+
+                if ($perjalanan) {
+                    $sheet->setCellValue("G{$row}", $perjalanan->tanggal);
+                    $sheet->setCellValue("H{$row}", "{$perjalanan->kilometer_awal} - {$perjalanan->kilometer_akhir}");
+
+                    foreach ([
+                        'I' => $perjalanan->foto_km_awal,
+                        'J' => $perjalanan->foto_km_akhir,
+                    ] as $column => $photoPath) {
+                        if (!$photoPath || !Storage::disk('public')->exists($photoPath)) {
+                            continue;
+                        }
+
+                        $drawing = new Drawing();
+                        $drawing->setName($column === 'I' ? 'Kilometer Berangkat' : 'Kilometer Sampai');
+                        $drawing->setDescription("Foto kilometer {$kendaraan->nomor_kendaraan} tanggal {$perjalanan->tanggal}");
+                        $drawing->setPath(Storage::disk('public')->path($photoPath));
+                        $drawing->setHeight(56);
+                        $drawing->setCoordinates("{$column}{$row}");
+                        $drawing->setOffsetX(6);
+                        $drawing->setOffsetY(4);
+                        $drawing->setWorksheet($sheet);
+                    }
+                }
+
+                $sheet->getRowDimension($row)->setRowHeight(66);
+                $row++;
             }
-            fclose($file);
-        };
-        return response()->stream($callback, 200, $headers);
+        }
+
+        $sheet->freezePane('A2');
+        $sheet->getAutoFilter()->setRange('A1:J' . max(1, $row - 1));
+        $filename = 'laporan_kendaraan_' . ($request->start_date ?? 'all') . '_' . ($request->end_date ?? 'all') . '.xlsx';
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+            $spreadsheet->disconnectWorksheets();
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     public function exportAset(Request $request)
@@ -255,7 +357,8 @@ class ReportController extends Controller
 
         if ($format === 'pdf') {
             AuditLogService::log('EXPORT', 'ASET_REPORT', 'User exported Laporan Aset to PDF', Auth::user());
-            return view('shared.laporan.export.aset_pdf', compact('asets', 'request'));
+            $branches = Branch::options();
+            return view('shared.laporan.export.aset_pdf', compact('asets', 'request', 'branches'));
         }
 
         AuditLogService::log('EXPORT', 'ASET_REPORT', 'User exported Laporan Aset to Excel (CSV)', Auth::user());
@@ -267,12 +370,14 @@ class ReportController extends Controller
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         ];
-        $callback = function() use($asets) {
+        $branches = Branch::options();
+        $callback = function() use($asets, $branches) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['Kode Cabang', 'Nomor Sertifikat', 'Nama Pemilik', 'Lokasi', 'Luas Tanah (m2)', 'Jatuh Tempo', 'Status Sertifikat', 'Status Data']);
+            fputcsv($file, ['Kode Cabang', 'Nama Cabang', 'Nomor Sertifikat', 'Nama Pemilik', 'Lokasi', 'Luas Tanah (m2)', 'Jatuh Tempo', 'Status Sertifikat', 'Status Data']);
             foreach ($asets as $aset) {
                 fputcsv($file, [
                     $aset->kode_cabang,
+                    $branches[$aset->kode_cabang] ?? 'Belum ditentukan',
                     $aset->nomor_sertifikat,
                     $aset->nama_pemilik,
                     $aset->lokasi,
@@ -287,4 +392,3 @@ class ReportController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 }
-

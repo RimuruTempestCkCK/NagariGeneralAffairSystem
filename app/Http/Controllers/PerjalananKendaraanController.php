@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
+use App\Models\Branch;
 use App\Models\PerjalananKendaraan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,10 @@ class PerjalananKendaraanController extends Controller
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
             $query->whereBetween('tanggal', [$request->tanggal_mulai, $request->tanggal_akhir]);
         }
+
+        if (array_key_exists($request->query('kode_cabang'), Branch::options())) {
+            $query->whereHas('kendaraan', fn ($vehicle) => $vehicle->where('kode_cabang', $request->query('kode_cabang')));
+        }
         
         // Staff only see their own journey (if it follows PO logic, but since it's vehicle, let's keep it visible or specific to staff logic - per BRD usually staff inputs it, maybe we just show all or staff specific)
         if (Auth::user()->role === 'staff') {
@@ -33,7 +38,11 @@ class PerjalananKendaraanController extends Controller
         $perjalanans = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
         $kendaraans = Kendaraan::where('kondisi', '!=', 'Rusak')->orderBy('nomor_kendaraan', 'asc')->get();
 
-        return view('shared.perjalanan-kendaraan.index', compact('perjalanans', 'kendaraans'));
+        return view('shared.perjalanan-kendaraan.index', [
+            'perjalanans' => $perjalanans,
+            'kendaraans' => $kendaraans,
+            'branches' => Branch::options(),
+        ]);
     }
 
     /**
@@ -48,7 +57,15 @@ class PerjalananKendaraanController extends Controller
             'kilometer_akhir' => 'required|integer|gte:kilometer_awal',
             'tujuan' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
+            'foto_km_awal' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'foto_km_akhir' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
+
+        foreach (['foto_km_awal', 'foto_km_akhir'] as $photo) {
+            if ($request->hasFile($photo)) {
+                $validated[$photo] = $request->file($photo)->store('kendaraan/perjalanan', 'public');
+            }
+        }
 
         $validated['jarak_tempuh'] = $validated['kilometer_akhir'] - $validated['kilometer_awal'];
         $validated['user_id'] = Auth::id();
@@ -99,7 +116,15 @@ class PerjalananKendaraanController extends Controller
             'kilometer_akhir' => 'required|integer|gte:kilometer_awal',
             'tujuan' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
+            'foto_km_awal' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'foto_km_akhir' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
+
+        foreach (['foto_km_awal', 'foto_km_akhir'] as $photo) {
+            if ($request->hasFile($photo)) {
+                $validated[$photo] = $request->file($photo)->store('kendaraan/perjalanan', 'public');
+            }
+        }
 
         $validated['jarak_tempuh'] = $validated['kilometer_akhir'] - $validated['kilometer_awal'];
 
@@ -132,4 +157,3 @@ class PerjalananKendaraanController extends Controller
         ]);
     }
 }
-

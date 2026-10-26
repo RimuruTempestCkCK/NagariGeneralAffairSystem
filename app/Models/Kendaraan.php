@@ -12,6 +12,7 @@ class Kendaraan extends Model
 
     protected $fillable = [
         'nomor_kendaraan',
+        'kode_cabang',
         'status_kendaraan',
         'jenis_kendaraan',
         'tahun_kendaraan',

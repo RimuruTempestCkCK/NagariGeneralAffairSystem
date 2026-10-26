@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atk;
+use App\Models\AtkCabangStok;
+use App\Models\Branch;
 use App\Models\PemakaianAtk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,8 +42,12 @@ class PemakaianAtkController extends Controller
             $query->where('unit_kerja', $request->unit_kerja);
         }
 
+        if (array_key_exists($request->query('kode_cabang'), Branch::options())) {
+            $query->where('kode_cabang', $request->query('kode_cabang'));
+        }
+
         $pemakaians = $query->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->paginate(10)->withQueryString();
-        $atks = Atk::where('status', 'Aktif')->where('jumlah', '>', 0)->orderBy('nama_atk')->get();
+        $atks = Atk::where('status', 'Aktif')->where('jumlah', '>', 0)->with('cabangStoks')->orderBy('nama_atk')->get();
 
         // Agregasi pemakaian bulan ini
         $totalBebanBulanIni = PemakaianAtk::whereMonth('tanggal', now()->month)
@@ -51,7 +57,13 @@ class PemakaianAtkController extends Controller
             ->whereYear('tanggal', now()->year)
             ->sum('jumlah');
 
-        return view('shared.pemakaian-atk.index', compact('pemakaians', 'atks', 'totalBebanBulanIni', 'totalItemDipakaiBulanIni'));
+        return view('shared.pemakaian-atk.index', [
+            'pemakaians' => $pemakaians,
+            'atks' => $atks,
+            'totalBebanBulanIni' => $totalBebanBulanIni,
+            'totalItemDipakaiBulanIni' => $totalItemDipakaiBulanIni,
+            'branches' => Branch::options(),
+        ]);
     }
 
     /**
@@ -61,6 +73,7 @@ class PemakaianAtkController extends Controller
     {
         $validated = $request->validate([
             'atk_id' => 'required|exists:atks,id',
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys(Branch::options()))],
             'unit_kerja' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'jumlah' => 'required|integer|min:1',
@@ -73,12 +86,24 @@ class PemakaianAtkController extends Controller
 
             $atk = Atk::lockForUpdate()->findOrFail($validated['atk_id']);
 
-            // Validasi kecukupan stok
+            $branchStock = AtkCabangStok::where('atk_id', $atk->id)
+                ->where('kode_cabang', $validated['kode_cabang'])
+                ->lockForUpdate()
+                ->first();
+
+            if (!$branchStock || $branchStock->jumlah < $validated['jumlah']) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => "Stok ATK {$atk->nama_atk} di cabang {$validated['kode_cabang']} tidak mencukupi.",
+                ], 422);
+            }
+
             if ($atk->jumlah < $validated['jumlah']) {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
-                    'message' => "Stok tidak mencukupi! Stok saat ini untuk {$atk->nama_atk} hanya tersisa {$atk->jumlah} {$atk->satuan}.",
+                    'message' => "Stok agregat untuk {$atk->nama_atk} tidak mencukupi.",
                 ], 422);
             }
 
@@ -94,6 +119,7 @@ class PemakaianAtkController extends Controller
                 'atk_id' => $atk->id,
                 'user_id' => Auth::id(),
                 'unit_kerja' => $validated['unit_kerja'],
+                'kode_cabang' => $validated['kode_cabang'],
                 'jumlah' => $validated['jumlah'],
                 'harga_satuan' => $hargaSatuan,
                 'total_beban_biaya' => $totalBeban,
@@ -105,6 +131,7 @@ class PemakaianAtkController extends Controller
             // Pemotongan stok otomatis secara atomic
             $atk->jumlah -= $validated['jumlah'];
             $atk->save();
+            $branchStock->decrement('jumlah', $validated['jumlah']);
 
             DB::commit();
 
@@ -164,4 +191,3 @@ class PemakaianAtkController extends Controller
         ]);
     }
 }
-

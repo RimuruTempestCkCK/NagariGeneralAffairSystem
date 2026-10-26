@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atk;
+use App\Models\Branch;
 use App\Models\PermintaanAtk;
 use App\Models\PermintaanAtkItem;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class PermintaanAtkController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $query = PermintaanAtk::with(['user', 'approver', 'items.atk']);
+        $query = PermintaanAtk::with(['user', 'approver', 'branch', 'items.atk']);
 
         // Jika role staff, hanya lihat permintaan miliknya
         if ($user->role === 'staff') {
@@ -29,7 +30,8 @@ class PermintaanAtkController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('nomor_po', 'like', "%{$search}%")
-                  ->orWhere('unit_kerja', 'like', "%{$search}%");
+                  ->orWhere('unit_kerja', 'like', "%{$search}%")
+                  ->orWhereHas('branch', fn ($branch) => $branch->where('nama', 'like', "%{$search}%"));
             });
         }
 
@@ -41,7 +43,9 @@ class PermintaanAtkController extends Controller
         $permintaans = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         $atks = Atk::where('status', 'Aktif')->orderBy('nama_atk')->get();
 
-        return view('shared.permintaan-atk.index', compact('permintaans', 'atks'));
+        $branches = Branch::options();
+
+        return view('shared.permintaan-atk.index', compact('permintaans', 'atks', 'branches'));
     }
 
     /**
@@ -49,8 +53,8 @@ class PermintaanAtkController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'unit_kerja' => 'required|string|max:255',
+        $validated = $request->validate([
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::exists('branches', 'kode')],
             'tanggal_permintaan' => 'required|date',
             'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
@@ -60,6 +64,7 @@ class PermintaanAtkController extends Controller
 
         try {
             DB::beginTransaction();
+            $branch = Branch::where('kode', $validated['kode_cabang'])->firstOrFail();
 
             // Generate nomor PO unik: PO-YYYYMMDD-XXXX
             $datePrefix = date('Ymd', strtotime($request->tanggal_permintaan));
@@ -82,7 +87,8 @@ class PermintaanAtkController extends Controller
             $permintaan = PermintaanAtk::create([
                 'nomor_po' => $nomorPo,
                 'user_id' => Auth::id(),
-                'unit_kerja' => $request->unit_kerja,
+                'unit_kerja' => $branch->nama,
+                'kode_cabang' => $branch->kode,
                 'status' => $status,
                 'catatan' => $request->catatan,
                 'tanggal_permintaan' => $request->tanggal_permintaan,
@@ -119,7 +125,7 @@ class PermintaanAtkController extends Controller
      */
     public function show($id)
     {
-        $permintaan = PermintaanAtk::with(['user', 'approver', 'items.atk'])->findOrFail($id);
+        $permintaan = PermintaanAtk::with(['user', 'approver', 'branch', 'items.atk'])->findOrFail($id);
 
         // Security check
         if (Auth::user()->role === 'staff' && $permintaan->user_id !== Auth::id()) {
@@ -151,8 +157,8 @@ class PermintaanAtkController extends Controller
             ], 422);
         }
 
-        $request->validate([
-            'unit_kerja' => 'required|string|max:255',
+        $validated = $request->validate([
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::exists('branches', 'kode')],
             'tanggal_permintaan' => 'required|date',
             'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
@@ -162,11 +168,13 @@ class PermintaanAtkController extends Controller
 
         try {
             DB::beginTransaction();
+            $branch = Branch::where('kode', $validated['kode_cabang'])->firstOrFail();
 
             $status = $request->input('action') === 'submit' ? 'PENDING' : 'DRAFT';
 
             $permintaan->update([
-                'unit_kerja' => $request->unit_kerja,
+                'unit_kerja' => $branch->nama,
+                'kode_cabang' => $branch->kode,
                 'tanggal_permintaan' => $request->tanggal_permintaan,
                 'catatan' => $request->catatan,
                 'status' => $status,
@@ -329,4 +337,3 @@ class PermintaanAtkController extends Controller
         ]);
     }
 }
-

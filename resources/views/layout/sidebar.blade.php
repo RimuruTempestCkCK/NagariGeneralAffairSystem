@@ -85,6 +85,10 @@
     @if(Auth::user()->role === 'admin')
     <nav class="nav-section">
         <div class="nav-label">Modul Manajemen</div>
+        <a class="nav-link {{ request()->routeIs('admin.branches.*') ? 'is-active' : '' }}" href="{{ route('admin.branches.index') }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M10 21v-4h4v4"/></svg>
+            <span>Pengelolaan Cabang</span>
+        </a>
         <a class="nav-link {{ request()->routeIs('*.aset.*') ? 'is-active' : '' }}" href="{{ route(Auth::user()->role . '.aset.index') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
             <span>Manajemen Aset</span>

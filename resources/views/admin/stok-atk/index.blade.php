@@ -41,6 +41,14 @@
         </div>
         <form method="GET" action="{{ route('admin.stok-atk.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="search" value="{{ request('search') }}" class="input" placeholder="Cari No. Jurnal / Keterangan / ATK..." style="width: 250px;">
+            <select name="kode_cabang" class="input">
+                <option value="">Semua Cabang</option>
+                @foreach($branches as $kode => $nama)
+                <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                @endforeach
+            </select>
+            <input type="date" name="start_date" value="{{ request('start_date') }}" class="input" aria-label="Tanggal mulai">
+            <input type="date" name="end_date" value="{{ request('end_date') }}" class="input" aria-label="Tanggal akhir">
             <select name="jenis_transaksi" onchange="this.form.submit()" class="input">
                 <option value="">Semua Transaksi</option>
                 <option value="Stok Awal" {{ request('jenis_transaksi') === 'Stok Awal' ? 'selected' : '' }}>Stok Awal</option>
@@ -55,6 +63,7 @@
             <thead>
                 <tr>
                     <th>Tanggal</th>
+                    <th>Cabang</th>
                     <th>Jenis Transaksi</th>
                     <th>Barang ATK</th>
                     <th>Jumlah</th>
@@ -68,6 +77,7 @@
                 @forelse($transaksiStok as $stok)
                 <tr>
                     <td class="cell-date">{{ date('d M Y', strtotime($stok->tanggal)) }}</td>
+                    <td>{{ $branches[$stok->kode_cabang] ?? 'Belum ditentukan' }}</td>
                     <td>
                         @if($stok->jenis_transaksi === 'Stok Awal')
                             <span class="tag t-unavail">Stok Awal</span>
@@ -98,7 +108,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 30px; color: var(--t-muted);">
+                    <td colspan="9" style="text-align: center; padding: 30px; color: var(--t-muted);">
                         Belum ada riwayat transaksi stok ATK.
                     </td>
                 </tr>
@@ -141,12 +151,22 @@
         <form id="formStok" onsubmit="handleStokSubmit(event)">
             <input type="hidden" id="jenis_transaksi" name="jenis_transaksi" value="Stok Masuk">
             <div class="form-group">
+                <label>Cabang *</label>
+                <select class="select" id="kode_cabang" required onchange="autoFillAtkPrice()">
+                    <option value="">Pilih Cabang...</option>
+                    @foreach($branches as $kode => $nama)
+                    <option value="{{ $kode }}" {{ $kodeCabang === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                    @endforeach
+                </select>
+                <small id="branchStockHelp"></small>
+            </div>
+            <div class="form-group">
                 <label>Pilih Barang ATK *</label>
                 <select class="select" id="atk_id" required onchange="autoFillAtkPrice()">
                     <option value="">-- Pilih Barang ATK --</option>
                     @foreach($atks as $atk)
-                        <option value="{{ $atk->id }}" data-harga="{{ $atk->harga }}" data-satuan="{{ $atk->satuan }}" data-stok="{{ $atk->jumlah }}">
-                            {{ $atk->kode_atk }} - {{ $atk->nama_atk }} (Stok: {{ $atk->jumlah }} {{ $atk->satuan }})
+                        <option value="{{ $atk->id }}" data-harga="{{ $atk->harga }}" data-satuan="{{ $atk->satuan }}" data-stocks='@json($atk->cabangStoks->pluck("jumlah", "kode_cabang"))'>
+                            {{ $atk->kode_atk }} - {{ $atk->nama_atk }}
                         </option>
                     @endforeach
                 </select>
@@ -203,12 +223,20 @@
 </div>
 
 <script>
+    const ATK_BRANCHES = @json($branches);
+
     function autoFillAtkPrice() {
         const select = document.getElementById('atk_id');
         const opt = select.options[select.selectedIndex];
+        const branch = document.getElementById('kode_cabang').value;
+        const stocks = opt && opt.dataset.stocks ? JSON.parse(opt.dataset.stocks) : {};
+        const branchStock = Number(stocks[branch] || 0);
         if (opt && opt.dataset.harga) {
             document.getElementById('harga_satuan').value = opt.dataset.harga;
         }
+        document.getElementById('branchStockHelp').textContent = branch
+            ? `Stok tersedia di cabang: ${branchStock} ${opt?.dataset.satuan || 'PCS'}`
+            : '';
         calculateTotal();
     }
 
@@ -221,11 +249,13 @@
     function openCreateModal(jenis) {
         document.getElementById('modalStokTitle').textContent = `Catat ${jenis} ATK`;
         document.getElementById('jenis_transaksi').value = jenis;
+        document.getElementById('kode_cabang').value = @json($kodeCabang);
         document.getElementById('atk_id').value = '';
         document.getElementById('jumlah').value = '';
         document.getElementById('harga_satuan').value = '';
         document.getElementById('no_jurnal').value = '';
         document.getElementById('keterangan').value = '';
+        document.getElementById('branchStockHelp').textContent = '';
         document.getElementById('previewTotal').textContent = 'Rp 0';
         document.getElementById('modalFormStok').classList.add('flex');
     }
@@ -262,6 +292,7 @@
                 <div style="background:var(--bg-muted); padding: 15px; border-radius: 8px; margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div style="grid-column: 1 / -1;"><strong>Jenis:</strong> <span class="tag t-active">${s.jenis_transaksi}</span></div>
                     <div style="grid-column: 1 / -1;"><strong>Barang:</strong> ${s.atk ? s.atk.nama_atk : '-'}</div>
+                    <div style="grid-column: 1 / -1;"><strong>Cabang:</strong> ${ATK_BRANCHES[s.kode_cabang] || 'Belum ditentukan'}</div>
                     <div><strong>Jumlah Masuk:</strong> <br><span style="color:var(--success)">+${s.jumlah} ${s.atk ? s.atk.satuan : ''}</span></div>
                     <div><strong>Tanggal:</strong> <br>${s.tanggal}</div>
                 </div>
@@ -283,6 +314,7 @@
         e.preventDefault();
         const payload = {
             atk_id: document.getElementById('atk_id').value, jenis_transaksi: document.getElementById('jenis_transaksi').value,
+            kode_cabang: document.getElementById('kode_cabang').value,
             tanggal: document.getElementById('tanggal').value, jumlah: document.getElementById('jumlah').value,
             harga_satuan: document.getElementById('harga_satuan').value, no_jurnal: document.getElementById('no_jurnal').value,
             keterangan: document.getElementById('keterangan').value, _token: '{{ csrf_token() }}'

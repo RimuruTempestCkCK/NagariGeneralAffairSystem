@@ -23,6 +23,12 @@
             <h2 class="card-title">Riwayat Perjalanan Kendaraan</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.perjalanan-kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
+            <select name="kode_cabang" class="input">
+                <option value="">Semua Cabang</option>
+                @foreach($branches as $kode => $nama)
+                <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                @endforeach
+            </select>
             <select name="kendaraan_id" onchange="this.form.submit()" class="input">
                 <option value="">Semua Kendaraan</option>
                 @foreach($kendaraans as $k)
@@ -43,6 +49,7 @@
                     <th>Kendaraan</th>
                     <th>Tujuan</th>
                     <th>Jarak Tempuh</th>
+                    <th>Foto Kilometer</th>
                     <th style="text-align: right;">Aksi</th>
                 </tr>
             </thead>
@@ -55,6 +62,25 @@
                     <td>
                         <strong style="color: var(--primary);">{{ number_format($p->jarak_tempuh, 0, ',', '.') }} Km</strong>
                         <div style="font-size: 12px; color: var(--t-muted);">{{ $p->kilometer_awal }} - {{ $p->kilometer_akhir }}</div>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap;">
+                        @if($p->foto_km_awal)
+                        <a href="{{ asset('storage/' . $p->foto_km_awal) }}" target="_blank" rel="noopener" style="display: grid; gap: 4px; text-align: center; text-decoration: none;">
+                            <img src="{{ asset('storage/' . $p->foto_km_awal) }}" alt="Foto kilometer berangkat {{ $p->kendaraan->nomor_kendaraan }}" loading="lazy" style="width: 72px; height: 56px; object-fit: cover; border-radius: 6px;">
+                            <span>Berangkat</span>
+                        </a>
+                        @endif
+                        @if($p->foto_km_akhir)
+                        <a href="{{ asset('storage/' . $p->foto_km_akhir) }}" target="_blank" rel="noopener" style="display: grid; gap: 4px; text-align: center; text-decoration: none;">
+                            <img src="{{ asset('storage/' . $p->foto_km_akhir) }}" alt="Foto kilometer sampai {{ $p->kendaraan->nomor_kendaraan }}" loading="lazy" style="width: 72px; height: 56px; object-fit: cover; border-radius: 6px;">
+                            <span>Sampai</span>
+                        </a>
+                        @endif
+                        @if(!$p->foto_km_awal && !$p->foto_km_akhir)
+                            <span style="color: var(--t-muted);">Belum ada foto</span>
+                        @endif
+                        </div>
                     </td>
                     <td style="text-align: right;">
                         <div class="data-cell-actions" style="justify-content: flex-end;">
@@ -69,7 +95,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 30px; color: var(--t-muted);">
+                    <td colspan="6" style="text-align: center; padding: 30px; color: var(--t-muted);">
                         Tidak ada data perjalanan.
                     </td>
                 </tr>
@@ -117,7 +143,7 @@
                     <select class="select" id="kendaraan_id" required>
                         <option value="">Pilih Kendaraan...</option>
                         @foreach($kendaraans as $k)
-                        <option value="{{ $k->id }}">{{ $k->nomor_kendaraan }} - {{ $k->jenis_kendaraan }}</option>
+                        <option value="{{ $k->id }}">{{ $k->nomor_kendaraan }} - {{ $k->jenis_kendaraan }} ({{ $branches[$k->kode_cabang] ?? 'Cabang belum ditentukan' }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -146,6 +172,16 @@
                 <label>Keterangan</label>
                 <textarea class="textarea" id="keterangan" rows="2"></textarea>
             </div>
+            <div class="form-group">
+                <label>Foto Kilometer Berangkat (JPG/PNG/WebP, maks. 5 MB)</label>
+                <input class="input" type="file" id="foto_km_awal" accept="image/jpeg,image/png,image/webp">
+                <div id="current_foto_km_awal"></div>
+            </div>
+            <div class="form-group">
+                <label>Foto Kilometer Sampai (JPG/PNG/WebP, maks. 5 MB)</label>
+                <input class="input" type="file" id="foto_km_akhir" accept="image/jpeg,image/png,image/webp">
+                <div id="current_foto_km_akhir"></div>
+            </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
                 <button type="submit" class="btn btn--primary">Simpan Perjalanan</button>
@@ -155,6 +191,8 @@
 </div>
 
 <script>
+    const storageBaseUrl = @json(asset('storage'));
+
     function calculateJarak() {
         const awal = parseInt(document.getElementById('kilometer_awal').value) || 0;
         const akhir = parseInt(document.getElementById('kilometer_akhir').value) || 0;
@@ -165,11 +203,14 @@
         if (!id) {
             document.getElementById('modalFormTitle').textContent = 'Catat Perjalanan';
             document.getElementById('formData').reset();
+            document.getElementById('current_foto_km_awal').textContent = '';
+            document.getElementById('current_foto_km_akhir').textContent = '';
             document.getElementById('perjalanan_id').value = '';
             document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
             document.getElementById('modalForm').classList.add('flex');
         } else {
             document.getElementById('modalFormTitle').textContent = 'Edit Perjalanan';
+            document.getElementById('formData').reset();
             fetch(`/${window.NGAS_USER_ROLE}/perjalanan-kendaraan/${id}`)
                 .then(res => res.json())
                 .then(data => {
@@ -182,6 +223,8 @@
                         document.getElementById('kilometer_akhir').value = p.kilometer_akhir;
                         document.getElementById('tujuan').value = p.tujuan;
                         document.getElementById('keterangan').value = p.keterangan || '';
+                        document.getElementById('current_foto_km_awal').innerHTML = p.foto_km_awal ? `<a href="${storageBaseUrl}/${p.foto_km_awal}" target="_blank" rel="noopener"><img src="${storageBaseUrl}/${p.foto_km_awal}" alt="Foto kilometer berangkat" style="display:block;width:120px;height:90px;object-fit:cover;border-radius:6px;margin:8px 0 4px;">Lihat foto kilometer berangkat</a>` : '';
+                        document.getElementById('current_foto_km_akhir').innerHTML = p.foto_km_akhir ? `<a href="${storageBaseUrl}/${p.foto_km_akhir}" target="_blank" rel="noopener"><img src="${storageBaseUrl}/${p.foto_km_akhir}" alt="Foto kilometer sampai" style="display:block;width:120px;height:90px;object-fit:cover;border-radius:6px;margin:8px 0 4px;">Lihat foto kilometer sampai</a>` : '';
                         calculateJarak();
                         document.getElementById('modalForm').classList.add('flex');
                     }
@@ -199,16 +242,22 @@
 
         const id = document.getElementById('perjalanan_id').value;
         const url = id ? `/${window.NGAS_USER_ROLE}/perjalanan-kendaraan/${id}` : `/${window.NGAS_USER_ROLE}/perjalanan-kendaraan`;
-        const method = id ? 'PUT' : 'POST';
-
-        const payload = {
-            kendaraan_id: document.getElementById('kendaraan_id').value, tanggal: document.getElementById('tanggal').value,
-            kilometer_awal: awal, kilometer_akhir: akhir, tujuan: document.getElementById('tujuan').value,
-            keterangan: document.getElementById('keterangan').value, _token: '{{ csrf_token() }}'
-        };
+        const payload = new FormData();
+        payload.append('kendaraan_id', document.getElementById('kendaraan_id').value);
+        payload.append('tanggal', document.getElementById('tanggal').value);
+        payload.append('kilometer_awal', awal);
+        payload.append('kilometer_akhir', akhir);
+        payload.append('tujuan', document.getElementById('tujuan').value);
+        payload.append('keterangan', document.getElementById('keterangan').value);
+        payload.append('_token', '{{ csrf_token() }}');
+        if (id) payload.append('_method', 'PUT');
+        for (const field of ['foto_km_awal', 'foto_km_akhir']) {
+            const file = document.getElementById(field).files[0];
+            if (file) payload.append(field, file);
+        }
 
         try {
-            const res = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+            const res = await fetch(url, { method: 'POST', headers: { 'Accept': 'application/json' }, body: payload });
             const data = await res.json();
             if (data.success) {
                 closeFormModal();

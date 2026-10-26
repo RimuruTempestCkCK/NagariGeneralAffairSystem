@@ -23,6 +23,12 @@
             <h2 class="card-title">Riwayat Pemeliharaan Kendaraan</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.pemeliharaan-kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
+            <select name="kode_cabang" class="input">
+                <option value="">Semua Cabang</option>
+                @foreach($branches as $kode => $nama)
+                <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                @endforeach
+            </select>
             <select name="kendaraan_id" onchange="this.form.submit()" class="input">
                 <option value="">Semua Kendaraan</option>
                 @foreach($kendaraans as $k)
@@ -50,6 +56,7 @@
                     <th>Kendaraan</th>
                     <th>Jenis</th>
                     <th>Total Biaya</th>
+                    <th>Nota</th>
                     <th style="text-align: right;">Aksi</th>
                 </tr>
             </thead>
@@ -65,6 +72,13 @@
                         @endif
                     </td>
                     <td style="font-weight: bold; color: var(--primary);">Rp {{ number_format($p->total_biaya, 0, ',', '.') }}</td>
+                    <td>
+                        @if($p->foto_nota)
+                        <a href="{{ asset('storage/' . $p->foto_nota) }}" target="_blank" rel="noopener">Lihat nota</a>
+                        @else
+                        -
+                        @endif
+                    </td>
                     <td style="text-align: right;">
                         <div class="data-cell-actions" style="justify-content: flex-end;">
                             <button type="button" onclick="openDetailModal({{ $p->id }})" class="btn--icon act--view" title="Detail">
@@ -81,7 +95,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 30px; color: var(--t-muted);">
+                    <td colspan="6" style="text-align: center; padding: 30px; color: var(--t-muted);">
                         Tidak ada data pemeliharaan.
                     </td>
                 </tr>
@@ -174,6 +188,11 @@
                 <label>Keterangan Tambahan</label>
                 <textarea class="textarea" id="catatan" rows="2"></textarea>
             </div>
+            <div class="form-group">
+                <label>Foto Nota Pemeliharaan (JPG/PNG/WebP, maks. 5 MB)</label>
+                <input class="input" type="file" id="foto_nota" accept="image/jpeg,image/png,image/webp">
+                <div id="current_foto_nota"></div>
+            </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
                 <button type="submit" class="btn btn--primary">Simpan Pemeliharaan</button>
@@ -210,6 +229,7 @@
         if (!id) {
             document.getElementById('modalFormTitle').textContent = 'Catat Pemeliharaan Kendaraan';
             document.getElementById('formData').reset();
+            document.getElementById('current_foto_nota').textContent = '';
             document.getElementById('pemeliharaan_id').value = '';
             document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
             document.getElementById('harga_onderdil').value = 0;
@@ -218,6 +238,7 @@
             document.getElementById('modalForm').classList.add('flex');
         } else {
             document.getElementById('modalFormTitle').textContent = 'Edit Data Pemeliharaan';
+            document.getElementById('formData').reset();
             fetch(`/${window.NGAS_USER_ROLE}/pemeliharaan-kendaraan/${id}`)
                 .then(res => res.json())
                 .then(data => {
@@ -232,6 +253,7 @@
                         document.getElementById('harga_onderdil').value = p.harga_onderdil;
                         document.getElementById('biaya_jasa').value = p.biaya_jasa;
                         document.getElementById('catatan').value = p.catatan || '';
+                        document.getElementById('current_foto_nota').innerHTML = p.foto_nota ? `<a href="/storage/${p.foto_nota}" target="_blank">Lihat foto nota</a>` : '';
                         calculateTotal();
                         document.getElementById('modalForm').classList.add('flex');
                     }
@@ -263,6 +285,7 @@
                         </div>
                         <div style="background:var(--bg-muted); padding: 15px; border-radius: 8px;">
                             <p><strong>Catatan:</strong><br>${p.catatan || '-'}</p>
+                            <p><strong>Nota:</strong><br>${p.foto_nota ? `<a href="/storage/${p.foto_nota}" target="_blank">Lihat foto nota</a>` : 'Tidak ada foto'}</p>
                         </div>
                     `;
                     document.getElementById('modalDetail').classList.add('flex');
@@ -274,18 +297,17 @@
         e.preventDefault();
         const id = document.getElementById('pemeliharaan_id').value;
         const url = id ? `/${window.NGAS_USER_ROLE}/pemeliharaan-kendaraan/${id}` : `/${window.NGAS_USER_ROLE}/pemeliharaan-kendaraan`;
-        const method = id ? 'PUT' : 'POST';
-
-        const payload = {
-            kendaraan_id: document.getElementById('kendaraan_id').value, tanggal: document.getElementById('tanggal').value,
-            jenis_perbaikan: document.getElementById('jenis_perbaikan').value, bengkel: document.getElementById('bengkel').value,
-            onderdil: document.getElementById('onderdil').value, harga_onderdil: document.getElementById('harga_onderdil').value,
-            biaya_jasa: document.getElementById('biaya_jasa').value, catatan: document.getElementById('catatan').value,
-            _token: '{{ csrf_token() }}'
-        };
+        const payload = new FormData();
+        for (const field of ['kendaraan_id', 'tanggal', 'jenis_perbaikan', 'bengkel', 'onderdil', 'harga_onderdil', 'biaya_jasa', 'catatan']) {
+            payload.append(field, document.getElementById(field).value);
+        }
+        payload.append('_token', '{{ csrf_token() }}');
+        if (id) payload.append('_method', 'PUT');
+        const invoice = document.getElementById('foto_nota').files[0];
+        if (invoice) payload.append('foto_nota', invoice);
 
         try {
-            const res = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+            const res = await fetch(url, { method: 'POST', headers: { 'Accept': 'application/json' }, body: payload });
             const data = await res.json();
             if (data.success) {
                 closeFormModal();

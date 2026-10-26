@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atk;
+use App\Models\AtkCabangStok;
+use App\Models\Branch;
 use App\Models\StokAtk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,15 +39,46 @@ class StokAtkController extends Controller
             $query->where('atk_id', $request->atk_id);
         }
 
+        if ($request->filled('start_date')) {
+            $query->whereDate('tanggal', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('tanggal', '<=', $request->end_date);
+        }
+
+        $kodeCabang = $request->query('kode_cabang');
+        if (array_key_exists($kodeCabang, Branch::options())) {
+            $query->where('kode_cabang', $kodeCabang);
+        } else {
+            $kodeCabang = null;
+        }
+
         $transaksiStok = $query->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->paginate(10)->withQueryString();
-        $atks = Atk::where('status', 'Aktif')->orderBy('nama_atk')->get();
+        $atks = Atk::where('status', 'Aktif')->with('cabangStoks')->orderBy('nama_atk')->get();
 
-        // Ringkasan stok ATK keseluruhan
-        $totalNilaiPersediaan = Atk::selectRaw('SUM(jumlah * harga) as total')->value('total') ?? 0;
-        $totalItemAtk = Atk::count();
-        $totalStokFisik = Atk::sum('jumlah');
+        if ($kodeCabang) {
+            $totalNilaiPersediaan = AtkCabangStok::join('atks', 'atks.id', '=', 'atk_cabang_stoks.atk_id')
+                ->where('kode_cabang', $kodeCabang)
+                ->selectRaw('SUM(atk_cabang_stoks.jumlah * atks.harga) as total')
+                ->value('total') ?? 0;
+            $totalItemAtk = AtkCabangStok::where('kode_cabang', $kodeCabang)->where('jumlah', '>', 0)->count();
+            $totalStokFisik = AtkCabangStok::where('kode_cabang', $kodeCabang)->sum('jumlah');
+        } else {
+            $totalNilaiPersediaan = Atk::selectRaw('SUM(jumlah * harga) as total')->value('total') ?? 0;
+            $totalItemAtk = Atk::count();
+            $totalStokFisik = Atk::sum('jumlah');
+        }
 
-        return view('admin.stok-atk.index', compact('transaksiStok', 'atks', 'totalNilaiPersediaan', 'totalItemAtk', 'totalStokFisik'));
+        return view('admin.stok-atk.index', [
+            'transaksiStok' => $transaksiStok,
+            'atks' => $atks,
+            'totalNilaiPersediaan' => $totalNilaiPersediaan,
+            'totalItemAtk' => $totalItemAtk,
+            'totalStokFisik' => $totalStokFisik,
+            'branches' => Branch::options(),
+            'kodeCabang' => $kodeCabang,
+        ]);
     }
 
     /**
@@ -55,6 +88,7 @@ class StokAtkController extends Controller
     {
         $validated = $request->validate([
             'atk_id' => 'required|exists:atks,id',
+            'kode_cabang' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys(Branch::options()))],
             'jenis_transaksi' => 'required|in:Stok Awal,Stok Masuk',
             'tanggal' => 'required|date',
             'jumlah' => 'required|integer|min:1',
@@ -82,7 +116,15 @@ class StokAtkController extends Controller
                 'no_jurnal' => $validated['no_jurnal'] ?? null,
                 'keterangan' => $validated['keterangan'] ?? null,
                 'tanggal' => $validated['tanggal'],
+                'kode_cabang' => $validated['kode_cabang'],
             ]);
+
+            $branchStock = AtkCabangStok::firstOrCreate(
+                ['atk_id' => $atk->id, 'kode_cabang' => $validated['kode_cabang']],
+                ['jumlah' => 0]
+            );
+            $branchStock = AtkCabangStok::whereKey($branchStock->id)->lockForUpdate()->firstOrFail();
+            $branchStock->increment('jumlah', $validated['jumlah']);
 
             // Update master ATK: tambah jumlah dan update harga terkini
             $atk->jumlah += $validated['jumlah'];
@@ -118,4 +160,3 @@ class StokAtkController extends Controller
         ]);
     }
 }
-

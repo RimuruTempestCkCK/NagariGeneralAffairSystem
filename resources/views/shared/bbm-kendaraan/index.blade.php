@@ -23,6 +23,12 @@
             <h2 class="card-title">Riwayat Pembelian BBM</h2>
         </div>
         <form method="GET" action="{{ route(Auth::user()->role . '.bbm-kendaraan.index') }}" class="filter-bar" style="display: flex; gap: 10px; align-items: center;">
+            <select name="kode_cabang" class="input">
+                <option value="">Semua Cabang</option>
+                @foreach($branches as $kode => $nama)
+                <option value="{{ $kode }}" {{ request('kode_cabang') === $kode ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
+                @endforeach
+            </select>
             <select name="kendaraan_id" onchange="this.form.submit()" class="input">
                 <option value="">Semua Kendaraan</option>
                 @foreach($kendaraans as $k)
@@ -44,6 +50,7 @@
                     <th>Jenis BBM</th>
                     <th>Liter / Harga</th>
                     <th>Total Biaya</th>
+                    <th>Foto Struk</th>
                     <th style="text-align: right;">Aksi</th>
                 </tr>
             </thead>
@@ -58,6 +65,13 @@
                         <div style="font-size: 12px; color: var(--t-muted);">@ Rp {{ number_format($p->harga_per_liter, 0, ',', '.') }}</div>
                     </td>
                     <td style="font-weight: bold; color: var(--primary);">Rp {{ number_format($p->total_biaya, 0, ',', '.') }}</td>
+                    <td>
+                        @if($p->foto_struk)
+                        <a href="{{ asset('storage/' . $p->foto_struk) }}" target="_blank" rel="noopener">Lihat struk</a>
+                        @else
+                        -
+                        @endif
+                    </td>
                     <td style="text-align: right;">
                         <div class="data-cell-actions" style="justify-content: flex-end;">
                             <button type="button" onclick="openFormModal({{ $p->id }})" class="btn--icon act--edit" title="Edit">
@@ -71,7 +85,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 30px; color: var(--t-muted);">
+                    <td colspan="7" style="text-align: center; padding: 30px; color: var(--t-muted);">
                         Tidak ada data BBM.
                     </td>
                 </tr>
@@ -148,6 +162,11 @@
                 <label>Catatan Tambahan</label>
                 <textarea class="textarea" id="catatan" rows="2"></textarea>
             </div>
+            <div class="form-group">
+                <label>Foto Struk BBM (JPG/PNG/WebP, maks. 5 MB)</label>
+                <input class="input" type="file" id="foto_struk" accept="image/jpeg,image/png,image/webp">
+                <div id="current_foto_struk"></div>
+            </div>
             <div class="modal-footer">
                 <button type="button" onclick="closeFormModal()" class="btn btn--ghost">Batal</button>
                 <button type="submit" class="btn btn--primary">Simpan BBM</button>
@@ -172,12 +191,14 @@
         if (!id) {
             document.getElementById('modalFormTitle').textContent = 'Catat Pembelian BBM';
             document.getElementById('formData').reset();
+            document.getElementById('current_foto_struk').textContent = '';
             document.getElementById('bbm_id').value = '';
             document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
             document.getElementById('total_biaya').value = 'Rp 0';
             document.getElementById('modalForm').classList.add('flex');
         } else {
             document.getElementById('modalFormTitle').textContent = 'Edit Data BBM';
+            document.getElementById('formData').reset();
             fetch(`/${window.NGAS_USER_ROLE}/bbm-kendaraan/${id}`)
                 .then(res => res.json())
                 .then(data => {
@@ -190,6 +211,7 @@
                         document.getElementById('liter').value = p.liter;
                         document.getElementById('harga_per_liter').value = p.harga_per_liter;
                         document.getElementById('catatan').value = p.catatan || '';
+                        document.getElementById('current_foto_struk').innerHTML = p.foto_struk ? `<a href="/storage/${p.foto_struk}" target="_blank">Lihat foto struk</a>` : '';
                         calculateTotal();
                         document.getElementById('modalForm').classList.add('flex');
                     }
@@ -203,20 +225,17 @@
         e.preventDefault();
         const id = document.getElementById('bbm_id').value;
         const url = id ? `/${window.NGAS_USER_ROLE}/bbm-kendaraan/${id}` : `/${window.NGAS_USER_ROLE}/bbm-kendaraan`;
-        const method = id ? 'PUT' : 'POST';
-
-        const payload = {
-            kendaraan_id: document.getElementById('kendaraan_id').value,
-            tanggal: document.getElementById('tanggal').value,
-            jenis_bbm: document.getElementById('jenis_bbm').value,
-            liter: document.getElementById('liter').value,
-            harga_per_liter: document.getElementById('harga_per_liter').value,
-            catatan: document.getElementById('catatan').value,
-            _token: '{{ csrf_token() }}'
-        };
+        const payload = new FormData();
+        for (const field of ['kendaraan_id', 'tanggal', 'jenis_bbm', 'liter', 'harga_per_liter', 'catatan']) {
+            payload.append(field, document.getElementById(field).value);
+        }
+        payload.append('_token', '{{ csrf_token() }}');
+        if (id) payload.append('_method', 'PUT');
+        const receipt = document.getElementById('foto_struk').files[0];
+        if (receipt) payload.append('foto_struk', receipt);
 
         try {
-            const res = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+            const res = await fetch(url, { method: 'POST', headers: { 'Accept': 'application/json' }, body: payload });
             const data = await res.json();
             if (data.success) {
                 closeFormModal();

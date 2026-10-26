@@ -18,6 +18,8 @@ class PerjalananKendaraan extends Model
         'jarak_tempuh',
         'tujuan',
         'keterangan',
+        'foto_km_awal',
+        'foto_km_akhir',
     ];
 
     public function kendaraan()

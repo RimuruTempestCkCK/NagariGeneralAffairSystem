@@ -32,6 +32,7 @@ class TransaksiAtkSeeder extends Seeder
         foreach ($stokMasuk as $kodeAtk => $jumlahMasuk) {
             $atk = Atk::where('kode_atk', $kodeAtk)->first();
             if (!$atk) continue;
+            $kodeCabang = $atk->cabangStoks()->value('kode_cabang') ?? '001';
 
             StokAtk::updateOrCreate(
                 [
@@ -41,6 +42,7 @@ class TransaksiAtkSeeder extends Seeder
                 ],
                 [
                     'user_id' => $admin->id,
+                    'kode_cabang' => $kodeCabang,
                     'jumlah' => $atk->jumlah,
                     'harga_satuan' => $atk->harga,
                     'total_harga' => $atk->jumlah * $atk->harga,
@@ -61,6 +63,7 @@ class TransaksiAtkSeeder extends Seeder
                     ],
                     [
                         'user_id' => $admin->id,
+                        'kode_cabang' => $kodeCabang,
                         'jumlah' => $jumlah,
                         'harga_satuan' => $atk->harga,
                         'total_harga' => $jumlah * $atk->harga,
@@ -122,6 +125,7 @@ class TransaksiAtkSeeder extends Seeder
             if (!$atk) continue;
 
             $user = $row['role'] === 'admin' ? $admin : $staff;
+            $kodeCabang = $atk->cabangStoks()->value('kode_cabang') ?? '001';
             $totalBeban = $row['jumlah'] * $atk->harga;
 
             PemakaianAtk::updateOrCreate(
@@ -132,6 +136,7 @@ class TransaksiAtkSeeder extends Seeder
                 ],
                 [
                     'unit_kerja' => $row['unit'],
+                    'kode_cabang' => $kodeCabang,
                     'jumlah' => $row['jumlah'],
                     'harga_satuan' => $atk->harga,
                     'total_beban_biaya' => $totalBeban,
