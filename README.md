@@ -1,79 +1,112 @@
 # Nagari General Affair System (NGAS)
 
-Sistem Informasi Manajemen General Affair (Divisi Umum) Bank Nagari untuk pengelolaan ATK, Kendaraan Operasional, Aset Inventaris, Keamanan, dan Pelaporan Cabang.
+Sistem Informasi Manajemen General Affair (Divisi Umum) Bank Nagari untuk sentralisasi dan pengelolaan operasional inventaris Alat Tulis Kantor (ATK), Kendaraan Dinas/Operasional, Aset Inventaris Kantor, Keamanan Lingkungan Kerja, dan Pelaporan Multi-Cabang.
 
 ---
 
-## Tampilan Halaman Login
+## Tampilan Antarmuka
 
+### Halaman Login
 ![Halaman Login NGAS](docs/images/login-page.png)
 
 ---
 
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Modul & Fitur Utama
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### 1. Manajemen ATK (Alat Tulis Kantor)
+* **Master ATK & Inventaris**: Pendataan katalog barang ATK lengkap dengan kode, nama, kategori, dan batas stok minimum.
+* **Integrasi QR Code**: Fitur generate QR Code dengan penyematan logo Bank Nagari di tengah QR, cetak QR satuan, dan cetak bulk/massal.
+* **Scan Barcode / QR**: Pemindaian cepat QR Code melalui scanner untuk lookup detail item ATK.
+* **Permintaan & Pemakaian ATK**: Alur pengajuan permintaan, verifikasi stok cabang, dan pencatatan pemakaian harian.
+* **Monitoring & Jurnal Stok**: Pelacakan saldo stok per cabang dan pencatatan mutasi transaksi masuk/keluar.
 
-## About Laravel
+### 2. Operasional Kendaraan
+* **Master Kendaraan**: Pendataan armada dinas/operasional (plat nomor, jenis, tipe, tahun, dan status penugasan cabang).
+* **Catatan Perjalanan Dinas**: Monitoring rute perjalanan, odometer (awal & akhir), pengemudi, serta unggah bukti dokumentasi foto perjalanan.
+* **Pencatatan Bahan Bakar (BBM)**: Tracking pengisian BBM, jenis BBM, biaya, liter, odometer, serta lampiran bukti struk.
+* **Pemeliharaan & Servis**: Riwayat servis berkala, perbaikan kendaraan, biaya perawatan, dan lampiran nota bengkel.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 3. Inventaris Aset Kantor
+* **Pencatatan Aset Fisik**: Registrasi aset berwujud kantor, nomor registrasi, kondisi (baik, rusak ringan, rusak berat), dan alokasi cabang.
+* **Multi-Dokumen & Lampiran**: Dukungan upload banyak dokumen legalitas / foto fisik aset (PDF, JPG, PNG).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 4. Manajemen Keamanan (Security & K3)
+* **Evaluasi & Pengawasan**: Checklist dan evaluasi berkala sistem keamanan, CCTV, APAR, dan pos jaga.
+* **Audit Trail / Activity Log**: Rekam jejak seluruh aktivitas user dalam sistem guna transparansi dan akuntabilitas.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 5. Multi-Cabang (Branch Management)
+* **Pengelolaan Cabang**: Manajemen hingga 5 kantor cabang Bank Nagari dengan kode cabang 3 karakter.
+* **Isolasi & Pemisahan Data**: Filter otomatis transaksi stok, kendaraan, aset, dan permintaan berdasarkan cabang kerja.
 
-## Learning Laravel
+### 6. Rekapitulasi & Pelaporan
+* Laporan komprehensif untuk ATK, Kendaraan, dan Aset.
+* Filter dinamis berdasarkan periode tanggal dan cabang.
+* Ekspor laporan ke format dokumen resmi (PDF & Excel).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Hak Akses (Role & Permission)
 
-## Laravel Sponsors
+| Role | Deskripsi Hak Akses | Akun Default (Seeder) |
+| :--- | :--- | :--- |
+| **Admin** | Akses penuh: Master data ATK, Kendaraan, Aset, Pengelolaan Cabang, Verifikasi Permintaan, Audit Logs, dan Seluruh Laporan. | `admin@banknagari.co.id` / `admin123` |
+| **Staff** | Akses operasional: Pengajuan permintaan ATK, input pemakaian harian, pencatatan perjalanan kendaraan, BBM, dan pemeliharaan. | `staff@banknagari.co.id` / `staff123` |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## Persyaratan Sistem
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+* **PHP**: `>= 8.2` (dengan ekstensi: `pdo_mysql`, `zip`, `gd`, `fileinfo`, `mbstring`)
+* **Database**: MySQL `>= 8.0` atau MariaDB `>= 10.4`
+* **Composer**: `>= 2.0`
+* **Web Server**: Apache / Nginx / PHP Built-in Server
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Petunjuk Instalasi & Menjalankan Aplikasi
 
-## Code of Conduct
+1. **Clone Repository & Masuk Direktori**
+   ```bash
+   git clone https://github.com/RimuruTempestCkCK/NagariGeneralAffairSystem.git
+   cd NagariGeneralAffairSystem
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Install Dependensi PHP**
+   ```bash
+   composer install
+   ```
 
-## Security Vulnerabilities
+3. **Konfigurasi Environment (`.env`)**
+   Salin `.env.example` ke `.env` dan sesuaikan koneksi database Anda:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=nagarigeneralaffairsystem
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. **Generate Application Key & Storage Link**
+   ```bash
+   php artisan key:generate
+   php artisan storage:link
+   ```
 
-## License
+5. **Migrasi Database & Seeder Data Awal**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6. **Jalankan Server Lokal**
+   ```bash
+   php artisan serve
+   ```
+   Akses aplikasi melalui browser di: `http://127.0.0.1:8000`
 
-## Konfigurasi NGAS
+---
 
-- Admin mengelola maksimal lima cabang melalui menu **Pengelolaan Cabang**. Kode cabang terdiri dari tiga karakter dan tidak dapat diubah setelah dibuat; nama cabang dapat diperbarui. Cabang yang sudah dipakai data tidak dapat dihapus.
-- `config/branches.php` hanya menjadi sumber daftar cabang awal ketika migrasi tabel cabang dijalankan pada instalasi baru.
-- Setelah mengambil perubahan aplikasi, jalankan migrasi dengan `php artisan migrate` dan pastikan penyimpanan berkas publik tersedia dengan `php artisan storage:link`.
-- Foto perjalanan, struk BBM, dan nota pemeliharaan menerima JPG, PNG, atau WebP hingga 5 MB per foto. Lampiran aset menerima PDF/JPG/PNG tanpa batas jumlah berkas, hingga 10 MB per berkas.
-- Kendaraan dan aset lama yang belum memakai salah satu dari lima kode cabang perlu diperbarui melalui formulirnya agar muncul pada filter cabang. Migrasi lanjutan memetakan data contoh ATK yang kode dan namanya cocok dengan seeder; data lain yang belum memiliki cabang tetap perlu diperiksa sebelum dialokasikan.
+## Ketentuan & Validasi File Upload
+
+* **Foto Perjalanan, Struk BBM, & Nota Pemeliharaan**: Format JPG, PNG, atau WebP (maksimal 5 MB per foto).
+* **Lampiran Aset**: Format PDF, JPG, atau PNG (maksimal 10 MB per file, mendukung multi-file upload).
