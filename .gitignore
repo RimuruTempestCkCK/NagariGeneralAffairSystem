@@ -37,3 +37,5 @@ akun*.txt
 # Slash di depan membatasi aturan ini hanya ke file root, bukan ke file
 # bernama sama di dalam subfolder.
 /IMPLEMENTATION_STATUS.md
+.playwright-mcp/
+
