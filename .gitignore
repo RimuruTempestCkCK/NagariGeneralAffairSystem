@@ -38,4 +38,5 @@ akun*.txt
 # bernama sama di dalam subfolder.
 /IMPLEMENTATION_STATUS.md
 .playwright-mcp/
+devtunnel.exe
 
